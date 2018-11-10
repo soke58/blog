@@ -1,0 +1,142 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>定义VB数据类型常识</title></head><body><h1>定义VB数据类型常识</h1><div><p>学过编程的人都知道大多数的计算机语言都规定了各自的数据类型，VB也不例外。其实，在一个最简单的程序中数据类型是可以不作规定的，也就是说，变量可以使用各种类型，但是在一个复杂的程序里，这样做就很危险，因为很可能给同一个变量赋予了不同的类型，而导致程序出错。所以，为了程序的严谨和便于查看，正确的定义数据类型是必要的。定义数据的另一个原因是，不同的数据占用不同的内存数量，譬如整型（Interger）数据占2字节，而长整型数据占4个字节，定义合适的数据类型，不管你相信不相信，它可以节省内存！ <br />
+<br />
+VB常用的数据类型有：整型（Integer，表示-32768至32767之间的整数）、长整型（Long，表示-2,147,483,648至2,147,483,647之间的整数）、实型（Single，表示-3.37E+38至3.37E+38之间的实数）、双精度实型（Double，表示-1.67E+308至1.67E+308之间的实数），字符（String，每个字符占一字节，可以储存0～65,535个字符），布尔（Boolean，只有两个值True/-1，或False/0）。 <br />
+<br />
+数据类型的定义方法： <br />
+<br />
+定义变量最简单的方法是用&ldquo;Dim&rdquo;关键字，它的语法： <br />
+<br />
+<br />
+Dim 【变量名】As 【数据类型】 <br />
+<br />
+<br />
+如：Dim Index As Integer <br />
+<br />
+<br />
+也可以在一行中定义多个变量，如： <br />
+<br />
+<br />
+Dim Index As Integer , Dim Number As Long <br />
+<br />
+<br />
+把多个变量定义成同一类型可以写成： <br />
+<br />
+<br />
+Dim Index , Number As Integer <br />
+<br />
+<br />
+更可以在定义时进行初赋值： <br />
+<br />
+<br />
+Dim Index=3 <br />
+<br />
+<br />
+有时为了简便，也以符号进行简单的定义，作用是和上面一样的。整型可以用&ldquo;%&rdquo;代替，长整型可以用&ldquo;&amp;&rdquo;代替，实型可以用&ldquo;!&rdquo;，双精度实型可以用&ldquo;#&rdquo;定义，如刚才的第一个例子可以写成： <br />
+<br />
+<br />
+Dim Index% 等价于 Dim Index As Integer <br />
+<br />
+对于常量的定义用Const定义，如：Const COLOR=255。 <br />
+<br />
+为了在程序中便于查阅，我们对变量和常量的写法进行规定，变量一般用小写方式，常量则全部大写。 <br />
+<br />
+注意：使用常量的好处，对于程序中经常出现的数值，应设常量等于它，这样一是书写方便，其二，如果要改变该数值，只需改变定义常量的语句值，而不需改变每个语句，提高了效率。 <br />
+<br />
+数组的定义类似于变量定义，所不同的是数组需要指定数组中的元素个数，例如： <br />
+<br />
+<br />
+Dim IntegerArray(99) As Integer <br />
+<br />
+<br />
+这个数组中包含100个元素，脚标从0到99。 <br />
+<br />
+<br />
+也可以指定脚标的起始值，例如： <br />
+<br />
+<br />
+Dim IntegerArray(2 to 10) As Integer <br />
+<br />
+<br />
+这个数组含有九个元素，脚标从2到10。 <br />
+<br />
+<br />
+还可以定义多维数组： <br />
+<br />
+<br />
+Dim ThreeD(4,2 to 5,3 to 6) As Integer <br />
+<br />
+<br />
+上例定义了一个三维数组(4×4×4)。 <br />
+<br />
+<br />
+记录的定义 <br />
+<br />
+记录定义是把控制权交给用户的方法，它让用户可以定义自己的数据类型，它使用关键字&ldquo;Type&rdquo;，方法是： <br />
+<br />
+<br />
+Type 【数据类型标识符】 <br />
+<br />
+<br />
+&lt;域名&gt; As &lt;数据类型&gt; <br />
+<br />
+&lt;域名&gt; As &lt;数据类型&gt; <br />
+<br />
+&lt;域名&gt; As &lt;数据类型&gt; <br />
+<br />
+………………………… <br />
+<br />
+<br />
+End Type <br />
+<br />
+<br />
+例如，定义一个地址数据： <br />
+<br />
+<br />
+Type Address <br />
+<br />
+<br />
+Street As String <br />
+<br />
+ZipCode As String <br />
+<br />
+Phone As String <br />
+<br />
+<br />
+End Type <br />
+<br />
+<br />
+这个地址数据里包括三个属性，街区、邮政编码和电话，可以把某数据定义成此类型： <br />
+<br />
+<br />
+Dim MyHome As Address <br />
+<br />
+<br />
+要调用或改变&ldquo;MyHome&rdquo;的值时，类似于对对象的属性的操作： <br />
+<br />
+<br />
+变量名.域名＝&ldquo;……&rdquo; <br />
+<br />
+<br />
+为了简化书写重复的部分,可以用关键字&ldquo;With&rdquo;： <br />
+<br />
+<br />
+With MyHome <br />
+<br />
+<br />
+.Street=&rdquo;阜成路&rdquo; <br />
+<br />
+.ZipCode=&rdquo;100037&rdquo; <br />
+<br />
+.Phone=&rdquo;12345678&rdquo; <br />
+<br />
+<br />
+End With</p>
+<p>VB建立了一种新的变量类型――货币型变量，通过使用仅带有二位小数的货币变量，就能避免因使用实型变量而带来的数值积累误差问题。 <br />
+<br />
+VB在调用函数（Function）时，必须在函数名后跟一对括号。 <br />
+<br />
+VB对白兰地使用范围重新做了规范，在Basic里把隐含变量都当作全局变量，而在VB里对隐含变量都当作局部变量。 <br />
+<br />
+VB里的说明语句（Declare），仅支持动态链结库（DLL）的子程序和无变量函数。 <br />
+<br />
+使用数组，必须事先用Dim或Redim进行定义。</p></div></body></html>

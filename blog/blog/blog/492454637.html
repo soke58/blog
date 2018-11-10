@@ -1,0 +1,24 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>对网页内容进行解析（VB如何操作WEB页的浏览提交）</title></head><body><h1>对网页内容进行解析（VB如何操作WEB页的浏览提交）</h1><div><p><a href="http://blog.csdn.net/zcsor/archive/2007/01/16/1484409.aspx">http://blog.csdn.net/zcsor/archive/2007/01/16/1484409.aspx</a></p>
+<p>当我们获取到网页以后,可以通过Document对象来获取其源文件:</p>
+<p>假设在WebBrowser2中打开的网页,(如果是其他形式,例如上一篇中提到的获取后的对象,只需要修改WEBBROWER2为相应对象即可.)</p>
+<p>WebBrowser2.Document.body.createtextrange().htmltext就是网页的源码了!怎么处理呢?如下:</p>
+<p>思路:源码是一个字符串,我们将其分割即可,一般利用以下办法:</p>
+<p>Dim mTextArr() As String  '接受分割后的字符串</p>
+<p>Dim mTextHtml as string '网页源码</p>
+<p>mTexthtml=WebBrowser2.Document.body.createtextrange().htmltext</p>
+<p>mTextArr() = Split(mText, vbcrlf)  '按行分离,实际上，我们只需要将vbcrlf替换为&quot;特征字符&quot;即可简化操作,例如</p>
+<p>'mTextArr() = Split(mText, &quot;IMG height=12 alt=&quot;)</p>
+<p>'到这里,我们就得到了被分离后的源代码,接下来历遍它,提取出我们需要的字符即可,这里介绍两个技巧</p>
+<p>1、利用多个变量,来过滤无关字符,简化代码注意特征字符(分割符)的设置,适当的设置可以滤掉很多字符,如下面代码</p>
+<p>mTextArr() = Split(mText, &quot;IMG height=12 alt=&quot;)</p>
+<p>2、利用INSTR函数识别字符串,</p>
+<p>3、将结果保存到LIST控件,以便排序(直接设置按字符大小排序即可)</p>
+<p>4、利用Right等函数进行格式化字符,如某格式化字符代码:</p>
+<p>tmp2 = Right(&quot;00000000&quot; &amp; Left(mTextArr(i), InStr(1, mTextArr(i), &quot;票&quot;) - 1), 8)</p>
+<p> 关于字符处理就写这些,</p>
+<p>再写点其他的,某些情况下,一个页面(FORMS)里面有很多个FORM,导致我们打开指定页后发现没有需要的部分,这时你只需要打开你要浏览的页面,在你需要的部分最近的空白处点右键,选择&quot;属性&quot;即可看到真正的页面,有些情况下某部分页面无法直接显示,那么我们调用相应的页面内函数即可,例如百度贴吧里面的验证字符串,只有点了输入框才出现,实际上,我们只需要调用页面内的check_img等函数即可显示,另例:在前面的跑跑卡丁车那个示例中:</p>
+<p>WBDocument.body.All(&quot;chkemail&quot;).onclick&nbsp;&nbsp;&nbsp;&nbsp;  '以下两句同本句功能<br />
+'WBDocument.body.All(&quot;chkemail&quot;).Checked = 1<br />
+'WBDocument.parentWindow.execScript &quot;showEmailOrNot(userReg)&quot;, &quot;javascript&quot;</p>
+<p>也体现了如何显示出一个&quot;隐藏&quot;的项目:</p>
+<p>或者调用相应事件或者调用相应JAVA程序.</p></div></body></html>
