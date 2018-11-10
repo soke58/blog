@@ -1,0 +1,52 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>下面的代码实现了文章图片上下篇（张）的切换</title></head><body><h1>下面的代码实现了文章图片上下篇（张）的切换</h1><div><p>&lt;!--#include file=``conn.asp``--&gt;<br>
+&lt;!--程序开始--&gt;<br>
+&lt;!--`定义一个thenext函数来找出下一篇的ID，如果当前记录已经是最后一条记录，则输出文字&ldquo;没有了&rdquo;--&gt;<br>
+&lt;% <br>
+function thenext<br>
+newrs=server.CreateObject(``adodb.recordset``)<br>
+sql=``select top 1 * from article where id&gt;``&amp;id&amp;`` order by id``<br>
+set newrs=conn.execute(sql)<br>
+if newrs.eof then<br>
+response.Write(``上一篇:``)<br>
+response.Write(``没有了``)<br>
+else<br>
+a2=newrs(``id``)<br>
+response.Write(``上一篇:``)<br>
+response.Write``&lt;a href=`show_info.asp?id=``&amp;a2&amp;```&gt;``<br>
+if len(newrs(``title``))&gt;18then <br>
+response.write(left(newrs(``title``),18)&amp;``...``) <br>
+else <br>
+response.write(newrs(``title``)) <br>
+end if<br>
+response.Write ``&lt;/a&gt;``<br>
+end if<br>
+end function<br>
+%&gt;<br>
+&lt; !--`定义一个thehead函数来找出下一篇的ID，如果当前记录已经是最前面的一条记录，则输出文字&ldquo;没有了&rdquo;--&gt;<br>
+&lt;% <br>
+function thehead<br>
+headrs=server.CreateObject(``adodb.recordset``)<br>
+sql=``select top 1 * from article where id&lt;``&amp;id&amp;`` order by id desc``<br>
+set headrs=conn.execute(sql)<br>
+<br>
+if headrs.eof then<br>
+response.Write(``下一篇:``)<br>
+response.Write(``没有了``)<br>
+else<br>
+a0=headrs(``id``)<br>
+response.Write(``下一篇:``)<br>
+response.Write``&lt;a href=`show_info.asp?id=``&amp;a0&amp;```&gt;``<br>
+if len(headrs(``title``))&gt;18 then <br>
+response.write(left(headrs(``title``),18)&amp;``...``) <br>
+else <br>
+response.write(headrs(``title``)) <br>
+end if<br>
+response.Write ``&lt;/a&gt;``<br>
+end if<br>
+end function<br>
+%&gt;<br>
+<br>
+<br>
+调用函数:相应的地方加上：<br>
+&lt;% thehead %&gt;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;% thenext %&gt;&nbsp;&nbsp;<br>
+就OK拉</p></div></body></html>

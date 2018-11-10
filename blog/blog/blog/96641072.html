@@ -1,0 +1,94 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>一段简单的添加数据库记录的程序代码</title></head><body><h1>一段简单的添加数据库记录的程序代码</h1><div>本人是一ASP菜鸟，某次乱建了个database.mdb数据库，其中只有一个表，四个字段如下<br>
+表名：bb<br>
+结构如下：<br>
+ID&nbsp;&nbsp;  name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  email&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  qq<br>
+1&nbsp;&nbsp;&nbsp;&nbsp;  混子&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  abc@abc.com&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  123456<br>
+现在我要在里面添加一条新记录，可是我是菜鸟啊！在网上搜了半天，都是专业术语，不懂！最后找到一些源码，经过改造基本上能适合我用拉，在此把源码以日记形式记录下来，用以备用！<br>
+&lt;% <br>
+strcon=``Provider=Microsoft.Jet.OLEDB.4.0;Data Source=``+Server.MapPath(``database.mdb``) <br>
+Set conn=Server.createobject(``ADODB.connection``) <br>
+conn.open(strcon) <br>
+set rs=server.createobject(``adodb.recordset``) <br>
+strSql=``select * from bb`` <br>
+rs.open strSql,conn,1,1 <br>
+%&gt; /*上面是连接代码，用途比较广泛*/<br>
+&lt;% if request.Form(``sub``)=``submit`` then<br>
+&nbsp;&nbsp;  name=request.Form(``name``)<br>
+&nbsp;&nbsp;  email=request.Form(``email``)<br>
+&nbsp;&nbsp;  qq=request.Form(``qq``)<br>
+&nbsp;&nbsp;  set rs=server.CreateObject(``adodb.recordset``)<br>
+&nbsp;&nbsp;  sql=``select * from bb``<br>
+&nbsp;&nbsp;  rs.open sql,conn,3,3<br>
+&nbsp;&nbsp;  rs.addnew<br>
+&nbsp;&nbsp;  rs(``name``)=name<br>
+&nbsp;&nbsp;  rs(``email``)=email<br>
+&nbsp;&nbsp;  rs(``qq``)=qq<br>
+&nbsp;&nbsp;  rs.update<br>
+&nbsp;&nbsp;  %&gt;<br>
+&lt;script language=``JavaScript``&gt;<br>
+alert(``资料添加成功!``)<br>
+window.location.href(``index.asp``)/*这里是添加成功后页面返回的地址,可修改*/<br>
+&lt;/script&gt;<br>
+/*这里好象是在给变量指定赋值，还带了一段JS语句不知道是不是*/<br>
+&lt;%<br>
+rs.close<br>
+set rs=nothing<br>
+conn.close<br>
+set conn=nothing<br>
+end if<br>
+%&gt;<br>
+/*结束语句，接下来是文本框代码*/<br>
+&lt;table width=``600`` border=``0`` cellpadding=``5`` cellspacing=``1`` bgcolor=``#C0C0C0`` align=center&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;form name=``form1`` method=``post`` action=``index.asp`` onsubmit=``return form1_onsubmit()``&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;tr align=``center`` bgcolor=``#E3E3E3``&gt; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;td height=``30`` colspan=``2``&gt;&lt;B&gt;资料添加&lt;/B&gt;&lt;/td&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;/tr&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;tr bgcolor=``#FFFFFF``&gt; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;td width=``100`` height=``25`` align=``right``&gt;名&amp;nbsp; 字：&lt;/td&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;td width=``500``&gt;&lt;input name=``name`` type=``text`` id=``name``&nbsp;&nbsp;  size=``20``&gt;&lt;/td&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;/tr&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;tr bgcolor=``#FFFFFF``&gt; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;td height=``25`` align=``right``&gt;伊妹儿：&lt;/td&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;td&gt;&lt;input name=``email`` type=``text`` id=``email``&nbsp;&nbsp;  size=``20``&gt;&lt;/td&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;/tr&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;tr bgcolor=``#FFFFFF``&gt; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;td height=``25`` align=``right``&gt;QQ号码：&lt;/td&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;td&gt;&lt;input name=``qq`` type=``text`` id=``qq``&nbsp;&nbsp;  size=``20``&gt;&lt;/td&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;/tr&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;tr align=``center`` bgcolor=``#E3E3E3``&gt; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;td height=``30`` colspan=``2``&gt; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;input type=``submit`` name=``submit`` value=``提交``&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  　　　 &lt;input type=``hidden`` name=``sub`` value=``submit``&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;input type=``reset`` name=``Submit2`` value=``重置``&gt;&lt;/td&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;/tr&gt;&lt;/form&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;  &lt;/table&gt;<br>
+/*这样就简简单单地实现了数据库的添加*/<br>
+&nbsp;&nbsp;<br>
+后记：其实还可以在连接代码后面加上以下代码：<br>
+&lt;script laguage=``javascript``&gt;<br>
+&lt;!--<br>
+function form1_onsubmit()<br>
+{<br>
+if (document.form1.name.value==````)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;  {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  alert(``请输入姓名！``)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  document.form1.name.focus()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  return false<br>
+&nbsp;&nbsp;&nbsp;&nbsp;  }<br>
+else if(document.form1.email.value==````)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;  { <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  alert(``请输入email地址！``)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  document.form1.email.focus()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  return false<br>
+&nbsp;&nbsp;&nbsp;&nbsp;  }<br>
+else if(document.form1.qq.value==````)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;  { <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  alert(``请输入QQ号码！``)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  document.form1.qq.focus()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  return false<br>
+&nbsp;&nbsp;&nbsp;&nbsp;  }<br>
+}<br>
+--&gt;<br>
+&lt;/script&gt;<br>
+<br>
+来实现输入的限制，至于正则表达式的添加不是本文要考虑的范畴，本站仅仅在于收藏此代码待用，以后估计还会收藏删除记录的菜鸟级代码，以供自己学习之用，呵呵。<br></div></body></html>

@@ -1,0 +1,44 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>把数据插入到数据库的两种方法</title></head><body><h1>把数据插入到数据库的两种方法</h1><div>把表单中的数据插入到数据库中有两种方法。<br>
+1.直接使用sql语句的<br>
+优点：速度快，不耗资源<br>
+缺点：不能传递太长的字段内容，字段比较多时不易排错。<br>
+推荐有经验的编程者优先考虑.<br>
+<br>
+具体操作：<br>
+假设表单中有以下字段：username,password,sex,age<br>
+对应的，在程序中有username,password,sex,age已取通过request.form或request.querystring取到字段的值。<br>
+数据库表user中有username,password,sex,age字段。其它age为数字字段.<br>
+已经建立connection对象，并打开链接.<br>
+<br>
+sql=``insert into [user] (username,password,sex,age) value (＇``&amp;username&amp;``＇,＇``&amp;password&amp;``＇,＇``&amp;sex&amp;``＇,``&amp;age&amp;``)``<br>
+conn.execute(sql)<br>
+<br>
+值得注意的是，如果username中含有&ldquo;＇&rdquo;单引号，则会出错，解决方法是把字符串函数先经过处理.我常用的方法是建立一个sqlencode函数。<br>
+function sqlencode(str)<br>
+sqlencode=``＇``&amp;replace(str,``＇``,``＇＇``)&amp;``＇``<br>
+end function<br>
+<br>
+这样上面的sql 语名在可以简化为sql=``insert into [user] (username,password,sex,age) values (``&amp;sqlencode(username)&amp;``,``&amp;sqlencode(password)&amp;``,``&amp;sqlencode(sex)&amp;``,``&amp;age&amp;``)``<br>
+多字段时注意前面列表中的字段名和 values后面的值的顺序要注意一一对应关系，如果该值为空，可以不填写，但表示分隔的&ldquo;，&rdquo;号不能省略。<br>
+加入的字段为字符串字段时要注意给内容前后加上``＇``号。<br>
+另外，在表名user上面打上方括号是因为user表可能是一个系统表，打上方括号才不会和系统有冲突。给表名加上方括也是保证代码的兼容性的一个良好习惯。<br>
+<br>
+2.使用recordset对象<br>
+优点：代码容易阅读，除错<br>
+缺点：消耗系统资源<br>
+推荐新手使用<br>
+<br>
+环境同上代码如下：<br>
+<br>
+set rs=Server.CreateObejct(``ADODB.Recordset``)<br>
+sql=``select * from [user]<br>
+rs.open sql,conn,2,3<br>
+rs.addnew ＇注意这一行为新加入一个记录，如果漏掉，就会改以前的记录了。<br>
+rs(``username``)=username<br>
+rs(``password``)=password<br>
+rs(``sex``)=sex<br>
+rs(``age``)=age<br>
+rs.update ＇将更新写入数据库中<br>
+rs.close ＇最快的关闭recordset对象是一种良好的习惯<br>
+set rs=nothing ＇将不用的对象释放也是一种良好的习惯<br>
+<br></div></body></html>

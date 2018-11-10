@@ -1,0 +1,227 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>cs控制相关命令</title></head><body><h1>cs控制相关命令</h1><div><font face="楷体_GB2312" color="#000000" size="3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </font>
+<table cellspacing="0" cellpadding="0" width="98%" align="center" border="0">
+    <tbody>
+        <tr>
+            <td>
+            <div align="left"><br>
+            <p><font face="楷体_GB2312" color="#000000" size="3">1、远程控制问题。如何防止自己的主机被别人恶意刷新，更改。 <br>
+            这个问题只存在于cscn 版本中，由于www.cs-cn.net汉化CS时，在server.cfg和listenserver.cfg文件中加入了一行&ldquo;rcon_password www.cs-cn.net&rdquo; 所以可以用&ldquo;www.cs-cn.net&rdquo;这个密码进行远程控制。 <br>
+            更改密码方法： <br>
+            cscn版本中，H，1，0， 输入更改后的密码即可，随便输几个字符就行了。 <br>
+            也可在控制台中，输入命令：rcon_password XXXX(新密码）即可。 <br>
+            另：直接在server.cfg和listenserver.cfg文件中删掉那一行，以后进CS就不必再麻烦了，没有远程控制了。 <br>
+            另：关于远程控制的若干命令，由于怕引起不必要的麻烦，在此就不列出了。 </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">2、自己怎样刷新？ 换地图，设置某些时间的问题。 <br>
+            方法一、控制台输入命令。常用的有： <br>
+            sv_restartround 1 （刷新一遍） 或者retry命令也可。 <br>
+            reconnect (自己刷新一遍，也就是重新加入游戏，而不必退出） <br>
+            mp_startmoney 16000 （开始时的钱数） <br>
+            mp_c4timer 45 （设定C4炸弹的爆炸时间） <br>
+            mp_buytime 2 （多少分钟内可在基地买东西） <br>
+            mp_timelimit 45 （打多少分钟换地图） <br>
+            mp_roundtime 2 （一个回合多少分钟） <br>
+            mp_freezetime 0 （多少秒时间内固定在那里买枪） <br>
+            mp_autoteambalance 1 （双方队伍人数自动平衡） <br>
+            name &ldquo;XXXXX&rdquo; （游戏中改自己的名字） <br>
+            changelevel XXXX （换成XXXX地图） <br>
+            decalfrequency XX （设定喷LOGO的间隔时间） <br>
+            方法二、在cscn版本里， <br>
+            H，1，1 （刷新一遍） <br>
+            H，1，2 （自己刷一遍） <br>
+            H，1，3 （开始时的钱数） <br>
+            H，1，8，1 （打多少分钟换地图） <br>
+            H，1，8，2 （一个回合多少分钟） <br>
+            H，1，8，3 （多少秒时间内固定在那里买枪） <br>
+            H，1，8，4 （多少分钟内可在基地买东西） <br>
+            H，1，8，5 （设定C4炸弹的爆炸时间） <br>
+            H，4 （游戏中改自己的名字） <br>
+            H，5 （换地图） </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">3、踢人问题。常有人有人作弊，看不顺眼，怎么踢他出去？还有那些乱刷新的家伙，怎样揪出他，踢他出去？ <br>
+            首先回答踢人问题： <br>
+            踢人分两种： <br>
+            一是简单的踢他，不过他还可以再进来，这种简单，作方法： <br>
+            控制台，输入users显示出每个玩家的ID编号， <br>
+            输入kick #XX(编号）（编号前面加#哦），OK，解决。 <br>
+            为什么要踢他的编号呢，因为有的人在名字里用了特殊符号或者太长记不住，所以踢编号是最好的方法。 <br>
+            二是踢他出去并封他的IP，让他就算换了名字也进不来。作方法： <br>
+            控制台，先查ID编号，再输入banid YY #XX kick,就可以了，不过在实际中这样做自己主机就会退出游戏。 <br>
+            经过研究，发现，在局域网游戏中是不可以这样banid的，为什么呢？经查，所有局域网的玩家的uniqueid都是一样的，（虽然个人的ID编号不一样，）banid 命令是以uniqueid为识别的，所以banid别人就把自己顺便给banid 出去啦。 <br>
+            好，踢人问题解决了，可是有人捣乱刷新，怎么查出这个人呢？ <br>
+            解决方法：在他刷新或乱改了设置之后，马上调出控制台，好，你会看到这样的话：rcon from 192.168.29.34 ……（之后写的是他用的远程控制密码和远程控制命令），看到IP了吗？ <br>
+            输入status,可以查看各个玩家的ID和对应的IP，看出是谁了吧？警告他！不要捣乱！不爽的话用users加kick 对付他也不过分哦。 <br>
+            ！不过在此忠告大家，杀人不过头点地，封IP太毒了吧，踢一下也就行了，让他再进来不捣乱就行。 </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">4、CDKEY及如何更换CDKEY问题。 <br>
+            呵呵，常有人在论坛上要正版CDKEY。 <br>
+            不必想了，我们还是用我们的盗版CDKEY吧，在互动上进局域网游戏是一样用的， <br>
+            在此给出几个： <br>
+            5590-73806-8806 <br>
+            3293-04914-4860 <br>
+            5796-93604-1881 <br>
+            3398-64213-6822 <br>
+            5690-93404-2881 <br>
+            2390-22063-1841 <br>
+            3392-34213-8809 <br>
+            2092-22666-6828 <br>
+            2298-52248-1888 </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">如何更换CDKEY？ <br>
+            运行regedit ，在HKEY_CURRENT_USER/Software/Valve/CounterStrike/Settings， <br>
+            右边有个Key的键，删掉它。 <br>
+            再进CS就提示换CDKEY。 重填个就行了。 <br>
+            或者在CS里点 聊天室， 过一会就会提示CDKEY错误， 再重进也可以填CDKEY。 </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">5、重复打字、说话问题。 <br>
+            常有人问为什么有的人一句话可以连续发好几遍，而自己只能一遍一遍打呢？ <br>
+            解决办法： <br>
+            在控制台下，用say XXXXXXXXXXXXX 说话就可以了，相当于Y键，说完后，按向上的方向键就可以重复上次输入的命令，这样不就OK了？ <br>
+            还有用say_team XXXXXXXXX命令就相当于U键，只对队友说话。而Y是所有人都能看到的。 </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">6、CS路径设置问题。 <br>
+            新手刚进互动时，常不会设置路径，其实很简单，看看你的CS游戏装在什么地方，找到他就行了，找到桌面的那个快捷方式也行。一般是&ldquo;CProgram Files|CS1.5中文硬盘版|CS1.5中文硬盘版|cstrike.exe&rdquo;。 </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">7、POD机器人问题。 <br>
+            有人问起关于POD机器人怎么用的问题。在此简单作答： <br>
+            = 可以调出菜单，英文好完全可以自己看明白了。 <br>
+            不明白的话，以下是常用的： <br>
+            =1 表示随机加一个电脑，=51 表示全部加匪，=52表示全部加警， <br>
+            =6表示去掉一个电脑，=7表示把电脑全部去掉， <br>
+            =3表示把电脑全部杀死，=4就是连玩家连自己一起死啦！ <br>
+            =81表示让电脑只带刀，不许拿枪。 <br>
+            点击这里打开POD机器人详细使用说明 </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">8、反作弊器问题。平台作弊问题。 <br>
+            在此再次申明：痛恨作弊！不过哪里都有败类，CS也不例外。各大厅似乎都有某些作弊者。 <br>
+            关于平台，本身是具有一定的反作弊功能的，（不过可以破解掉，至于如何破解，别问我。） <br>
+            互动平台目前还不强制支持Cheating-Death 反作弊器，所以基本上在互动是不开CD的。 <br>
+            呼吁：作弊者人人得而诛之！！！ </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">9、黑屏，视角问题。有人问怎样才能让死了后屏幕变黑，或只看到自己人。 <br>
+            解决方法： <br>
+            输入命令mp_fadetoblack 1/0 （1是屏幕变黑，啥也看不到，0是可以看到） <br>
+            输入命令mp_forcechasecam 0/1/2 （0是自由模式、1只能跟着自己队友走动、2尸体视线留在原地） </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">10、CS窗口化问题 <br>
+            假如你需要用窗口模式来玩CS，请在CS参数里加上 -windows 即可。 <br>
+            如果又不需要窗口模式了，去掉参数-windows ，并在视频设置（video configure）里, <br>
+            把&ldquo;运行在窗口&rdquo;（run in a windows）前面的叉去掉就可以回复全屏了。 </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">11、不进服务器，怎样看各服务器的ping值大小 <br>
+            一般在服务器列表里，都是用点来表示网速的快慢，可是不能准确的表示ping的值。 <br>
+            解决办法： <br>
+            1、选择服务器，点一下&ldquo;信息&rdquo;一栏，可以看到ping值，但是你进服务器的时候，实际的ping值应该比看到的要高一点点。 <br>
+            2、在启动的参数里加入 -numericping， （就象加 -console一样加，参照文章前面）进去会发现本来Ping是用点显示,现在加了数字,数字越小ping越低,速度越快。 </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">12、CS屏幕大小不对，准心不准问题 <br>
+            碰到CS屏幕大小不准，准心偏低不准，等等。 <br>
+            是因为按了-号使屏幕变小了，按=号可以变大，不过如果装了POD，按=号就不能变大了，=成了POD的菜单呼出键。 <br>
+            可以退一下，恢复默认值就可以按=号调大了，不过这时POD就不能再呼出了，就是不能再调POD了 。 <br>
+            所以有另一个方法，就是使用命令调屏幕大小，不需要退。 命令是： <br>
+            sizedown 缩小屏幕 <br>
+            sizeup 放大屏幕 </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">13、局域网无法连接，快捷方式问题。 <br>
+            这个问题很蹊跷，以前很多高手都栽了。呵呵。就是局域网的两台机子可以在互动平台上联网，在局域网里建时，也能看到主机，就是进不去！提示信息应该为：You cannot connect to a server running a custom game cstrike until you…… <br>
+            呵呵， 你只是范了一个很小很小的错误。 -----快捷方式的问题，你是从桌面的快捷方式进入游戏的， <br>
+            点快捷方式的属性，会发现&ldquo;起始位置&rdquo;是空的，把它填上CS的目录，OK，问题解决了。就这么简单。 <br>
+            其中原因，呵呵，高手自会明白。 </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">14、CS被锁问题。 <br>
+            这个问题好象我来以前没人回答过。 <br>
+            就是每次点击cs的图标以后，开场画面都能正常 出现，但是当我点击&ldquo;进入游戏&rdquo;时，总会 跳出下面一串英文：Content control configuration-On. <br>
+            这个问题是因为打开了连接控制，也就是给CS加上了密码， <br>
+            没这个密码是不能用CS的。 假如你知道密码，在&ldquo;游戏设置&rdquo;的&ldquo;连接控制&rdquo;里把&ldquo;使用连接控制&rdquo;的叉去掉，不过需要密码。 <br>
+            假如你不知道密码。 破解它。 <br>
+            运行regedit，打开HKEY_CURRENT_USER/Software/Valve/CounterStrike/Settings <br>
+            里面有个&ldquo;User Token 2&rdquo; <br>
+            删掉它，就OK了。 </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">15、大跳问题。有人问怎样才能跳在空中划腿呢？也就是所谓的跳蹲。 <br>
+            1、方法一，按键设置： <br>
+            把跳跃键的第二设定改为V键或B键。 （CS里，每样都可以同时设2个键的，直接在控制设置里改就行了。） <br>
+            CS里打的时候，可以用大拇指，把V键和空格键一起按，就可以了。 <br>
+            这是正规按出来的跳蹲。 <br>
+            2、用一个简单的脚本也可以实现，这里有个脚本： <br>
+            　　 alias +sjump &ldquo;+jump;+duck&rdquo; <br>
+            　　 alias -sjump &ldquo;-jump;-duck&rdquo; <br>
+            　　 bind SPACE +sjump <br>
+            把它们一行一行从控制台输入也可以，不过一般都写到CFG文件里去，这样比较方便。 <br>
+            你可以把它加入到autoexec.cfg文件里去（在cstrike文件夹里，用记事本打开加进去就行啦），然后在CS中控制台下，执行一次 <br>
+            这个文件：exec autoexec.cfg 就可以了，以后每次它都会自动运行的。 </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">16、戴耳机左右声道与实际相反问题。 <br>
+            如果戴耳机左右声道与实际相反或者声音左右不清， <br>
+            首先，在系统的音量设置里把混音之类的什么去掉。 <br>
+            再进CS，在 游戏设置--&gt;音频设置里， 把 A3D硬件支持，EAX硬件支持，选上（或者去掉）。 <br>
+            如果已经进了CS，可以用以下命令更改：（可以加入config 文件，下面的是我的config里面的，效果不错的哦） <br>
+            s_a3d &ldquo;0&rdquo; <br>
+            s_eax &ldquo;0&rdquo; <br>
+            volume &ldquo;1.0&rdquo; <br>
+            suitvolume &ldquo;0.25&rdquo; <br>
+            hisound &ldquo;1.0&rdquo; <br>
+            bgmvolume &ldquo;1.0&rdquo; <br>
+            如果这样还不行，呵呵，把耳机反戴就行咯。 </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">17、切换后无声音问题。 <br>
+            这是个老麻烦啊，CS中有时消息来了，切换一下看看消息，再回来后发现声音没了。怎么办？ <br>
+            以下罗列几种办法以供参考： <br>
+            1、要切换出来之前，按esc退到CS菜单下再切换出来，这样就没事了。 <br>
+            2、据某战友提供，切换时，按着Shift键，这样切换出来回去后声音还在。 <br>
+            3、根据我的理解，运行于窗口模式是不是好点呢？ <br>
+            4、最便宜的就是用win2000和XP的人啦，就算声音已经没有了，按ctrl +Alt+Del 调出任务管理器，在 <br>
+            上面双击CS的程序，就可以进去啦，声音还在，就算本来没有了都还原了。 </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">18、&ldquo;IP adress error …&rdquo;问题 <br>
+            假如出现&ldquo;……game port.dat,ip adress error……&rdquo;的错误提示， <br>
+            东皮个人认为，应该是你安装了其他联网游戏平台，如浩方，XX互动，之类的游戏平台， <br>
+            或者需要进行虚拟IP转换的软件、游戏。 <br>
+            解决办法：到www.game163.net重新下载安装互动平台，（先把老的删了吧）。 <br>
+            这样应该就可以解决问题。如有其他原因，研究中。 </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">19、若干控制台参数 <br>
+            -console-预设就有,有这个在game里才能调出控制台 <br>
+            -32bpp-用32bit色彩起动game,预设是16bit,用32bit可能使游戏变慢,但更好看 <br>
+            -numericping-用数字显示ping <br>
+            -nojoy-不起动摇捍 <br>
+            -noipx-不用ipx,如果是intetnet游戏,不要起动此项 <br>
+            -heapsize XXXXX-x为指定数字,可指定cs占用多少内存,最好用建议值 </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">20、进CS服务器总要2次才能进去的问题 <br>
+            有时候会碰到这样的情况，每次进一个服务器总是没反应，需要按ESC退一下再进一次才能进去。 <br>
+            这种情况，一般是因为硬盘的DMA选项没有打开。 <br>
+            在系统属性里打开DMA（直接内存读取）选项再重启就可以了。 </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">21、OPENGL 不支持问题 <br>
+            这也很常见啊，一般有这样的提示：The selected OpenGL Mode is not supporLted by video card…… <br>
+            关于OPENGL不支持的问题，比较复杂，现列一些解决方法如下： <br>
+            1、强行设置，有些显卡老提醒你说不支持OPENGL，别理他，继续设置，可以用的。 <br>
+            2、如果不行，下载最新的显卡驱动 地址：http://www.mydrivers.com <br>
+            3、最好安装DirectX 9，地址：http://www.onlinedown.net/soft/5288.htm <br>
+            一般这样都能解决问题，还不行，请 <br>
+            4、手工安装GLsetup.exe或MSOpengl（地址：http://www.openglsource.com/download/MSOpengl.exe <br>
+            GLSetup最新1.0.0.121完全版（2001年4月13日发布） ：http://file2.mydrivers.com/display/glsetup.121.exe(for win9x) <br>
+            5、如果还不能解决问题，可能你的显卡不太支持， <br>
+            请使用GLDirect V4.01，（降低硬件要求，模拟OPENGL） <br>
+            地址：：http://soft.winzheng.com/SoftView/SoftView_13593.htm <br>
+            另：忠告：打CS，显卡最好是TNT 2 以上的，也就是差不多99年底之后买的。 <br>
+            另：这里有OPENGL的最新版本的升级，可以试试哦 </font></p>
+            <p><br>
+            <font face="楷体_GB2312" color="#000000" size="3">CS主机远程控制方法与被恶意控制的对策<br>
+            作者：火旗枪剑　来源：枪旗工作室(tcno.net)　日期：2005-5-21<br>
+            半条命cs的服务器，即一般俗称的主机，带有遥控功能。管理员凭密码控制服务器，甚至不需要进入游戏。本文以主要以counter-strike 1.5为例讲解cs主机远程控制方法与被恶意控制的对策。对其他如1.6，零点行动(cz)，cs:source和半条命等也基本适用。</font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">一，通过正确的遥控密码远程控制。<br>
+            cs主机有server和listenserver两种。前者是独立服务器，后者是一般玩家自己建立并且本人在里面游戏的主机(一下都称之为主机)。cs程序建立主机时会读取cstrike目录下的game.cfg、listenserver.cfg、server.cfg和valve目录下的skill.cfg(此文件一般情况下打包在pak0.pak内)等文件内的设置参数。其中game.cfg内主要为游戏参数的设置；server.cfg和listenserver.cfg内分别设置server和listenserver两种情况下的游戏参数；skill.cfg内本来是用来设置半条命游戏的一些参数。但是游戏参数可以在以上几个配置文件内的任意一个，并没有严格限制(除server.cfg和listenserver.cfg的区别严格、不能同时有效外)。</font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">设置远程控制密码的参数是&ldquo;rcon_password 密码&rdquo;，密码不能使用空格。也可以不在配置文件内设置，在主机建立后在控制台内输入。</font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">得知一个主机的密码后，有三种登陆方式(可能不限三种，只是我只熟悉此三种)： <br>
+            1.在游戏中进入该主机，在控制台输入&ldquo;rcon_password 密码&rdquo;，得到控制权。 <br>
+            2.在游戏中进入控制台，输入&ldquo;rcon_address 该主机ip:端口&rdquo;(默认情况可不带端口号)连接到主机。然后输入&ldquo;rcon_password 密码&rdquo;获得控制权。 <br>
+            3.使用hlsw等专用遥控软件，设置主机的ip、控制密码等等后通过专用软件控制主机。</font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">控制主机后，所有遥控命令的格式为&ldquo;rcon[空格][命令]&rdquo;。遥控情况下修改遥控密码&ldquo;rcon rcon_password 新密码&rdquo;，修改后需要用心密码登陆一次。</font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">遥控的登陆状态在游戏载入新地图后无效，需要再次登陆。</font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">由于制作者缺乏安全上的考虑，一些非官方的cs版本默认情况下设置了遥控密码。比如地球人都知道的www.cs-cn.net。这些游戏建立的主机一般在欢迎信息(cstrike\motd.txt)内有一个或几个网址，一般来说这就是遥控密码了。我所知的比如：www.cs-cn.net；www.weini.tv；www.Bimnm.net；ZiSaiMingZhu的&ldquo;!#%&amp;(lightmusic&rdquo;等等。使用这些版本的朋友请注意检查并清除这些默认的遥控密码。</font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">二，通过漏洞下载配置文件的远程控制。<br>
+            cs1.5服务器程序有一个漏洞。此漏洞允许攻击者下载主机上的配置文件，命令是&ldquo;cmd dlfile 文件名&rdquo;。如果要下载listenserver.cfg，命令就是&ldquo;cmd dlfile listenserver.cfg&rdquo;。当然此命令也可以下载addons目录下的amx等插件的配置文件，只是需要加一个路径而已。</font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">下载文件时需要在cstrike和valve目录下都没有重名文件，不然只有一个进度条，文件不会下载下来。</font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">解决此漏洞的方法是把服务器程序的版本升级到HLDS4111e以上，打HLDS4111e补丁。当然一般listenserver根本没有必要设置遥控密码，不打补丁也无所谓。</font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">三，被恶意控制后的对策。<br>
+            一旦被控制，并关闭了控制台，一般来说就只好退出大吉了，没有什么对策可讲。要防止被控制，根本还是在于打补丁和不随意设置密码等准备工作。</font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">此段意义不大，可以说只是写写玩，介绍一个预备措施而已。</font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">时刻要保持控制权。对于一般情况来说就是主机必须时刻掌握控制台。一个很好的方法就是给&ldquo;~&rdquo;键绑定控制台命令&ldquo;bind ~ &quot;console 1;toggleconsole&quot;&rdquo;。这样按一次&ldquo;~&rdquo;键即有两个操作：开关控制台和允许控制台。做好这一点后就不需要给游戏快捷方式加参数等等落后方法了，在任何情况下都可以按出控制台。为了避免被人远程&quot;unbindall&quot;(取消所有按键功能)，可以在kb_def.lst内写上此命令。一旦发现被控制，按esc(esc键是无法取消绑定的)到按键设置处恢复按键设置，然后拉开控制台修改遥控密码(rcon_password #$%^%$)。</font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">四，控制主机的&ldquo;恶毒&rdquo;招数。<br>
+            这段绝对不是教唆啊，只是写写玩哦，我们是绝对不首先使用核武器的:D。</font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">首先&ldquo;rcon rcon_password 新密码&rdquo;，修改密码，防止同道。</font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">然后&ldquo;console 0&rdquo;关闭控制台；&ldquo;unbind h&rdquo;取消控制菜单；&ldquo;unbind =&rdquo;制止一些用机器人插件杀人的无耻主机必备。</font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">关闭游戏大门，和主机单练：&ldquo;sv_password 游戏密码&rdquo;。</font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">让主机休息&ldquo;rcon unbindall&rdquo;(取消除esc键外所有按键功能)</font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">结束这游戏吧！&ldquo;rcon quit&rdquo;或&ldquo;rcon exit&rdquo;。</font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">当然，如果你有闲心，可以写一个控制脚本，实践证明必要时替主机操作也是可以的(可惜不能遥控鼠标来瞄准哇)。</font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">先写这么多，如果大家还需要了解此方面知识，可以告诉我。古人云苍蝇不叮无缝的蛋，一定记住不留安全死角哦！</font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">注意：(2005-5-29)<br>
+            一定要注意重命名或删除下载来的密码文件(listenserver.cfg之类)。一是不影响以后下载，更重要的是如不将其弄走，再建游戏的时候也就带上这个漏洞了，切记。<br>
+            </font></p>
+            </div>
+            </td>
+        </tr>
+    </tbody>
+</table></div></body></html>

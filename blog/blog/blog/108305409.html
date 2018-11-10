@@ -1,0 +1,127 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>ASP与数据库应用（给初学者）</title></head><body><h1>ASP与数据库应用（给初学者）</h1><div>一般来说，一个真正的、完整的站点是离不开数据库的，因为实际应用中，需要保存的数据很多，而且这些数据之间往往还有关联，利用数据库来管理这些数据，可以很方便的查询和更新。数据库有很多种，如：Fox 数据库(.dbf)、Access 数据库(.mdb)、Informix、Oracle 和 SQL Server 等等，在这里，我将以 Microsoft Access 数据库为例来说明ASP是如何访问数据库的。<br>
+<br>
+常用数据库语句<br>
+<br>
+　　1.SELECT 语句：命令数据库引擎从数据库里返回信息，作为一组记录。<br>
+　　2.INSERT INTO 语句：添加一个或多个记录至一个表。<br>
+　　3.UPDATE 语句：创建更新查询来改变基于特定准则的指定表中的字段值。<br>
+　　4.DELETE 语句：创建一个删除查询把记录从 FROM 子句列出并符合 WHERE 子句的一个或更多的表中清除。<br>
+　　5.EXECUTE 语句：用于激活 PROCEDURE（过程）<br>
+<br>
+用 ASP 来做一个自己的通讯录练练手吧……<br>
+<br>
+一、建立数据库：<br>
+<br>
+　　用 Microsoft Access 建立一个名为 data.mdb 的空数据库，使用设计器创建一个新表。输入以下几个字段：<br>
+<br>
+　　字段名称　　数据类型　　说明　　　　　　其它<br>
+　　ID　　　　　自动编号　　数据标识　　　　字段大小：长整型　新值：递增　索引：有（无重复）<br>
+　　username　　文本　　　　姓名　　　　　　缺省值<br>
+　　usermail　　文本　　　　E-mail　　　　　缺省值<br>
+　　view　　　　数字　　　　查看次数　　　　字段大小：长整型　默认值：0　索引：无<br>
+　　indate　　　时间日期　　加入时间　　　　缺省值<br>
+<br>
+　　保存为 data.mdb 文件，为了便于说明，只是做了一个比较简单的库。<br>
+<br>
+二、连接数据库<br>
+<br>
+　　方法1：<br>
+　　Set conn = Server.CreateObject(``ADODB.Connection``)<br>
+　　conn.Open ``driver={Microsoft Access Driver (*.mdb)};dbq=``&amp;Server.MapPath(``data.mdb``)<br>
+<br>
+　　方法2：<br>
+　　Set conn = Server.CreateObject(``ADODB.Connection``)<br>
+　　conn.Open ``Provider=Microsoft.Jet.OLEDB.4.0;Data Source=``&amp;Server.MapPath(``data.mdb``)<br>
+<br>
+　　注意：一个页面中，只要连接一次就可以了，数据库使用完后要及时关闭连接。<br>
+　　conn.Close<br>
+　　Set conn = Nothing<br>
+<br>
+三、添加新记录到数据库<br>
+<br>
+　　Set conn = Server.CreateObject(``ADODB.Connection``)<br>
+　　conn.Open ``driver={Microsoft Access Driver (*.mdb)};dbq=``&amp;Server.MapPath(``data.mdb``)<br>
+<br>
+　　username = ``风云突变``<br>
+　　usermail = ``fytb@163.com``<br>
+　　indate = Now()<br>
+<br>
+　　sql = ``insert into data (username,usermail,indata) values(＇``&amp;username&amp;``＇,＇``&amp;usermail&amp;``＇,＇``&amp;indate&amp;``＇)``<br>
+　　conn.Execute(sql)<br>
+<br>
+　　conn.Close<br>
+　　Set conn = Nothing<br>
+<br>
+　　说明：建立数据库连接；通过表单获取姓名、E-mail 字符串，Now()获取当前时间日期；使用 insert into 语句添加新记录；conn.Execute 来执行；最后关闭。<br>
+<br>
+四、选择数据库里的记录<br>
+<br>
+　　1.选择所有记录的字段（按记录倒序排序）：sql = ``select * from data order by ID desc``<br>
+　　2.选择所有记录的姓名和E-mail字段（不排序）：sql = ``select username,usermail from data``<br>
+　　3.选择姓名为&ldquo;风云突变&rdquo;的所有记录：sql = ``select * from data where username=＇``风云突变``＇``<br>
+　　4.选择使用 163 信箱的所有记录（按查看次数排序）：sql = ``select * from data where usermail like ＇%``@163.com``%＇ order by view desc``<br>
+　　5.选择最新的10个记录：sql = ``select top 10 * from data order by ID desc``<br>
+<br>
+　　SQL 语句已经知道了，不过在Web应用时，还得创建一个 RecordSet 对象得到记录集，才能把从数据库里取出的值应用在网页上，如果现在将所有的记录显示在网页上就这样：<br>
+<br>
+　　Set conn = Server.CreateObject(``ADODB.Connection``)<br>
+　　conn.Open ``driver={Microsoft Access Driver (*.mdb)};dbq=``&amp;Server.MapPath(``data.mdb``)<br>
+<br>
+　　sql = ``select * from data``<br>
+　　Set rs = Server.CreateObject(``ADODB.RecordSet``)<br>
+　　rs.Open sql,conn,1,1<br>
+<br>
+　　Do While Not rs.Eof<br>
+　　　　Response.Write ``&lt;p&gt;姓名：``&amp; rs(``username``) &amp;``　E-mail：``&amp; rs(``usermail``) &amp;``　查看：``&amp; rs(``view``) &amp;``次　``&amp; rs(``indate``) &amp;``加入&lt;/p&gt;``<br>
+　　　　rs.MoveNext<br>
+　　Loop<br>
+<br>
+　　rs.Close<br>
+　　Set rs = Nothing<br>
+　　conn.Close<br>
+　　Set conn = Nothing<br>
+<br>
+　　说明：建立数据库连接；创建 rs 得到记录集；循环显示记录，rs.Eof 表示记录末，rs.MoveNext 表示移到下一个记录；最后关闭。<br>
+<br>
+五、修改（更新）数据库记录<br>
+<br>
+　　修改记录的E-mail：<br>
+<br>
+　　Set conn = Server.CreateObject(``ADODB.Connection``)<br>
+　　conn.Open ``driver={Microsoft Access Driver (*.mdb)};dbq=``&amp;Server.MapPath(``data.mdb``)<br>
+<br>
+　　ID = 1<br>
+　　usermail = ``fytb@163.com``<br>
+<br>
+　　sql = ``update data set usermail=＇``&amp;usermail&amp;``＇ where ID=``&amp;CInt(ID)<br>
+　　conn.Execute(sql)<br>
+<br>
+　　conn.Close<br>
+　　Set conn = Nothing<br>
+<br>
+　　说明：建立数据库连接；获取记录ID、新 E-mail 字符串；使用 update 语句修改记录；conn.Execute 来执行；最后关闭。<br>
+　　如果使记录的查看值加1，则：sql = ``update data set view=view+1 where ID=``&amp;CInt(ID)<br>
+<br>
+六、删除数据库记录<br>
+<br>
+　　删除某一条记录：<br>
+<br>
+　　Set conn = Server.CreateObject(``ADODB.Connection``)<br>
+　　conn.Open ``driver={Microsoft Access Driver (*.mdb)};dbq=``&amp;Server.MapPath(``data.mdb``)<br>
+<br>
+　　ID = 1<br>
+<br>
+　　sql = ``delete from data where ID=``&amp;CInt(ID)<br>
+　　conn.Execute(sql)<br>
+<br>
+　　conn.Close<br>
+　　Set conn = Nothing<br>
+<br>
+　　说明：建立数据库连接；获取记录ID；使用 delete 语句删除记录；conn.Execute 来执行；最后关闭。<br>
+　　删除多条记录为：sql = ``delete from data where ID in (ID1,ID2,ID3)``<br>
+<br>
+　　删除所有记录为：sql = ``delete from data``<br>
+<br>
+总结：<br>
+<br>
+　　以上教程是针对ASP的初学者而写的，只是介绍了一些基本的用法，在了解之后可以自己去试试，重要的在于能举一反三、综合运用。更多的语法和参数请参阅 Microsoft Access 帮助中的 Microsoft Jet SQL 参考，由于本人才疏学浅、能力有限，如有表达不明确有地方还望指出，如果在应用当中遇到什么问题，也希望能够提出。谢谢。<br></div></body></html>

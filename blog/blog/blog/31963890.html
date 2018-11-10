@@ -1,0 +1,71 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>个人网站架设全攻略</title></head><body><h1>个人网站架设全攻略</h1><div><font face="楷体_GB2312" color="#000000" size="3">&nbsp;&nbsp;&nbsp;&nbsp;  </font>
+<table cellspacing="0" cellpadding="0" width="98%" align="center" border="0">
+    <tbody>
+        <tr>
+            <td>
+            <div align="left"><br>
+            <p><font face="楷体_GB2312" color="#000000" size="3">作者：未知&nbsp;&nbsp;&nbsp;&nbsp;  来源：转载&nbsp;&nbsp;&nbsp;&nbsp;  发布时间：06/02/2006 18:51:57&nbsp;&nbsp;&nbsp;&nbsp;  发布人：cyqdesign <br>
+            减小字体 增大字体</font></p>
+            <p><br>
+            <font face="楷体_GB2312" color="#000000" size="3">现在很多朋友都做了自己的个人网站，可因为money的问题，购买个人主页空间的还不多，大多数朋友都是使用的免费主页空间。但是免费空间一个不稳定，二来限制条件多，三是空间小，所以让大多数朋友都很无奈。 <br>
+            其实随着现在宽带的普及，我们完全可以利用一些网站和软件提供的免费服务在本机上架设有固定IP地址的网站，这样只要你的电脑是连在互联网上，别人就可以随时访问你。 </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">二、实现方式 <br>
+            &ldquo;花生壳&rdquo;就是这样一款软件，它免费为你提供动态域名解析服务，当你安装并注册这项服务后，无论你在任何地点、任何时间、使用任何线路，只要你的电脑连在互联网上，那你就可以利用这个服务建立拥有固定域名和最大自主权的互联网主机。 </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">三、安装要求 </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">硬件要求： <br>
+            基本配置： <br>
+            主频在200MHZ或以上的CPU <br>
+            128M内存 <br>
+            1G或以上的硬盘剩余空间 <br>
+            软件要求： <br>
+            系统：windows2000/nt/xp/2003 <br>
+            安装并支持TCP/IP协议 <br>
+            接入线路： <br>
+            任何可以获得公网IP的互联网接入方式。 <br>
+            四、安装花生壳固定IP </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">进入&ldquo;花生壳&rdquo;网站 <br>
+            网站地址： http://www.oray.net <br>
+            客户端下载地址： http://oray.net/PeanutHull/Download.asp <br>
+            注册网域护照。 <br>
+            注册过程很简单，注册成功后会提示：请尽快填写你的详细资料，你只有填写完详细资料以后，才能启用护照对应的在先支付功能。确定后填写完详细资料，就自动进入了&ldquo;我的控制台&rdquo;（以后要进入&ldquo;我的控制台&rdquo;，可以在首页输入你的用户和密码就可以了）。 <br>
+            在&ldquo;我的控制台&rdquo;左边菜单点&ldquo;域名服务中心&rdquo;,然后点击&ldquo;注册域名记录&rdquo;在免费域名中输入你想注册的名字(这个名字可以不是你注册的用户名)。如果你输入的域名没有被注册，那么在&ldquo;域名记录管理&rdquo;中就会出现你的域名记录。 <br>
+            在左边菜单点&ldquo;花生壳维护中心&rdquo;，右边页面会出现&ldquo;查看花生壳服务状态&rdquo;，此时显示的就是你刚才申请到的地址，状态是未激活，点&ldquo;激活花生壳服务&rdquo;，然后在接下去的操作按照提示把你的网站分好类就可以啦！ <br>
+            至此，网上&ldquo;花生壳&rdquo;申请和配置已经完成，退出系统即可。 <br>
+            安装下载回来的&ldquo;花生壳客户端&rdquo;，在安装过程中会出现一个输入用户名和密码的过程你就把你申请到的用户名和密码写进去，点下一步，完成安装后会出现一个窗口，状态就是在右边有个服务连接状态，显示&ldquo;在线&rdquo;域名：里面有域名信息，有指向本机域名列表（里面有你申请的服务器地址），连接成功显示的是彩色，连接未成功是灰色。 <br>
+            OK，进行到此，花生壳固定IP设置全部完成，下面就准备架设自己的个人网站了，let's go!! <br>
+            五、设置本地网络服务环境 </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">了解IIS <br>
+            IIS（Internet Information Server）是运行于Windows NT操作系统上的Web 服务器软件。它不但可以使用超文本传输协议（HTTP）传输信息，还可以提供文件传输协议（FTP）和Gopher服务，FTP 服务允许用户从 Web 节点或到 Web 节点传送文件。gopher 服务为定位文档使用菜单驱动协议。HTTP 协议已经尽可能地代替了 gopher 协议。 <br>
+            我们这里利用的就是WIN2000里面自带的IIS5.0,通过其对ASP良好的支持，从而建设本地的动态网站。 <br>
+            安装IIS <br>
+            A、打开控制面板中的&ldquo;添加/删除程序&rdquo; <br>
+            B、点击左边菜单栏中&ldquo;添加/删除Windows组件&rdquo;项，打开&ldquo;Windows组件向导&rdquo;对话框，在对话框&ldquo;组件&rdquo;列表中，选中&ldquo;Internet 信息服务（IIS）&rdquo;项。系统会提示要插入&ldquo;Windows 2000安装盘&rdquo;，插入光盘，然后点击&ldquo;下一步&rdquo;，系统即会开始安装， 一般几分钟就可以安装完毕。 <br>
+            配置IIS <br>
+            A、打开控制面板中的&ldquo;管理工具&rdquo;，进入&quot;管理工具&ldquo;窗口。 <br>
+            B、在&quot;管理工具&ldquo;窗口双击&ldquo;Internet信息服务&rdquo;图标，启动IIS管理程序。 <br>
+            C、双击左栏中的&quot;Internet信息服务&quot;展开下拉选项，依次打开 ：【**(本机名)】-&gt;【默认Web站点】。 <br>
+            D、右击&ldquo;默认Web站点&rdquo;项，在弹出的菜单中选择【属性】，打开【默认Web站点属性】对话框。 <br>
+            E、在【Web站点】中的&ldquo;Web站点标识&rdquo;中的&ldquo;说明&rdquo;中输入你想要显示的站点名称。 <br>
+            F、在&ldquo;主目录&rdquo;中的&ldquo;本地路径&rdquo;中选择你要显示的个人主页所在目录(可以点击右边的&ldquo;浏览...&rdquo;按钮，在弹出的&ldquo;浏览文件夹&rdquo;对话框中选择)。 <br>
+            G、在&ldquo;文档&rdquo;中的&ldquo;启用默认文档&rdquo;要注意，添加进来的文档名称必须是你的首页名称，否则无法显示。最后点击&ldquo;确定&rdquo;按钮，完成设置。 <br>
+            运行站点 <br>
+            打开IE浏览器，在地址栏中输入： http://localhost ,这个时候就会出现你的个人主页，OK，朋友，到此我们已经完成了一大半了，接下来让我们开始架设自己的BBS！ <br>
+            六、架设自己的论坛</font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">下载论坛安装文件 <br>
+            下载页面： http://down.dvbbs.net/SoftDown.asp?ID=2453 <br>
+            软件名称：动网论坛 V7.01 Final SP2(0613) <br>
+            软件类型：asp <br>
+            安装论坛 <br>
+            A、解压缩软件包，把解压出来的目录复制到个人主页下面，设置好相关的链接 <br>
+            B、打开&ldquo;默认web站点属性&rdquo;，在启用默认文档中添加&ldquo;index.asp&rdquo;，即论坛的首页文件名，点击&ldquo;确定&rdquo;。 <br>
+            C、这个时候当你点击进入论坛的链接后，你就会发现论坛可以使用了。 <br>
+            D、论坛的配置很简单，你只要稍微看看它的说明即可。 <br>
+            七、发布自己的网站 <br>
+            开启花生壳软件，输入用户名和密码后，如果系统托盘中的图标显示为彩色，则服务开启正常，此时，在IE浏览器中输入 http://xxx.vicp.net(xxx 为你在花生壳网站申请的域名).你会发现，打开的网页正是你电脑里面的个人主页，哈哈，是不是很爽哦。 </font></p>
+            <p><font face="楷体_GB2312" color="#000000" size="3">到此为止，个人网站的架设全部竣工。怎么样，我亲爱的朋友们，是不是觉得架设个人网站很简单？其实随着宽带的普及，我们完全没有必要到处去找什么免费空间，只要你在本机上架设好自己的服务器就可以了。OK，这次就到这里吧，希望能在不久的将来看到各位朋友的小叶子，做好了，不要忘记告诉大家哦。<br>
+            </font></p>
+            </div>
+            </td>
+        </tr>
+    </tbody>
+</table></div></body></html>

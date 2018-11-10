@@ -1,0 +1,26 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>一段调用数据库数据的简单代码</title></head><body><h1>一段调用数据库数据的简单代码</h1><div>&lt;% <br>
+strcon=``Provider=Microsoft.Jet.OLEDB.4.0;Data Source=``+Server.MapPath(``数据库.mdb``) <br>
+Set db=Server.createobject(``ADODB.connection``) <br>
+db.open(strcon) <br>
+set rs=server.createobject(``adodb.recordset``) <br>
+strSql=``select * from 表名`` <br>
+rs.open strSql,db,1,1 <br>
+%&gt; <br>
+&lt;table&gt; <br>
+&lt;%<br>
+do while not rs.eof <br>
+%&gt; <br>
+&lt;tr&gt;&lt;td&gt; <br>
+&lt;%=rs(``字段1``)%&gt; <br>
+&lt;/td&gt; <br>
+&lt;/tr&gt; <br>
+&lt;tr&gt;&lt;td&gt; <br>
+&lt;%=rs(``字段2``)%&gt; <br>
+&lt;/td&gt;&lt;/tr&gt; <br>
+&lt;%<br>
+rs.movenext <br>
+if rs.eof then exit do <br>
+loop <br>
+set rs=nothing <br>
+%&gt; <br>
+&lt;/table&gt;</div></body></html>

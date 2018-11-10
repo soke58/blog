@@ -1,0 +1,17 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>搞了一下午才找到的删除代码</title></head><body><h1>搞了一下午才找到的删除代码</h1><div><p>上一页中加入&lt;a href=``del.asp?id=&lt;%=rs(``id``)%&gt;``&gt;删除&lt;/a&gt;<br>
+<br>
+del.asp<br>
+&lt;!--＃i nclude file=``conn.asp`` --&gt;<br>
+&lt; %<br>
+&nbsp;&nbsp;&nbsp;&nbsp;  dim rs,sql<br>
+&nbsp;&nbsp;&nbsp;&nbsp;  id=request.QueryString(``id``)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;  set rs=server.createobject(``adodb.recordset``)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;  sql=``delete from 表 where id=``&amp;id<br>
+&nbsp;&nbsp;&nbsp;&nbsp;  conn.execute sql<br>
+<br>
+response.write ``&lt;script language=`javascript`&gt;``<br>
+response.write ``alert(`删除成功！`);``<br>
+response.write ``&lt;/script&gt;``<br>
+response.write ``&lt;meta http-equiv=`refresh` content=`0;url=admin.asp`&gt;``<br>
+response.end<br>
+% &gt;</p></div></body></html>

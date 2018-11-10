@@ -1,0 +1,222 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>ASP 编程中 20 个非常有用的例子!</title></head><body><h1>ASP 编程中 20 个非常有用的例子!</h1><div><p><font size="3"><font color="#000000">1.如何用Asp判断你的网站的虚拟物理路径 <wbr></wbr><br>
+<font style="line-height: 1.3em">答：使用Mappath方法 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">&lt; p align=&quot;center&quot; &gt;&lt; font size=&quot;4&quot; face=&quot;Arial&quot; &gt;&lt; b &gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">The Physical path to this virtual website is: </font><wbr></wbr><br>
+<font style="line-height: 1.3em">&lt; /b &gt;&lt; /font &gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">&lt; font color=&quot;#FF0000&quot; size=&quot;6&quot; face=&quot;Arial&quot; &gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">&lt; %= Server.MapPath(&quot;\&quot;)% &gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">&lt; /font &gt;&lt; /p &gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">2.我如何知道使用者所用的浏览器？ </font><wbr></wbr><br>
+<font style="line-height: 1.3em">答：使用the Request object方法 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">strBrowser=Request.ServerVariables(&quot;HTTP_USER_AGENT&quot;) </font><wbr></wbr><br>
+<font style="line-height: 1.3em">If Instr(strBrowser,&quot;MSIE&quot;) &lt; &gt; 0 Then </font><wbr></wbr><br>
+<font style="line-height: 1.3em">　　Response.redirect(&quot;ForMSIEOnly.htm&quot;) </font><wbr></wbr><br>
+<font style="line-height: 1.3em">Else </font><wbr></wbr><br>
+<font style="line-height: 1.3em">　　Response.redirect(&quot;ForAll.htm&quot;) </font><wbr></wbr><br>
+<font style="line-height: 1.3em">End If </font><wbr></wbr><br>
+<font style="line-height: 1.3em">3.如何计算每天的平均反复访问人数 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">答：解决方法 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">&lt; % startdate=DateDiff(&quot;d&quot;,Now,&quot;01/01/1990&quot;) </font><wbr></wbr><br>
+<font style="line-height: 1.3em">if strdate&lt; 0 then startdate=startdate*-1 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">avgvpd=Int((usercnt)/startdate) % &gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">显示结果 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">&lt; % response.write(avgvpd) % &gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">that is it.this page have been viewed since November 10,1998 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">4.如何显示随机图象 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">&lt; % dim p,ppic,dpic </font><wbr></wbr><br>
+<font style="line-height: 1.3em">ppic=12 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">randomize </font><wbr></wbr><br>
+<font style="line-height: 1.3em">p=Int((ppic*rnd)+1) </font><wbr></wbr><br>
+<font style="line-height: 1.3em">dpic=&quot;graphix/randompics/&quot;&amp;p&amp;&quot;.gif&quot; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">% &gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">显示 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">&lt; img src=&quot;&lt; %=dpic% &gt;&quot; &gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">5.如何回到先前的页面 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">答：&lt; a href=&quot;&lt; %=request.serverVariables(&quot;Http_REFERER&quot;)% &gt;&quot; &gt;preivous page&lt; /a &gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">或用图片如：&lt; img src=&quot;arrowback.gif&quot; alt=&quot;&lt; %=request.serverVariables(&quot;HTTP_REFERER&quot;)% &gt;&quot; &gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">6.如何确定对方的IP地址 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">答：&lt; %=Request.serverVariables(&quot;REMOTE_ADDR)% &gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">7.如何链结到一副图片上 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">答：&lt; % @Languages=vbscript % &gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">&lt; % response.expires=0 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">strimagename=&quot;graphix/errors/erroriamge.gif&quot; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">response.redirect(strimagename) </font><wbr></wbr><br>
+<font style="line-height: 1.3em">% &gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">8.强迫输入密码对话框 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">答：把这句话放载页面的开头 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">&lt; % response.status=&quot;401 not Authorized&quot; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">response.end </font><wbr></wbr><br>
+<font style="line-height: 1.3em">% &gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">9.如何传递变量从一页到另一页 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">答：用 HIDDEN 类型来传递变量 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">&lt; % form method=&quot;post&quot; action=&quot;mynextpage.asp&quot; &gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">&lt; % for each item in request.form % &gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">&lt; input namee=&quot;&lt; %=item% &gt;&quot; type=&quot;HIDDEN&quot; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">value=&quot;&lt; %=server.HTMLEncode(Request.form(item)) % &gt;&quot; &gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">&lt; % next % &gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">&lt; /form &gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">10.为何我在 asp 程序内使用 msgbox，程序出错说没有权限 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">答：由于 asp 是服务器运行的，如果可以在服务器显示一个对话框，那么你只好等有人按了确定之后，你的程序才能继续执行，而一般服务器不会有人守着，所以微软不得不禁止这个函数，并胡乱告诉你 ( 呵呵) 没有权限。但是ASP和客户端脚本结合倒可以显示一个对话框，as follows: </font><wbr></wbr><br>
+<font style="line-height: 1.3em">&lt;%yourVar=&quot;测试对话框&quot;%&gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">&lt;script language=javascript&gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">alert(&quot;&lt;%=yourvar%&gt;&quot;) </font><wbr></wbr><br>
+<font style="line-height: 1.3em">&lt;/script&gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">11.有没有办法保护自己的源代码，不给人看到 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">答：可以去下载一个微软的Windows Script Encoder，它可以对asp的脚本和客户端javascript/vbscript脚本进行加密。。。不过客户端加密后，只有ie5才能执行，服务器端脚本加密后，只有服务器上安装有script engine 5（装一个ie5就有了）才能执行。 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">12.怎样才能将 query string 从一个 asp 文件传送到另一个？ </font><wbr></wbr><br>
+<font style="line-height: 1.3em">答：前者文件加入下句： Response.Redirect(&quot;second.asp?&quot; &amp; Request.ServerVariables(&quot;QUERY_STRING&quot;)) </font><wbr></wbr><br>
+<font style="line-height: 1.3em">13.global.asa文件总是不起作用? </font><wbr></wbr><br>
+<font style="line-height: 1.3em">答：只有web目录设置为web application, global.asa才有效，并且一个web application的根目录下 global.asa才有效。IIS4可以使用Internet Service Manager设置application setting 怎样才能使得htm文件如同asp文件一样可以执行脚本代码？ </font><wbr></wbr><br>
+<font style="line-height: 1.3em">14.怎样才能使得htm文件如同asp文件一样可以执行脚本代码？ </font><wbr></wbr><br>
+<font style="line-height: 1.3em">答：Internet Sevices Manager - &gt; 选择default web site - &gt;右鼠键- &gt;菜单属性-〉主目录- &gt; 应用程序设置（Application Setting）- &gt; 点击按钮 &quot;配置&quot;- &gt; app mapping - &gt;点击按钮&quot;Add&quot; - &gt; executable browse选择 \WINNT\SYSTEM32\INETSRV\ASP.DLL EXTENSION 输入 htm method exclusions 输入PUT.DELETE 全部确定即可。但是值得注意的是这样对htm也要由asp.dll处理，效率将降低。 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">15.如何注册组件 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">答：有两种方法。 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">第一种方法：手工注册 DLL 这种方法从IIs 3.0一直使用到IIs 4.0和其它的Web Server。它需要你在命令行方式下来执行，进入到包含有DLL的目录，并输入：regsvr32 component_name.dll 例如 c:\temp\regsvr32 AspEmail.dll 它会把dll的特定信息注册入服务器中的注册表中。然后这个组件就可以在服务器上使用了，但是这个方法有一个缺陷。当使用这种方法注册完毕组件后，该组件必须要相应的设置NT的匿名帐号有权限执行这个dll。特别是一些组件需要读取注册表，所以，这个注册组件的方法仅仅是使用在服务器上没有MTS的情况下，要取消注册这个dll，使用：regsvr32 /u aspobject.dll example c:\temp\regsvr32 /u aneiodbc.dll </font><wbr></wbr><br>
+<font style="line-height: 1.3em">第二种方法：使用MTS(Microsoft Transaction Server) MTS是IIS 4新增特色，但是它提供了巨大的改进。MTS允许你指定只有有特权的用户才能够访问组件，大大提高了网站服务器上的安全性设置。在MTS上注册组件的步骤如下： </font><wbr></wbr><br>
+<font style="line-height: 1.3em">1) 打开IIS管理控制台。 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">2) 展开transaction server，右键单击&quot;pkgs installed&quot;然后选择&quot;new package&quot;。 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">3) 单击&quot;create an empty package&quot;。 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">4) 给该包命名。 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">5) 指定administrator帐号或则使用&quot;interactive&quot;（如果服务器经常是使用administrator 登陆的话）。 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">6) 现在使用右键单击你刚建立的那个包下面展开后的&quot;components&quot;。选择 &quot;new then component&quot;。 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">7) 选择 &quot;install new component&quot; 。 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">8) 找到你的.dll文件然后选择next到完成。 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">要删除这个对象，只要选择它的图标，然后选择delete。 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">附注：特别要注意第二种方法，它是用来调试自己编写组件的最好方法，而不必每次都需要重新启动机器了。 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">16. ASP与Access数据库连接： </font><wbr></wbr><br>
+<font style="line-height: 1.3em">&lt;%@ language=VBscript%&gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">&lt;% </font><wbr></wbr><br>
+<font style="line-height: 1.3em">dim conn,mdbfile </font><wbr></wbr><br>
+<font style="line-height: 1.3em">mdbfile=server.mappath(&quot;数据库名称.mdb&quot;) </font><wbr></wbr><br>
+<font style="line-height: 1.3em">set conn=server.createobject(&quot;adodb.connection&quot;) </font><wbr></wbr><br>
+<font style="line-height: 1.3em">conn.open &quot;driver={microsoft access driver (*.mdb)};uid=admin;pwd=数据库密码;dbq=&quot;&amp;mdbfile </font><wbr></wbr><br>
+<font style="line-height: 1.3em">%&gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">17. ASP与SQL数据库连接： </font><wbr></wbr><br>
+<font style="line-height: 1.3em">&lt;%@ language=VBscript%&gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">&lt;% </font><wbr></wbr><br>
+<font style="line-height: 1.3em">dim conn </font><wbr></wbr><br>
+<font style="line-height: 1.3em">set conn=server.createobject(&quot;ADODB.connection&quot;) </font><wbr></wbr><br>
+<font style="line-height: 1.3em">con.open &quot;;PROVIDER=SQLOLEDB;DATA SOURCE=SQL服务器名称或IP地址;UID=sa;PWD=数据库密码;DATABASE=数据库名称 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">%&gt; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">建立记录集对象： </font><wbr></wbr><br>
+<font style="line-height: 1.3em">set rs=server.createobject(&quot;adodb.recordset&quot;) </font><wbr></wbr><br>
+<font style="line-height: 1.3em">rs.open SQL语句,conn,3,2 </font><wbr></wbr><br>
+<br>
+<font style="line-height: 1.3em">18. SQL常用命令使用方法： </font><wbr></wbr><br>
+<font style="line-height: 1.3em">(1) 数据记录筛选： </font><wbr></wbr><br>
+<font style="line-height: 1.3em">sql=&quot;select * from 数据表 where 字段名=字段值 order by 字段名 [desc]&quot; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">sql=&quot;select * from 数据表 where 字段名 like %字段值% order by 字段名 [desc]&quot; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">sql=&quot;select top 10 * from 数据表 where 字段名 order by 字段名 [desc]&quot; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">sql=&quot;select * from 数据表 where 字段名 in (值1,值2,值3)&quot; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">sql=&quot;select * from 数据表 where 字段名 between 值1 and 值2&quot; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">(2) 更新数据记录： </font><wbr></wbr><br>
+<font style="line-height: 1.3em">sql=&quot;update 数据表 set 字段名=字段值 where 条件表达式&quot; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">sql=&quot;update 数据表 set 字段1=值1,字段2=值2 …… 字段n=值n where 条件表达式&quot; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">(3) 删除数据记录： </font><wbr></wbr><br>
+<font style="line-height: 1.3em">sql=&quot;delete from 数据表 where 条件表达式&quot; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">sql=&quot;delete from 数据表&quot; (将数据表所有记录删除) </font><wbr></wbr><br>
+<font style="line-height: 1.3em">(4) 添加数据记录： </font><wbr></wbr><br>
+<font style="line-height: 1.3em">sql=&quot;insert into 数据表 (字段1,字段2,字段3 …) valuess (值1,值2,值3 …)&quot; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">sql=&quot;insert into 目标数据表 select * from 源数据表&quot; (把源数据表的记录添加到目标数据表) </font><wbr></wbr><br>
+<font style="line-height: 1.3em">(5) 数据记录统计函数： </font><wbr></wbr><br>
+<font style="line-height: 1.3em">AVG(字段名) 得出一个表格栏平均值 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">COUNT(*|字段名) 对数据行数的统计或对某一栏有值的数据行数统计 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">MAX(字段名) 取得一个表格栏最大的值 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">MIN(字段名) 取得一个表格栏最小的值 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">SUM(字段名) 把数据栏的值相加 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">引用以上函数的方法： </font><wbr></wbr><br>
+<font style="line-height: 1.3em">sql=&quot;select sum(字段名) as 别名 from 数据表 where 条件表达式&quot; </font><wbr></wbr><br>
+<font style="line-height: 1.3em">set rs=conn.excute(sql) </font><wbr></wbr><br>
+<font style="line-height: 1.3em">用 rs(&quot;别名&quot;) 获取统的计值，其它函数运用同上。 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">(5) 数据表的建立和删除： </font><wbr></wbr><br>
+<font style="line-height: 1.3em">CREATE TABLE 数据表名称(字段1 类型1(长度),字段2 类型2(长度) …… ) </font><wbr></wbr><br>
+<font style="line-height: 1.3em">例：CREATE TABLE tab01(name varchar(50),datetime default now()) </font><wbr></wbr><br>
+<font style="line-height: 1.3em">DROP TABLE 数据表名称 (永久性删除一个数据表) </font><wbr></wbr><br>
+<font style="line-height: 1.3em">19. 记录集对象的方法： </font><wbr></wbr><br>
+<font style="line-height: 1.3em">rs.movenext 将记录指针从当前的位置向下移一行 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">rs.moveprevious 将记录指针从当前的位置向上移一行 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">rs.movefirst 将记录指针移到数据表第一行 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">rs.movelast 将记录指针移到数据表最后一行 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">rs.absoluteposition=N 将记录指针移到数据表第N行 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">rs.absolutepage=N 将记录指针移到第N页的第一行 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">rs.pagesize=N 设置每页为N条记录 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">rs.pagecount 根据 pagesize 的设置返回总页数 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">rs.recordcount 返回记录总数 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">rs.bof 返回记录指针是否超出数据表首端，true表示是，false为否 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">rs.eof 返回记录指针是否超出数据表末端，true表示是，false为否 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">rs.delete 删除当前记录，但记录指针不会向下移动 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">rs.addnew 添加记录到数据表末端 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">rs.update 更新数据表记录 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">－－－－－－－－－－－－－－－－－<wbr></wbr>－－－－－－－－－－－－－－－－－－<wbr></wbr>－－－－ </font><wbr></wbr><br>
+<font style="line-height: 1.3em">20 Recordset对象方法 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">Open方法 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">recordset.Open Source,ActiveConnection,CursorType,LockType,Options </font><wbr></wbr><br>
+<font style="line-height: 1.3em">Source </font><wbr></wbr><br>
+<font style="line-height: 1.3em">Recordset对象可以通过Source属性来连接Command对象。Source参数可以是一个Command对象名称、一段SQL命令、一个指定的数据表名称或是一个Stored Procedure。假如省略这个参数，系统则采用Recordset对象的Source属性。 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">ActiveConnection </font><wbr></wbr><br>
+<font style="line-height: 1.3em">Recordset对象可以通过ActiveConnection属性来连接Connection对象。这里的ActiveConnection可以是一个Connection对象或是一串包含数据库连接信息（ConnectionString）的字符串参数。 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">CursorType </font><wbr></wbr><br>
+<font style="line-height: 1.3em">Recordset对象Open方法的CursorType参数表示将以什么样的游标类型启动数据，包括adOpenForwardOnly、adOpenKeyset、adOpenDynamic及adOpenStatic，分述如下： </font><wbr></wbr><br>
+<font style="line-height: 1.3em">-------------------------------------------------------------- </font><wbr></wbr><br>
+<font style="line-height: 1.3em">常数 常数值 说明 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">------------------------------------------------------------- </font><wbr></wbr><br>
+<font style="line-height: 1.3em">adOpenForwardOnly 0 缺省值，启动一个只能向前移动的游标（Forward Only）。 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">adOpenKeyset 1 启动一个Keyset类型的游标。 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">adOpenDynamic 2 启动一个Dynamic类型的游标。 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">adOpenStatic 3 启动一个Static类型的游标。 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">------------------------------------------------------------- </font><wbr></wbr><br>
+<font style="line-height: 1.3em">以上几个游标类型将直接影响到Recordset对象所有的属性和方法，以下列表说明他们之间的区别。 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">------------------------------------------------------------- </font><wbr></wbr><br>
+<font style="line-height: 1.3em">Recordset属性 adOpenForwardOnly adOpenKeyset adOpenDynamic adOpenStatic </font><wbr></wbr><br>
+<font style="line-height: 1.3em">------------------------------------------------------------- </font><wbr></wbr><br>
+<font style="line-height: 1.3em">AbsolutePage 不支持 不支持 可读写 可读写 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">AbsolutePosition 不支持 不支持 可读写 可读写 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">ActiveConnection 可读写 可读写 可读写 可读写 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">BOF 只读 只读 只读 只读 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">Bookmark 不支持 不支持 可读写 可读写 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">CacheSize 可读写 可读写 可读写 可读写 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">CursorLocation 可读写 可读写 可读写 可读写 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">CursorType 可读写 可读写 可读写 可读写 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">EditMode 只读 只读 只读 只读 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">EOF 只读 只读 只读 只读 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">Filter 可读写 可读写 可读写 可读写 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">LockType 可读写 可读写 可读写 可读写 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">MarshalOptions 可读写 可读写 可读写 可读写 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">MaxRecords 可读写 可读写 可读写 可读写 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">PageCount 不支持 不支持 只读 只读 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">PageSize 可读写 可读写 可读写 可读写 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">RecordCount 不支持 不支持 只读 只读 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">Source 可读写 可读写 可读写 可读写 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">State 只读 只读 只读 只读 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">Status 只读 只读 只读 只读 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">AddNew 支持 支持 支持 支持 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">CancelBatch 支持 支持 支持 支持 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">CancelUpdate 支持 支持 支持 支持 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">Clone 不支持 不支持 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">Close 支持 支持 支持 支持 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">Delete 支持 支持 支持 支持 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">GetRows 支持 支持 支持 支持 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">Move 不支持 支持 支持 支持 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">MoveFirst 支持 支持 支持 支持 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">MoveLast 不支持 支持 支持 支持 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">MoveNext 支持 支持 支持 支持 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">MovePrevious 不支持 支持 支持 支持 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">NextRecordset 支持 支持 支持 支持 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">Open 支持 支持 支持 支持 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">Requery 支持 支持 支持 支持 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">Resync 不支持 不支持 支持 支持 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">Supports 支持 支持 支持 支持 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">Update 支持 支持 支持 支持 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">UpdateBatch 支持 支持 支持 支持 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">-------------------------------------------------------------- </font><wbr></wbr><br>
+<font style="line-height: 1.3em">其中NextRecordset方法并不适用于Microsoft Access数据库。 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">LockType </font><wbr></wbr><br>
+<font style="line-height: 1.3em">Recordset对象Open方法的LockType参数表示要采用的Lock类型，如果忽略这个参数，那么系统会以Recordset对象的LockType属性为预设值。LockType参数包含adLockReadOnly、adLockPrssimistic、adLockOptimistic及adLockBatchOptimistic等，分述如下： </font><wbr></wbr><br>
+<font style="line-height: 1.3em">------------------------------------------------------------- </font><wbr></wbr><br>
+<font style="line-height: 1.3em">常数 常数值 说明 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">-------------------------------------------------------------- </font><wbr></wbr><br>
+<font style="line-height: 1.3em">adLockReadOnly 1 缺省值，Recordset对象以只读方式启动，无法运行AddNew、Update及Delete等方法 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">adLockPrssimistic 2 当数据源正在更新时，系统会暂时锁住其他用户的动作，以保持数据一致性。 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">adLockOptimistic 3 当数据源正在更新时，系统并不会锁住其他用户的动作，其他用户可以对数据进行增、删、改的*作。 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">adLockBatchOptimistic 4 当数据源正在更新时，其他用户必须将CursorLocation属性改为adUdeClientBatch才能对数据进行增、 </font><wbr></wbr><br>
+<font style="line-height: 1.3em">删、改的*作。 </font><wbr></wbr></font></font></p></div></body></html>

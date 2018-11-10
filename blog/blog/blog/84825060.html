@@ -1,0 +1,20 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>FLASH 实现动态模糊效果</title></head><body><h1>FLASH 实现动态模糊效果</h1><div><p align="center"><font face="楷体_GB2312" color="#000000" size="3">在一些片头动画里我们经常能看到很炫的模糊效果，极具视觉冲击。高质量的模糊效果大多利用PS处理后才导入flash中进行制作。其实，在flash中也可以利用其脚本功能来实现动态模糊的效果（效果还可以的）。 </font></p>
+<ul class="ubb-list">
+    <li><font face="楷体_GB2312" color="#000000" size="3">首先用PS，制作两张图。一张清楚的，一张模糊的（用高斯模糊）。 </font></li>
+    <li><font face="楷体_GB2312" color="#000000" size="3">然后把两张图片导入到flash中，分别建立三个图层，顺序依次为 ：清楚的图片（最下面）、模糊的图片（在中间）、最上层为AS。 最重要一点：选中模糊的图片。按下F8将其转换为movieclip，同时在属性面板上将其实例名命名为blurred。<br>
+    </font></li>
+    <li><font face="楷体_GB2312" size="3"><font color="#000000">在as层上加入代码如下</font>。</font></li>
+</ul>
+<div class="code">var myColor:Color = new Color(blurred); <br>
+var white:Object = {ra:100, rb:255, ga:100, gb:255, ba:100, bb:255, aa:100, ab:255}; <br>
+myColor.setTransform(white); <br>
+setc(); <br>
+function setc(){ <br>
+onEnterFrame = function(){ <br>
+white.rb-=5; <br>
+white.gb-=5; <br>
+white.bb-=5; <br>
+white.ab-=5; <br>
+myColor.setTransform(white); <br>
+}<br>
+}</div></div></body></html>

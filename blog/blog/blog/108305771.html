@@ -1,0 +1,81 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>ASP通用数据库显示编辑程序</title></head><body><h1>ASP通用数据库显示编辑程序</h1><div>[引言:]我是虽然半路出家经作了几年的程序，但不知自己是否算是一个程序员。我最近帮朋友作一个网站，为了空间的便宜，选用了ASP＋ACCESS的服务器。由于本人对ASP知道很少，所以实在做得有点累，特别是后台数据库的管理，有一大堆的表需要我日常维护。我发现，对于后台数据管理，基本上对数据库进行增删改查的的操作，我一个表一个表的写同样的操作，真的无法忍受。上网查了查，还真有通用的数据显示程序，可惜没有数据编辑功能。于是有了自己写一个通用的功能的想法。下面是我参考网友*后的实现。<br>
+[设计目标:]<br>
+1、数据库显示，编辑，增加，修改，且可以由用户定义选用。<br>
+2、显示的字段列可以用户定义(显示名称可自定义)<br>
+3、页面的显示格式以由用户定义，这包括每页记录数，页脚，列宽，表格的样式(配置了格式控制CSS文件)<br>
+4、组件的界面，支持多语言(chinese,eng,...),可惜还未有时间实现，现为中文。<br>
+5、支持多表联合查询<br>
+[缺限:]<br>
+调用参数复杂，需要文档支持，多表联合查询别名有限制。<br>
+<br>
+[使用示例:]<br>
+&lt;html&gt;<br>
+&lt;head&gt;<br>
+&lt;meta http-equiv=``Content-Type`` content=``text/html; charset=gb2312``&gt;<br>
+&lt;META http-equiv=Content-Type content=``text/html; charset=gb2312``&gt;<br>
+&lt;LINK href=``./style_cn.css`` type=text/css rel=stylesheet&gt;<br>
+<br>
+&lt;title&gt;通用数据库显示程序&lt;/title&gt;<br>
+<br>
+&lt;/head&gt;<br>
+&lt;body bgcolor=``#66cccc``&gt;<br>
+&lt;%<br>
+＇多个字段用数组表示 <br>
+＇DSN连接写法<br>
+＇sConn = ``DSN=&lt;数据库名&gt;;UID=&lt;DSN账号&gt;;PWD=&lt;密码&gt;``<br>
+＇使用物理路径连接Access数据库写法<br>
+＇sConn = ``DBQ=`` &amp; Server.MapPath(``&lt;Access数据库文件的当前文件相对路径&gt;``) &amp; ``;DefaultDir=;DRIVER={Microsoft Access Driver (*.mdb)};``<br>
+＇连接SQLServer写法<br>
+＇sConn = ``Provider=SQLOLEDB;Persist Security Info=False;UID=&lt;用户名&gt;;PWD=&lt;密码&gt;;Initial Catalog=&lt;SQLServer数据库名&gt;;Data Source=&lt;数据服务器IP&gt;``<br>
+<br>
+Dim sConn, sTableName, sHidden, sDisplay, sQuery, sOrder, iTop, iPageSize,sEditCols,sKey,sRelation,sColWidth<br>
+sConn = ``DBQ=`` &amp; Server.MapPath(``sample.MDB``) &amp; ``;DefaultDir=;DRIVER={Microsoft Access Driver (*.mdb)};``<br>
+<br>
+＇sTableName = ``客户``<br>
+＇sDisplay = ``联系人姓名 | 联系人 | &lt;a href=````view.asp?CustomerID=$客户ID$````&gt;$联系人姓名$&lt;/a&gt;, 公司名称|公司, 联系人头衔|称谓, 地址, 城市``<br>
+＇sHidden = ``客户ID``<br>
+＇sQuery = ``联系人姓名 | 联系人, 公司名称|公司, 联系人头衔|称谓 , 城市``<br>
+＇sOrder = ``客户ID``<br>
+＇iTop = 300<br>
+＇iPageSize = 2<br>
+＇sEditCols=``0,1,1,1,1``＇0-not edit ,1-edit<br>
+＇sKey=``客户(客户ID);``<br>
+＇sRelation=````<br>
+<br>
+<br>
+sTableName = ``Customer,myOrder``<br>
+sDisplay = ``myOrder.custid|客户ID|&lt;a href=````view.asp?CustomerID=myOrder.custid$````&gt;$CustName$&lt;/a&gt;, lineid|行号,product|产品,qty|数量,Amt|金额,dt|日期,linenotes|备注``<br>
+sHidden = ``CustName``<br>
+sQuery = ``myOrder.CustID|客户ID, product|产品, dt|定单日期``<br>
+sOrder = ``myOrder.lineID``<br>
+iTop = 300<br>
+iPageSize = 2<br>
+sEditCols=``0,1,1,1,1,1,1``＇0-not edit ,1-edit<br>
+sKey=``myOrder(myOrder.custid,lineid);``<br>
+sRelation=`` myOrder.custid=customer.custid ``<br>
+sColWidth=``20,40,60,60,60,60,60``<br>
+<br>
+＇DisplayTable sConn, sTableName, sHidden, sDisplay, sQuery, sOrder, iTop, iPageSize<br>
+dim objTable<br>
+Set objTable= New clsDispalyTable<br>
+<br>
+＇response.Write sConn &amp; ``&lt;br&gt;``<br>
+objTable.SetTablePara sConn, sTableName, sHidden, sDisplay, sQuery, sOrder,sRelation,sKey<br>
+objTable.SetEditPara sEditCols,````,sColWidth,True,True,True<br>
+objTable.SetPagePara 300,3<br>
+Response.write ``&lt;table border=0 align=center cellspacing=0 cellpadding=0&gt;&lt;tr&gt;&lt;td bgcolor=#6699cc&gt;``<br>
+objTable.DisplayTable<br>
+Response.write ``&lt;/td&gt;&lt;/tr&gt;&lt;table&gt;``<br>
+<br>
+＇pConn, pTableNames, pHidden, pDisplay, pQuery,pOrder,pRelation,pKeys)<br>
+<br>
+<br>
+%&gt;<br>
+<br>
+演示:http:www.qinych.com/caibing/test/test.asp<br>
+<br>
+<br>
+&lt;/body&gt;<br>
+&lt;/html&gt;<br>
+[小结:]虽然已经完成了了大部分功能，但还有很多不完美的地言，肯请朋友提出意见。<br>
+<br></div></body></html>

@@ -1,0 +1,17 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>三个限制文本框输入的正则表达式</title></head><body><h1>三个限制文本框输入的正则表达式</h1><div>（以下代码经本站检测有效！可以使用）<br>
+1.只能输入数字和小数点 <br>
+代码如下:<br>
+<br>
+&lt;input type=text t_value=```` o_value=```` onkeypress=``if(!this.value.match(/^[\+\-]?\d*?\.?\d*?$/))this.value=this.t_value;else this.t_value=this.value;if(this.value.match(/^(?:[\+\-]?\d+(?:\.\d+)?)?$/))this.o_value=this.value`` onkeyup=``if(!this.value.match(/^[\+\-]?\d*?\.?\d*?$/))this.value=this.t_value;else this.t_value=this.value;if(this.value.match(/^(?:[\+\-]?\d+(?:\.\d+)?)?$/))this.o_value=this.value`` onblur=``if(!this.value.match(/^(?:[\+\-]?\d+(?:\.\d+)?|\.\d*?)?$/))this.value=this.o_value;else{if(this.value.match(/^\.\d+$/))this.value=<br>
+0+this.value;if(this.value.match(/^\.$/))this.value=0;this.o_value=this.value}``&gt;<br>
+<br>
+2.只能输入英文 <br>
+代码如下:<br>
+<br>
+&lt;input type=``text`` onkeyup=``this.value=this.value.replace(/[^a-zA-Z]/g,＇＇)``&gt;<br>
+<br>
+3.只能输入数字和英文( . 和 / 也被屏蔽，如不屏蔽这两个，则使用replace(/[^\w\.\/]/ig,&rsquo;&rsquo;) ) <br>
+代码如下:<br>
+<br>
+&lt;input onkeyup=``value=value.replace(/[^\w]/ig,＇＇)``&gt;<br>
+<br></div></body></html>
