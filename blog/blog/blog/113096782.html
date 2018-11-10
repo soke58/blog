@@ -1,0 +1,36 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>ASP代码实现下载功能</title></head><body><h1>ASP代码实现下载功能</h1><div><p><strong>将下边的文件代码复制保存为Download.asp，调用格式：Download.asp?FileName=要下载的文件名</strong></p>
+<p style="text-indent: 2em"><strong>'然后在文件viw.asp中加入&ldquo;点击下载&rdquo;的连接，则可以如下运用&lt;a href=&quot;Download.asp?FileName=/upload/&lt;%=Rs(&quot;ImgUrl&quot;)%&gt;&quot;&gt;点击下载&lt;/a&gt;，其中upload为一个文件夹。viw.asp文件和Download.asp文件应放在同一目录下。</strong></p>
+<p style="text-indent: 2em"><strong>代码如下：</strong></p>
+<p>&lt;% Dim Stream</p>
+<p>Dim Contents</p>
+<p>Dim FileName</p>
+<p>Dim FileExt</p>
+<p>Const adTypeBinary = 1</p>
+<p>FileName = Request.QueryString(&quot;FileName&quot;)</p>
+<p>if FileName = &quot;&quot; Then</p>
+<p>&nbsp;&nbsp;&nbsp;  Response.Write &quot;无效文件名.&quot;</p>
+<p>&nbsp;&nbsp;&nbsp;  Response.End</p>
+<p>End if</p>
+<p>' 下面是不希望下载的文件</p>
+<p>FileExt = Mid(FileName, InStrRev(FileName, &quot;.&quot;) + 1)</p>
+<p>Select Case UCase(FileExt)</p>
+<p>&nbsp;&nbsp;&nbsp;  Case &quot;ASP&quot;, &quot;ASA&quot;, &quot;ASPX&quot;, &quot;ASAX&quot;, &quot;MDB&quot;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Response.Write &quot;受保护文件,不能下载.&quot;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Response.End</p>
+<p>End Select</p>
+<p>' 下载这个文件</p>
+<p>Response.Clear</p>
+<p>Response.ContentType = &quot;application/octet-stream&quot;</p>
+<p>Response.AddHeader &quot;content-disposition&quot;, &quot;attachment; filename=&quot; &amp; FileName</p>
+<p>Set Stream = server.CreateObject(&quot;ADODB.Stream&quot;)</p>
+<p>Stream.Type = adTypeBinary</p>
+<p>Stream.Open</p>
+<p>Stream.LoadFromFile Server.MapPath(FileName)</p>
+<p>While Not Stream.EOS</p>
+<p>&nbsp;&nbsp;&nbsp;  Response.BinaryWrite Stream.Read(1024 * 64)</p>
+<p>Wend</p>
+<p>Stream.Close</p>
+<p>Set Stream = Nothing</p>
+<p>Response.Flush</p>
+<p>Response.End %&gt;</p>
+<p> </p></div></body></html>

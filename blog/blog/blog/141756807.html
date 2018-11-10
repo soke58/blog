@@ -1,0 +1,91 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>如何用ASP编写网站统计系统</title></head><body><h1>如何用ASP编写网站统计系统</h1><div><p> </p>
+<font face="新宋体">
+<p style="text-indent: 2em">在目前的网站统计系统决大部分都是CGI的，但编写起来特别复杂，而ASP学起来简单，更有和数据库结合的优点，所以结合自己曾经做过的网站统计系统，和大家探讨一下ASP编写网站统计系统。<br>
+大家都看过网易的网站统计系统，它可以统计总访问量，每日平均访问量，当日访问量，最高访问量，最高访问日期，日流量分析，月流量分析，周流量分析，浏览器分析，等等。<br>
+其实要做一个ASP的访问统计系统关键是系统表结构的设计。以及如何来采集用户的CGI变量，如何来显示用户的信息。也就是说系统的关键是两个ASP程序，统计程序和显示程序。<br>
+首先我们先看看如何来采集用户的访问信息。<br>
+我们编写访问统计需要知道用户的如下信息，访问者的IP（根据访问IP可以形成访问者IP列表），访问者的浏览器与操作系统（统计访问者的浏览器与操作系统及所有访问者浏览器与操作系统比例图），访问者的访问时间（进行日访问量分析，月访问量分析，周访问量分析），下面我们来看看用ASP的获得以上信息的语句：<br>
+<strong>&nbsp;&nbsp;&nbsp;  1。获得访问者IP</strong></p>
+</font>
+<p><font face="新宋体">Dim M_IP<br>
+M_IP=Request.Servervariables(&quot;REMOTE_HOST&quot;)<br>
+</font>用上面的语句可以取得访问者的IP。<br>
+<strong>&nbsp;&nbsp;&nbsp;&nbsp;  2。获得浏览器信息</strong><br>
+<code><font face="新宋体">Dim O_Browser,M_BrowserType<br>
+Set O_Browser=Server.Createobject(&quot;MSWC.BrowserType&quot;)<br>
+M_BrowserType=O_Browser.Browser+O_Browser.Version<br>
+</font></code><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  3。获得访问时间</strong><br>
+<code><font face="新宋体">Dim M_DateTime<br>
+M_DateTime=Year(Date())&amp;&quot;/&quot;&amp;Right(&quot;0&quot;&amp;Month(Date()),2)&amp;&quot;/&quot;Right(&quot;0&quot;&amp;Day(Date()),2)&amp;&quot;/&quot;&amp;Right(&quot;0&quot;&amp;Hour(Time()),2)&amp;&quot;:&quot;&amp;Right(&quot;0&quot;&amp;Minute(Time()),2)&amp;&quot;:&quot;&amp;Right(&quot;0&quot;&amp;Second(Time()),2)<br>
+</font></code>&nbsp;&nbsp;&nbsp;&nbsp;  1取得用户的操作系统。<br>
+在ASP中使用如下语句可以得到访问者的http_user_agent字符串。<br>
+<code><font face="新宋体">Dim StrUserAgent<br>
+StrUserAgent=Request.ServerVariables(&quot;HTTP_USER_AGENT&quot;)<br>
+</font></code>这个字符串一般是如下格式：<br>
+<code><font face="新宋体">Mozilla/4.0 (compatible; MSIE 4.01; Windows 98)<br>
+</font></code>上面的字符串可以说明访问者使用的操作系统是Windows98,浏览器是MSIE 4.01,但是这个字符串格式不固定，而且可以自己更改。<br>
+&nbsp;&nbsp;&nbsp;  平常我们所见的其它一些主要的UserAgent字符串如下：<br>
+使用IE的浏览器：<br>
+<code><font face="新宋体">Mozilla/2.0 (compatible; MSIE 3.01; Windows 95)<br>
+Mozilla/4.0 (compatible; MSIE 4.0; Windows 95);<br>
+Mozilla/4.0 (compatible; MSIE 4.01; Windows 98)<br>
+Mozilla/4.0 (compatible; MSIE 5.0; Windows 98);<br>
+Mozilla/4.0 (compatible; MSIE 5.0b2; Windows NT)<br>
+</font><code><font face="新宋体">使用NetScape的浏览器：<br>
+</font><font face="新宋体"><code>Mozilla/4.03 〔en〕 (Win95; I)<br>
+Mozilla/4.08 〔en〕 (WinNT; U ;Nav)<br>
+Mozilla/4.5 〔en〕 (WinNT; U)<br>
+Mozilla/3.04Gold (Win95; I)<br>
+</code>使用Opera的浏览器：<br>
+</font><font face="新宋体"><code>Mozilla/4.0 (compatible; Opera/3.0; Windows 95) 3.50b10<br>
+</code>FrontPage编辑器：<br>
+</font><font face="新宋体"><code>Mozilla/2.0 (compatible; MS FrontPage 3.0)<br>
+</code>使用Sun操作系统：<br>
+</font><font face="新宋体"><code>Mozilla/3.01Gold (X11; I; SunOS 5.7 i86pc)<br>
+</code>使用PowerPc的Mac机：<br>
+</font><font face="新宋体"><code>Mozilla/4.0 (compatible; MSIE 4.5; Mac_PowerPC)<br>
+</code>通过分析以上字符串，我们可以找出规律，编写一个子程序来判断访问者用的是何种操作系统,又由于用ASP中的判断浏览器类型的控件需要更新Browser.ini文件，所以我们可以结合这个字符串来判断浏览器属性。<br>
+<strong>&nbsp;&nbsp;&nbsp;&nbsp;  2.我们以什么样的方式来统计网站呢？</strong><br>
+我们可以让用户在他的主页上加入如下语句：<br>
+</font><font face="新宋体"><code>＜a href=&quot;http://www.abc.com/viewer.asp?userid=username&quot;＞＜img src=&quot;http://www.abc.com/counter.asp?userid=username&quot;＞＜/a＞上面的userid是具体哪一个用户，要注意用户和访问者不是一个概念。<br>
+</code>通过上面的字符串我们就可以采集用户的访问数据，并给用户提供观看数据的链接。在我们看加有网易的统计系统的页面时会发现它会返回给用户一个图标，我们就可以在counter.asp中实现这个功能。<br>
+加入：response.redirect &quot;http://www.abc.com/abc.gif&quot;<br>
+这个语句我们可以加在统计数据采集后返回给用户。<br>
+设计表结构是一项极其重要的工作，它的合理与否与程序的编制紧密相关。 <br>
+一个网站统计系统应该有一个用户表，统计值表。 <br>
+这个用户表也就是保留注册用户信息的表，统计值表就是记录用户的每一项统计指标值的表。在统计值的表中我们可以指定用户的统计指标，我们可把每一个指标用一个ID值来表示,这里我们简单举例。 <br>
+用户表： <br>
+</font><font face="新宋体"><code>Table Name:regist_table <br>
+Field type <br>
+username C 用户名 <br>
+password C 密码 <br>
+regdate C 注册时间 <br>
+</code>值表： <br>
+</font><font face="新宋体"><code>Table Name:value_table <br>
+Field type <br>
+username C 用户名 <br>
+id C 统计指标ID <br>
+value C 统计指标的值 <br>
+</code>Id列表： <br>
+</font><font face="新宋体"><code>Table Name:id_table <br>
+Field type <br>
+id C 统计指标ID <br>
+</code>idvalue C 统计指标的说明 <br>
+有了这三个表我们就可以开始做了。 <br>
+如我们可以指定以下ID <br>
+</font><font face="新宋体"><code>id idvalue <br>
+101 总访问量 <br>
+201 1日访问量 <br>
+202 2日访问量 <br>
+: : <br>
+: : <br>
+231 31日访问量 <br>
+</code>要想对用户开始统计我们必须得先让用户注册，用户使用的流程如下： <br>
+填注册表-＞初始用户的value表（把对应的ID加入）-＞把注册信息反馈给用户 <br>
+-＞用户在自己的页面上加入链接-＞开始统计<br>
+能采集数据我们都能采到了，那么我们就开始编制ASP的统计页面。 <br>
+这一页我们叫计数页，counter.asp <br>
+这段asp代码我们需要让它按如下的流程进行采集数据并保存数据和更新数据： <br>
+采集用户名,判断用户名是否合法,采集访问者的信息，对信息进行加工，进行保存和更新数据库，返回logo图标。 <br>
+调用这个ASP用counter.asp?user=abc这个方式。 <br>
+采集用户名我们可以用Request对象的相应方法取得，然后检查用户表判断用户是否合法，然后取信息，用我们上面讲到的取得相应信息的方法取得信息，然后进行加工保存在数据表里，但最重要的是如何对数据进行更新，如当日每小时访问统计数，当天每小时统计数等，我们如何对每天的数据进行更新是这个程式的要点，我们可以采取几种方式，如对每天的每个小时的记录的更新我们采取在每天午夜12点更新，对每月的每一天的数据我们在月份切换的那一天进行更新。</font></code></code></p></div></body></html>

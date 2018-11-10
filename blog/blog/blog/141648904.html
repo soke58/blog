@@ -1,0 +1,26 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>asp删除目录和文件的代码</title></head><body><h1>asp删除目录和文件的代码</h1><div><div >&lt;%<br>
+dim fso,tmpfolder,tmpsubfolder,tmpfile,tmpfiles<br>
+set fso=server.CreateObject(&quot;scripting.FileSystemObject&quot;)<br>
+sub delfolder(sPath)<br>
+ If (fso.FolderExists(server.MapPath (sPath))) then<br>
+  set tmpfolder=fso.GetFolder(server.MapPath (sPath))<br>
+  set tmpfiles=tmpfolder.files<br>
+  for each tmpfile in tmpfiles<br>
+&nbsp;&nbsp;  fso.DeleteFile (tmpfile)<br>
+  next<br>
+  set tmpsubfolder=tmpfolder.SubFolders<br>
+  for each tmpfolder in tmpsubfolder<br>
+   response.Write spath&amp;&quot;/&quot;&amp;tmpfolder.name<br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;  delfolder(spath&amp;&quot;/&quot;&amp;tmpfolder.name )<br>
+  next<br>
+  fso.DeleteFolder (server.MapPath (sPath))<br>
+ end if<br>
+end sub<br>
+%&gt;<br>
+&lt;%<br>
+'调用例子<br>
+'test.asp放到wwwroot\下<br>
+'wwwroot\1\存在，且其他下有若干子目录和文件<br>
+delfolder(&quot;1&quot;)<br>
+%&gt;</div></div></body></html>

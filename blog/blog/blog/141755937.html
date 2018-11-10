@@ -1,0 +1,77 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>asp 字符串函数</title></head><body><h1>asp 字符串函数</h1><div><p class="style6">字符串函数提供处理字符串变量的功能。<br>
+<br>
+Asc Asc函数提取字符串第一个字母的ANSI字符码。<br>
+用法为：result = Asc(string)<br>
+其中result是字符码，string是任意有效的字符串表达式。如果string为Empty，则产生一个实时错误。<br>
+<br>
+AscB AscB函数提取字符串的第一个字节。<br>
+用法为：result = AscB(string)<br>
+其中result是Byte字类，string是任意有效的字符串表达式。如果string为Empty，则产生一个实时错误。<br>
+<br>
+AscW AscW函数提取字符串第一个字母的Unicode字符码。<br>
+用法为：result = AscW(string)<br>
+其中result是Unicode，string是任意有效的字符串表达式。如果string为Empty，则产生一个实时错误。<br>
+<br>
+InStr InStr函数识别某个记号在字符串中的首字母位置。<br>
+用法为：newstart = InStr([start, ]source, token[, compare])<br>
+其中newstart时记号在字符串中的位置（如果没有的话则为0），start是查找的起始位置，source是要查找的字符串，token是要定位的字符串，compare是比较类型（0表示二进制比较，1表示忽略大小写的文本比较）。 <br>
+<br>
+InStrB InStrB函数是InStr的字节版，识别某个记号在字符串中的首字节位置。<br>
+用法为：newstart = InStrB([start, ]source, token[, compare])<br>
+其中newstart时记号在字符串中的首字节位置（如果没有的话则为0），start是查找的起始位置，source是要查找的字符串，token是要定位的字符串，compare是比较类型（0表示二进制比较，1表示忽略大小写的文本比较）。 <br>
+<br>
+LCase LCase函数把字符串变为小写形式。<br>
+用法为：result = LCase(string)<br>
+其中result是小写字符串，string是任意有效的字符串表达式。 <br>
+<br>
+Left Left函数从字符串的起始处提取指定数目的字符。<br>
+用法为：result = Left(string,length)<br>
+其中result是字符串变量，string是有效的字符串表达式，length是表示返回多少字符的数值型表达式。<br>
+<br>
+LeftB LeftB函数从字符串的起始处提取指定数目的字节。<br>
+用法为：result = LeftB(string,length)<br>
+其中result是字符串变量，string是有效的字符串表达式，length是表示提取的字节数的数值型表达式。<br>
+<br>
+Len Len函数确定字符串的大小或存储这个变量需要多少字符。<br>
+用法为：result = Len(string | varname)<br>
+其中，result是字符串中的字符数或存储这个变量所需的字节数，string是任意有效的字符串表达式，varname是变量名。<br>
+<br>
+LenB Len函数确定字符串的大小或存储这个变量需要多少字节。<br>
+用法为：result = LenB(string | varname)<br>
+其中，result是字符串中的字节数或存储这个变量所需的字节数，string是任意有效的字符串表达式，varname是变量名。<br>
+<br>
+LTrim LTrim函数复制字符串并去掉前面的空格。<br>
+用法为：result = LTrim(string)<br>
+其中，result是去掉空格后的字符串，string是要去掉空格的有效字符串表达式。<br>
+<br>
+Mid Mid函数从字符串的某个位置复制指定数目的字符。<br>
+用法为：result = Mid(string,start[,length])<br>
+其中，result是结果字符串，string是要从中复制字符的表达式，start是string中复制的起始位置，length是要复制的字符数。<br>
+<br>
+MidB Mid函数从字符串的某个位置复制指定数目的字节。<br>
+用法为：result = Mid(string,start[,length])<br>
+其中，result是结果字符串，string是要从中复制字节的表达式，start是string中复制的起始位置，length是要复制的字节数。<br>
+<br>
+Right Right函数从字符串的尾部提取指定数目的字符。<br>
+用法为：result = Right(string,length)<br>
+其中result是字符串变量，string是有效的字符串表达式，length是表示返回多少字符的数值型表达式。<br>
+<br>
+RightB RightB函数从字符串的起始处提取指定数目的字节。<br>
+用法为：result = RightB(string,length)<br>
+其中result是字符串变量，string是有效的字符串表达式，length是表示提取的字节数的数值型表达式。 <br>
+<br>
+RTrim RTrim函数复制字符串并去掉尾部的空格。<br>
+用法为：result = RTrim(string)<br>
+其中，result是去掉空格后的字符串，string是要去掉空格的有效字符串表达式。<br>
+<br>
+String String函数构造含有多个相同字符的字符串。<br>
+用法为：result = String(number, character)<br>
+其中，result是字符串变量，number是返回字符串的长度，character是用来构造返回字符串的字符码。<br>
+<br>
+Trim Trim函数复制字符串并去掉首尾的空格。<br>
+用法为：result = Trim(string)<br>
+其中，result是去掉空格后的字符串，string是要去掉空格的有效字符串表达式。<br>
+<br>
+UCase UCase函数把字符串变为大写形式。<br>
+用法为：result = UCase(string)<br>
+其中result是大写字符串，string是任意有效的字符串表达式。 </p></div></body></html>

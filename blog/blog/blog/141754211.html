@@ -1,0 +1,18 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>有关记录排序的ASP代码</title></head><body><h1>有关记录排序的ASP代码</h1><div><p>一，显示纪录</p>
+<p>&nbsp;&nbsp; set rs=server.createobject(&quot;adodb.recordset&quot;)<br>
+&nbsp;&nbsp; sql=&quot;select * from jfnewso where newsclass='理论动态' and classname='&quot;&amp;Session(&quot;fenlei&quot;)&amp;&quot;' order by  Displayorder desc,id desc &quot;<br>
+&nbsp;&nbsp; rs.open sql,conn,1,1</p>
+<p>二，修改排序</p>
+<p>&lt;%<br>
+if request(&quot;action&quot;)=&quot;ORDERUP&quot; then<br>
+'排序向上<br>
+ set rs=server.createobject(&quot;adodb.recordset&quot;)<br>
+ sql=&quot;select * from jfnewso where id='&quot;&amp;request(&quot;id&quot;)&amp;&quot;'&quot;<br>
+ rs.open sql,conn,3,2<br>
+ rs(&quot;DisplayOrder&quot;)=rs(&quot;DisplayOrder&quot;)+1<br>
+ rs.update<br>
+ rs.close<br>
+ set rs=nothing<br>
+ response.write &quot;&lt;script language=javascript&gt;alert('编辑成功！');location.href('?action=liebiao&amp;fenlei=&quot;&amp;request(&quot;fenlei&quot;)&amp;&quot;&amp;xiangmu=&quot;&amp;request(&quot;xiangmu&quot;)&amp;&quot;');&lt;/script&gt;&quot;<br>
+end if<br>
+%&gt;</p></div></body></html>

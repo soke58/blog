@@ -1,0 +1,452 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>ASP的内置函数详解</title></head><body><h1>ASP的内置函数详解</h1><div><p><strong>Array()</strong><br>
+　　FUNCTION: 返回一个数组<br>
+　　SYNTAX: Array(list)<br>
+　　ARGUMENTS: 字符，数字均可<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　Dim myArray()<br>
+　　For i = 1 to 7<br>
+　　Redim Preserve myArray(i)<br>
+　　myArray(i) = WeekdayName(i)<br>
+　　Next<br>
+　　%&gt;</strong><br>
+　　RESULT: 建立了一个包含7个元素的数组myArray<br>
+　　myArray(&quot;Sunday&quot;,&quot;Monday&quot;, ... ... &quot;Saturday&quot;)<br>
+<br>
+<strong>CInt()</strong><br>
+　　FUNCTION: 将一个表达式转化为数字类型<br>
+　　SYNTAX: CInt(expression)<br>
+　　ARGUMENTS: 任何有效的字符均可<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　f = &quot;234&quot;<br>
+　　response.write cINT(f) + 2<br>
+　　%&gt;</strong><br>
+　　RESULT: 236<br>
+　　转化字符&quot;234&quot;为数字&quot;234&quot;，如果字符串为空，则返回0值<br>
+<br>
+<strong>CreateObject()</strong><br>
+　　FUNCTION: 建立和返回一个已注册的ACTIVEX组件的实例。<br>
+　　SYNTAX: CreateObject(objName)<br>
+　　ARGUMENTS: objName 是任何一个有效、已注册的ACTIVEX组件的名字.<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　Set con = Server.CreateObject(&quot;ADODB.Connection&quot;)<br>
+　　%&gt;</strong><br>
+　　RESULT:<br>
+<br>
+<strong>CStr()</strong><br>
+　　FUNCTION: 转化一个表达式为字符串.<br>
+　　SYNTAX: CStr(expression)<br>
+　　ARGUMENTS: expression 是任何有效的表达式。<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　s = 3 + 2<br>
+　　response.write &quot;The result is: &quot; &amp; cStr(s)<br>
+　　%&gt;</strong><br>
+　　RESULT: 转化数字&ldquo;5&rdquo;为字符&ldquo;5&rdquo;。<br>
+<br>
+<strong>Date()</strong><br>
+　　FUNCTION: 返回当前系统日期.<br>
+　　SYNTAX: Date()<br>
+　　ARGUMENTS: None.<br>
+　　EXAMPLE: <strong>&lt;%=Date%&gt;</strong><br>
+　　RESULT: 8/4/99<br>
+<br>
+<strong>DateAdd()</strong><br>
+　　FUNCTION: 返回一个被改变了的日期。<br>
+　　SYNTAX: DateAdd(timeinterval,number,date)<br>
+　　ARGUMENTS: timeinterval is the time interval to add; number is amount of time intervals to add; and date is the starting date.<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　currentDate = #8/4/99#<br>
+　　newDate = DateAdd(&quot;m&quot;,3,currentDate)<br>
+　　response.write newDate<br>
+　　%&gt;</strong><br>
+<br>
+　　<strong>&lt;%<br>
+　　currentDate = #12:34:45 PM#<br>
+　　newDate = DateAdd(&quot;h&quot;,3,currentDate)<br>
+　　response.write newDate<br>
+　　%&gt;</strong><br>
+　　RESULT: 11/4/99<br>
+　　3:34:45 PM<br>
+<br>
+　　&quot;m&quot; = &quot;month&quot;;<br>
+　　&quot;d&quot; = &quot;day&quot;;<br>
+<br>
+　　If currentDate is in time format then,<br>
+　　&quot;h&quot; = &quot;hour&quot;;<br>
+　　&quot;s&quot; = &quot;second&quot;;<br>
+<br>
+<strong>DateDiff()</strong><br>
+　　FUNCTION: 返回两个日期之间的差值 。<br>
+　　SYNTAX: DateDiff(timeinterval,date1,date2 [, firstdayofweek [, firstweekofyear&gt;&gt;)<br>
+　　ARGUMENTS: timeinterval 表示相隔时间的类型，如&ldquo;M&ldquo;表示&ldquo;月&rdquo;。<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　fromDate = #8/4/99#<br>
+　　toDate = #1/1/2000#<br>
+　　response.write &quot;There are &quot; &amp; _<br>
+　　DateDiff(&quot;d&quot;,fromDate,toDate) &amp; _<br>
+　　&quot; days to millenium from 8/4/99.&quot;<br>
+　　%&gt;</strong><br>
+　　RESULT: 从8/4/99 到2000年还有 150 天.<br>
+<br>
+<strong>Day()</strong><br>
+　　FUNCTION: 返回一个月的第几日 .<br>
+　　SYNTAX: Day(date)<br>
+　　ARGUMENTS: date 是任何有效的日期。<br>
+　　EXAMPLE: <strong>&lt;%=Day(#8/4/99#)%&gt;</strong><br>
+　　RESULT: 4<br>
+<br>
+<strong>FormatCurrency()</strong><br>
+　　FUNCTION: 返回表达式，此表达式已被格式化为货币值<br>
+　　SYNTAX: FormatCurrency(Expression [, Digit [, LeadingDigit [, Paren [, GroupDigit&gt;&gt;&gt;&gt;)<br>
+　　ARGUMENTS: Digit 指示小数点右侧显示位数的数值。默认值为 -1，指示使用的是计算机的区域设置; 　　LeadingDigit 三态常数，指示是否显示小数值小数点前面的零。<br>
+　　EXAMPLE: <strong>&lt;%=FormatCurrency(34.3456)%&gt;</strong><br>
+　　RESULT: $34.35<br>
+<br>
+<strong>FormatDateTime()</strong><br>
+　　FUNCTION: 返回表达式，此表达式已被格式化为日期或时间<br>
+　　SYNTAX: FormatDateTime(Date, [, NamedFormat&gt;)<br>
+　　ARGUMENTS: NamedFormat 指示所使用的日期/时间格式的数值，如果省略，则使用 vbGeneralDate.<br>
+　　EXAMPLE: <strong>&lt;%=FormatDateTime(&quot;08/4/99&quot;, vbLongDate)%&gt;</strong><br>
+　　RESULT: Wednesday, August 04, 1999<br>
+<br>
+<strong>FormatNumber()</strong><br>
+　　FUNCTION: 返回表达式，此表达式已被格式化为数值.<br>
+　　SYNTAX: FormatNumber(Expression [, Digit [, LeadingDigit [, Paren [, GroupDigit&gt;&gt;&gt;&gt;)<br>
+　　ARGUMENTS: Digit 指示小数点右侧显示位数的数值。默认值为 -1，指示使用的是计算机的区域设置。; LeadingDigit i指示小数点右侧显示位数的数值。默认值为 -1，指示使用的是计算机的区域设置。; Paren 指示小数点右侧显示位数的数值。默认值为 -1，指示使用的是计算机的区域设置。; GroupDigit i指示小数点右侧显示位数的数值。默认值为 -1，指示使用的是计算机的区域设置。.<br>
+　　EXAMPLE: <strong>&lt;%=FormatNumber(45.324567, 3)%&gt;</strong><br>
+　　RESULT: 45.325<br>
+<br>
+<strong>FormatPercent()</strong><br>
+　　FUNCTION: 返回表达式，此表达式已被格式化为尾随有 % 符号的百分比（乘以 100 ）。 (%)<br>
+　　SYNTAX: FormatPercent(Expression [, Digit [, LeadingDigit [, Paren [, GroupDigit&gt;&gt;&gt;&gt;)<br>
+　　ARGUMENTS: 同上.<br>
+　　EXAMPLE: <strong>&lt;%=FormatPercent(0.45267, 3)%&gt;</strong><br>
+　　RESULT: 45.267%<br>
+<br>
+<strong>Hour()</strong><br>
+　　FUNCTION: 以24时返回小时数.<br>
+　　SYNTAX: Hour(time)<br>
+　　ARGUMENTS:<br>
+　　EXAMPLE: <strong>&lt;%=Hour(#4:45:34 PM#)%&gt;</strong><br>
+　　RESULT: 16<br>
+　　(Hour has been converted to 24-hour system)<br>
+<br>
+<strong>Instr()</strong><br>
+　　FUNCTION: 返回字符或字符串在另一个字符串中第一次出现的位置.<br>
+　　SYNTAX: Instr([start, &gt; strToBeSearched, strSearchFor [, compare&gt;)<br>
+　　ARGUMENTS: Start为搜索的起始值，strToBeSearched接受搜索的字符串 strSearchFor要搜索的字符compare 比较方式（详细见ASP常数）<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　strText = &quot;This is a test!!&quot;<br>
+　　pos = Instr(strText, &quot;a&quot;)<br>
+　　response.write pos<br>
+　　%&gt;</strong><br>
+　　RESULT: 9<br>
+<br>
+<strong>InstrRev()</strong><br>
+　　FUNCTION: 同上，只是从字符串的最后一个搜索起<br>
+　　SYNTAX: InstrRev([start, &gt; strToBeSearched, strSearchFor [, compare&gt;)<br>
+　　ARGUMENTS: 同上.<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　strText = &quot;This is a test!!&quot;<br>
+　　pos = InstrRev(strText, &quot;s&quot;)<br>
+　　response.write pos<br>
+　　%&gt;</strong><br>
+　　RESULT: 13<br>
+<br>
+<br>
+<strong>Int()</strong><br>
+　　FUNCTION: 返回数值类型,不四舍五入。<br>
+　　SYNTAX: Int(number)<br>
+　　ARGUMENTS:<br>
+　　EXAMPLE: <strong>&lt;%=INT(32.89)%&gt;</strong><br>
+　　RESULT: 32<br>
+<br>
+<strong>IsArray()</strong><br>
+　　FUNCTION: 判断一对象是否为数组，返回布尔值 .<br>
+　　SYNTAX: IsArray(name)<br>
+　　ARGUMENTS:<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　strTest = &quot;Test!&quot;<br>
+　　response.write IsArray(strTest)<br>
+　　%&gt;</strong><br>
+　　RESULT: False<br>
+<br>
+<strong>IsDate()</strong><br>
+　　FUNCTION: 判断一对象是否为日期，返回布尔值<br>
+　　SYNTAX: IsDate(expression)<br>
+　　ARGUMENTS: expression is any valid expression.<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　strTest = &quot;8/4/99&quot;<br>
+　　response.write IsDate(strTest)<br>
+　　%&gt;</strong><br>
+　　RESULT: True<br>
+<br>
+<strong>IsEmpty()</strong><br>
+　　FUNCTION: 判断一对象是否初始化，返回布尔值.<br>
+　　SYNTAX: IsEmpty(expression)<br>
+　　ARGUMENTS:<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　Dim i<br>
+　　response.write IsEmpty(i)<br>
+　　%&gt;</strong><br>
+　　RESULT: True<br>
+<br>
+<strong>IsNull()</strong><br>
+　　FUNCTION: 判断一对象是否为空，返回布尔值.<br>
+　　SYNTAX: IsNull(expression)<br>
+　　ARGUMENTS:<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　Dim i<br>
+　　response.write IsNull(i)<br>
+　　%&gt;</strong><br>
+　　RESULT: False<br>
+　　<br>
+<strong>IsNumeric()</strong><br>
+　　FUNCTION: 判断一对象是否为数字，返回布尔值.<br>
+　　SYNTAX: IsNumeric(expression)<br>
+　　ARGUMENTS:<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　i = &quot;345&quot;<br>
+　　response.write IsNumeric(i)<br>
+　　%&gt;</strong><br>
+　　RESULT: True<br>
+　　就算数字加了引号，ASP还是认为它是数字。<br>
+<br>
+<strong>IsObject()</strong><br>
+　　FUNCTION: 判断一对象是否为对象，返回布尔值.<br>
+　　SYNTAX: IsObject(expression)<br>
+　　ARGUMENTS:<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　Set con = Server.CreateObject(&quot;ADODB.Connection&quot;)<br>
+　　response.write IsObject(con)<br>
+　　%&gt;</strong><br>
+　　RESULT: True<br>
+<br>
+<br>
+<strong>LBound()</strong><br>
+　　FUNCTION: 返回指定数组维的最小可用下标.<br>
+　　SYNTAX: Lbound(arrayname [, dimension&gt;)<br>
+　　ARGUMENTS: dimension 指明要返回哪一维下界的整数。使用 1 表示第一维，2 表示第二维，以此类　　推。如果省略 dimension 参数，默认值为 1.<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　i = Array(&quot;Monday&quot;,&quot;Tuesday&quot;,&quot;Wednesday&quot;)<br>
+　　response.write LBound(i)<br>
+　　%&gt;</strong><br>
+　　RESULT: 0<br>
+<br>
+<strong>LCase()</strong><br>
+　　FUNCTION: 返回字符串的小写形式<br>
+　　SYNTAX: Lcase(string)<br>
+　　ARGUMENTS: string is any valid string expression.<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　strTest = &quot;This is a test!&quot;<br>
+　　response.write LCase(strTest)<br>
+　　%&gt;</strong><br>
+　　RESULT: this is a test!<br>
+<br>
+<strong>Left()</strong><br>
+　　FUNCTION: 返回字符串左边第length个字符以前的字符（含第length个字符).<br>
+　　SYNTAX: Left(string, length)<br>
+　　ARGUMENTS:<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　strTest = &quot;This is a test!&quot;<br>
+　　response.write Left(strTest, 3)<br>
+　　%&gt;</strong><br>
+　　RESULT: Thi<br>
+<br>
+<strong>Len()</strong><br>
+　　FUNCTION: 返回字符串的长度.<br>
+　　SYNTAX: Len(string | varName)<br>
+　　ARGUMENTS:<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　strTest = &quot;This is a test!&quot;<br>
+　　response.write Len(strTest)<br>
+　　%&gt;</strong><br>
+　　RESULT: 15<br>
+<br>
+<strong>LTrim()</strong><br>
+　　FUNCTION: 去掉字符串左边的空格.<br>
+　　SYNTAX: LTrim(string)<br>
+　　ARGUMENTS:<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　strTest = &quot; This is a test!&quot;<br>
+　　response.write LTrim(strTest)<br>
+　　%&gt;</strong><br>
+　　RESULT: This is a test!<br>
+<br>
+<strong>Mid()</strong><br>
+　　FUNCTION: 返回特定长度的字符串(从start开始,长度为length).<br>
+　　SYNTAX: Mid(string, start [, length&gt;)<br>
+　　ARGUMENTS:<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　strTest = &quot;This is a test! Today is Monday.&quot;<br>
+　　response.write Mid(strTest, 17, 5)<br>
+　　%&gt;</strong><br>
+　　RESULT: Today<br>
+<br>
+<strong>Minute()</strong><br>
+　　FUNCTION: 返回时间的分钏.<br>
+　　SYNTAX: Minute(time)<br>
+　　ARGUMENTS:<br>
+　　EXAMPLE: <strong>&lt;%=Minute(#12:45:32 PM#)%&gt;</strong><br>
+　　RESULT: 45<br>
+<br>
+<strong>Month()</strong><br>
+　　FUNCTION: 返回日期.<br>
+　　SYNTAX: Month(date)<br>
+　　ARGUMENTS: date is any valid date expression.<br>
+　　EXAMPLE: <strong>&lt;%=Month(#08/04/99#)%&gt;</strong><br>
+　　RESULT: 8<br>
+<br>
+<strong>MonthName()</strong><br>
+　　FUNCTION: Returns a string identifying the specified month.<br>
+　　SYNTAX: MonthName(month, [, Abb&gt;)<br>
+　　ARGUMENTS: month is the numeric representation for a given month; Abb (optional) is a boolean value used to display month abbreviation. True will display the abbreviated month name and False (default) will not show the abbreviation.<br>
+　　EXAMPLE: <strong>&lt;%=MonthName(Month(#08/04/99#))%&gt;</strong><br>
+　　RESULT: August<br>
+<br>
+<strong>Now()</strong><br>
+　　FUNCTION: Returns the current system date and time.<br>
+　　SYNTAX: Now()<br>
+　　ARGUMENTS: None<br>
+　　EXAMPLE: <strong>&lt;%=Now%&gt;</strong><br>
+　　RESULT: 8/4/99 9:30:16 AM<br>
+<br>
+<strong>Replace()</strong><br>
+　　FUNCTION: Returns a string in which a specified sub-string has been replaced with another substring a specified number of times.<br>
+　　SYNTAX: Replace(strToBeSearched, strSearchFor, strReplaceWith [, start [, count [, compare&gt;&gt;&gt;)<br>
+　　ARGUMENTS: strToBeSearched is a string expression containing a sub-string to be replaced; strSearchFor is the string expression to search for within strToBeSearched; strReplaceWith is the string expression to replace sub-string strSearchFor; start (optional) is the numeric character position to begin search; count (optional) is a value indicating the comparision constant.<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　strTest = &quot;This is an apple!&quot;<br>
+　　response.write Replace(strTest, &quot;apple&quot;, &quot;orange&quot;)<br>
+　　%&gt;</strong><br>
+　　RESULT: This is an orange!<br>
+<br>
+<strong>Right()</strong><br>
+　　FUNCTION: 返回字符串右边第length个字符以前的字符（含第length个字符).<br>
+　　SYNTAX: Right(string, length)<br>
+　　ARGUMENTS: .<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　strTest = &quot;This is an test!&quot;<br>
+　　response.write Right(strTest, 3)<br>
+　　%&gt;</strong><br>
+　　RESULT: st!<br>
+<br>
+<strong>Rnd()</strong><br>
+　　FUNCTION: 产生一个随机数.<br>
+　　SYNTAX: Rnd [ (number) &gt;<br>
+　　ARGUMENTS:<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　Randomize()<br>
+　　response.write RND()<br>
+　　%&gt;</strong><br>
+　　RESULT: 任何一个在0 到 1 之间的数<br>
+<br>
+<strong>Round()</strong><br>
+　　FUNCTION: 返回按指定位数进行四舍五入的数值.<br>
+　　SYNTAX: Round(expression [, numRight&gt;)<br>
+　　ARGUMENTS: numRight数字表明小数点右边有多少位进行四舍五入。如果省略，则 Round 函数返回整数.<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　i = 32.45678<br>
+　　response.write Round(i)<br>
+　　%&gt;</strong><br>
+　　RESULT: 32<br>
+<br>
+<strong>Rtrim()</strong><br>
+　　FUNCTION: 去掉字符串右边的字符串.<br>
+　　SYNTAX: Rtrim(string)<br>
+　　ARGUMENTS:<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　strTest = &quot;This is a test!! &quot;<br>
+　　response.write RTrim(strTest)<br>
+　　%&gt;</strong><br>
+　　RESULT: This is a test!!<br>
+<br>
+<strong>Second()</strong><br>
+　　FUNCTION: 返回秒.<br>
+　　SYNTAX: Second(time)<br>
+　　ARGUMENTS: .<br>
+　　EXAMPLE: <strong>&lt;%=Second(#12:34:28 PM#)%&gt;</strong><br>
+　　RESULT: 28<br>
+<br>
+<strong>StrReverse()</strong><br>
+　　FUNCTION: 反排一字符串<br>
+　　SYNTAX: StrReverse(string)<br>
+　　ARGUMENTS:<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　strTest = &quot;This is a test!!&quot;<br>
+　　response.write StrReverse(strTest)<br>
+　　%&gt;</strong><br>
+　　RESULT: !!tset a si sihT<br>
+<br>
+<strong>Time()</strong><br>
+　　FUNCTION: 返回系统时间.<br>
+　　SYNTAX: Time()<br>
+　　ARGUMENTS: .<br>
+　　EXAMPLE: <strong>&lt;%=Time%&gt;</strong><br>
+　　RESULT: 9:58:28 AM<br>
+<br>
+<strong>Trim()</strong><br>
+　　FUNCTION: 去掉字符串左右的空格.<br>
+　　SYNTAX: Trim(string)<br>
+　　ARGUMENTS: string is any valid string expression.<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　strTest = &quot; This is a test!! &quot;<br>
+　　response.write Trim(strTest)<br>
+　　%&gt;</strong><br>
+　　RESULT: This is a test!!<br>
+<br>
+<strong>UBound()</strong><br>
+　　FUNCTION: 返回指定数组维数的最大可用下标.<br>
+　　SYNTAX: Ubound(arrayname [, dimension&gt;)<br>
+　　ARGUMENTS: dimension (optional) 指定返回哪一维上界的整数。1 表示第一维，2 表示第二维，以此类推。如果省略 dimension 参数，则默认值为 1.<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　i = Array(&quot;Monday&quot;,&quot;Tuesday&quot;,&quot;Wednesday&quot;)<br>
+　　response.write UBound(i)<br>
+　　%&gt;</strong><br>
+　　RESULT: 2<br>
+<br>
+<strong>UCase()</strong><br>
+　　FUNCTION: 返回字符串的大写形式.<br>
+　　SYNTAX: UCase(string)<br>
+　　ARGUMENTS:<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　strTest = &quot;This is a test!!&quot;<br>
+　　response.write UCase(strTest)<br>
+　　%&gt;</strong><br>
+　　RESULT: THIS IS A TEST!!<br>
+<br>
+<strong>VarType()</strong><br>
+　　FUNCTION: 返回指示变量子类型的值<br>
+　　SYNTAX: VarType(varName)<br>
+　　ARGUMENTS:<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　i = 3<br>
+　　response.write varType(i)<br>
+　　%&gt;</strong><br>
+　　RESULT: 2(数字)详见&quot;asp常数&quot;<br>
+<br>
+<strong>WeekDay()</strong><br>
+　　FUNCTION: 返回在一周的第几天.<br>
+　　SYNTAX: WeekDay(date [, firstdayofweek&gt;)<br>
+　　ARGUMENTS: .<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　d = #8/4/99#<br>
+　　response.write Weekday(d)<br>
+　　%&gt;</strong><br>
+　　RESULT: 4(星期三)<br>
+<br>
+<strong>WeekDayName()</strong><br>
+　　FUNCTION: 返回一周第几天的名字.<br>
+　　SYNTAX: WeekDayName(weekday [, Abb [, firstdayofweek&gt;&gt;)<br>
+　　ARGUMENTS: Abb可选。Boolean 值，指明是否缩写表示星期各天的名称。如果省略， 默认值为 False，即不缩写星期各天的名称.firstdayofweek指明星期第一天的数值<br>
+　　EXAMPLE: <strong>&lt;%<br>
+　　d = #8/4/99#<br>
+　　response.write WeekdayName(Weekday(d))<br>
+　　%&gt;</strong><br>
+　　RESULT: Wednesday<br>
+<br>
+<strong>Year()</strong><br>
+　　FUNCTION: 返回当前的年份.<br>
+　　SYNTAX: Year(date)<br>
+　　ARGUMENTS:<br>
+　　EXAMPLE: <strong>&lt;%=Year(#8/4/99#)%&gt;</strong><br>
+　　RESULT: 1999</p></div></body></html>

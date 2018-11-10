@@ -1,0 +1,29 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>国外空间Microsoft JET Database Engine error &amp;#39;80004005&amp;#39; 错误解决办法</title></head><body><h1>国外空间Microsoft JET Database Engine error &amp;#39;80004005&amp;#39; 错误解决办法</h1><div><span style="line-height: 15pt"><br>
+<br>
+<table style="line-height: 15pt" cellspacing="0" cellpadding="0" width="100%" border="0">
+    <tbody>
+        <tr>
+            <td><span style="font-size: 14px">
+            <p>错误提示：<br>
+            解决不同语言支持的Access数据库的默认排序不同的问题 有些用户上传网站文件到空间后，发现打不开网站，可能会出现类似下面的错误提示：  <br>
+            <br>
+            <table cellspacing="0" cellpadding="3" border="0">
+                <tbody>
+                    <tr>
+                        <td>Microsoft JET Database Engine error &rsquo;80004005&rsquo; Selected collating sequence not supported by the operating system. /conn.asp, line ...</td>
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+            <br>
+            主要原因是建立<strong>Access数据库文件的语言</strong>环境不同，不同语言支持的Access新建的文件的默认排序是不同的，所以会报错。由于国外空间都是英文*作系统。根据微软(Microsoft)的官方网站说明：<strong>若Access在一种语言下创建，而在另一种语言下使用就会提示这种错误</strong>。用户的网站放在国内空间上由于国内服务器大多是中文*作系统，所以不会出现类似问题。 在中文*作系统下创建的Access数据库的默认排序是中文类型的，如汉语拼音。。。 <br>
+            解决方法： <br>
+            1.打开Microsoft Access ，打开任意一个mdb文件，然后点&quot;工具&quot;，选中 &ldquo;选项&rdquo;，再选 &quot;常规&quot; 项。注意在右下方有 &ldquo;新建数据库排序次序&rdquo;下拉框，选中 &ldquo;常规&rdquo;。然后点确定。（注意，选项只有在有文件打开的状况下才能使用） <br>
+            2.然后&quot;文件&quot; --&gt; &quot;新建&quot; ，创建一个空白数据文件，然后&quot;文件&quot; --&gt; &quot;获取外部数据&quot; -- &quot;导入&quot;，打开老数据库文件将所有的表全部导入到新文件来，然后保存新文件。 <br>
+            3.保存此新文件，然后上传到服务器。 <br>
+            4.OK！</p>
+            </span></td>
+        </tr>
+    </tbody>
+</table>
+</span></div></body></html>

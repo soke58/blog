@@ -1,0 +1,44 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>用asp制作强大的搜索引擎(1)</title></head><body><h1>用asp制作强大的搜索引擎(1)</h1><div><p><font face="宋体" size="3">不知你上网时注意到没有：一些内容丰富的网站，总建有一个内容搜索引擎；一些大型的商业网站或者综合网站，都配有强大的网站搜索引擎，比如搜狐、新浪、雅虎等等。其方便的搜索查询功能至今给人们留下难以磨灭的印象，你只要输入你想浏览资料的关键字（比如：网页），一按&ldquo;搜索&rdquo;按钮，关于&ldquo;网页&rdquo;的资料列表就呈现在你的眼前；这只是搜索引擎的基本功能--搜索查询。笔者现在专门负责网上山东（</font><a href="http://www.china-sd.net/"><font face="宋体" size="3">http://www.china-sd.net</font></a><font face="宋体" size="3">）中山东搜索版块的建设，利用最常用的开发语言--asp开发搜索引擎的强大功能！下面我就搜索引擎主要组成部分和其中一些功能的实现代码讲解给大家，有什么不足之处请大家给予指出！<br>
+&nbsp;&nbsp;  在这一章节中，我介绍一下搜索引擎的组成部分和主要功能.</font></p>
+<p><font face="宋体" size="3">&nbsp;&nbsp;  搜索引擎的组成，大致分为三部分：<br>
+&nbsp;&nbsp;  1、界面：这一部分主要是面向客户的，是可以看到的部分，比如您打开search.sina.com.cn事后看到的页面。<br>
+&nbsp;&nbsp;  2、程序：这一部分主要是执行代码，根据客户的搜索要求去执行代码从而获得搜索结果；这些是我们看不到的。<br>
+&nbsp;&nbsp;  3、数据库：所有的搜索引擎都离不开数据库，连著名的google.com也不例外；数据库是储存搜索资料的仓库，储存的越多，搜索得到的资料就会越多，这也是搜索引擎是否强大的闪耀点之一。<br>
+&nbsp;&nbsp;  那么搜索引擎是否强大还有其他的闪耀点喽，是什么呢？对，搜索引擎数据库中的存储资料再多，我们不能够方便的去查找搜索，甚至查找不到所需的资料，那么这个数据库就是&ldquo;死&rdquo;的，毫无用处可言，所以程序代码起到非常重要的作用。<br>
+&nbsp;&nbsp;&nbsp;  讲到这里，我应该给大家介绍一下搜索引擎的几个主要功能：<br>
+&nbsp;&nbsp;&nbsp;  1、搜索查询：毫无疑问这是最基本的功能了，根据关键字找到符合关键字的相关资料。<br>
+&nbsp;&nbsp;&nbsp;  2、分页显示：如果你搜索到的资料非常多，都放在一个页面里，那样给人的感觉就会使乱糟糟的一片；分页显示根据人们看书的习惯，将一部分内容放到第一页，其他的内容放到第二页、第三页等等。<br>
+&nbsp;&nbsp;&nbsp;  3、搜索统计：一般包括查询资料的数量，分几个页面，每个页面含几个资料，当前页面资料范围等等。<br>
+&nbsp;&nbsp;&nbsp;  4、搜索结果编排：搜索排名我想大家不会陌生，这些是综合网站搜索引擎挣money的一项措施，这也是强大搜索引擎中不可缺少的功能；比如根据点击量排名，根据收费排名、根据等级排名。<br>
+&nbsp;&nbsp;&nbsp;  5、多个关键字查询：&ldquo;如果要查找包含多个关键词的信息，可以用空格把关键词隔开&rdquo;这是新浪搜索引擎版面中的一段文字，在一个文本框中打上多个关键字搜索查询资料。<br>
+&nbsp;&nbsp;&nbsp;  6、整体统计：这个是对搜索引擎开通至今一些数据统计，包含&ldquo;热门查询关键字&rdquo;统计、数据库中资料整体统计、每个类别所含资料统计等等。<br>
+&nbsp;&nbsp;&nbsp;  以上功能代码主要根据笔者的要求来书写，大家可以在我写的代码上做修改，以成为你自己需要的功能代码。</font></p>
+<p><font face="宋体" size="3">&nbsp;&nbsp;  好了，经过了一节的热身后，我们也可以进入实战阶段，首先，我们先建一个数据库，作为资料的存储，这里我将数据库的文件名为information.mdb，使用access创建数据库，当然你也可以使用sqlserver创建。<br>
+&nbsp;&nbsp;&nbsp;  建立四个表：www(存储资料),sort(大类)，samll(小类),key(查询关键字)<br>
+&nbsp;&nbsp;&nbsp;  1、www表：id---自动编号，sitename---站点名称，url---站点链接，faq---简要说明，key---关键字，time---添加时间,level---站点等级，sortid---大类id，smallid---小类id，hot---站点点击次数。<br>
+&nbsp;&nbsp;  2、sort表：id---自动编号,sort<br>
+&nbsp;&nbsp;  3、small表：id---自动编号,small<br>
+&nbsp;&nbsp;  4、key表：keyname---关键字；keyhot---出现的次数 <br>
+&nbsp;&nbsp;  用asp建立与数据库的连接：conn.asp<br>
+&nbsp;&nbsp;  &lt;%<br>
+on error resume next<br>
+connstr=&quot;dbq=&quot;+server.mappath(&quot;information.mdb&quot;)+&quot;;defaultdir=;driver={microsoft access driver (*.mdb)};&quot;<br>
+set conn=server.createobject(&quot;adodb.connection&quot;)<br>
+conn.open connstr<br>
+%&gt;<br>
+说明：使用server.mappath（）表示的路径为文件的相对路径，我这里conn.asp和information.mdb在同一个目录下。我想这些都很简单，大家很容易理解和接受的！好，将数据库建立起来后，我们就可以建设强大功能的搜索引擎。请期待哦！嘻嘻~~~~<br>
+[b]模糊搜索[/b]<br>
+&nbsp;&nbsp;&nbsp;  根据一个关键字，搜索到相关的资料，这里的&ldquo;相关&rdquo;是指资料中有类似这个关键字的字符串。例如：&ldquo;山东&rdquo;这个关键字，只要数据库中资料里包含&ldquo;山东&rdquo;这个关键字的都要把它们找出来。模糊搜索的应用其实很简单，只要使用一个sql语句就可以实现，下面咱们看看他的语句的写法。<br>
+&nbsp;&nbsp;&nbsp;  sql语法中你会发现这么几个判定词：like、not like和 between。 like判定词是一个非常有用的符号。不过，在很多情况下用了它可能会带给你太多的数据，所以在用到它之前最好先开动脑筋多想想自己到底想获得什么数据。not like是反其道而行了。between假设你想取出一定范围内的数据，而且你事先知道范围的起点和终点，那么你不妨采用between 判断词。这几个判定词根据不同的环境使用，一般最常用的就是like和&quot;%&quot;结合了。<br>
+&nbsp;&nbsp;  dim sql,key<br>
+&nbsp;&nbsp;  key=request(&quot;key&quot;)<br>
+&nbsp;&nbsp;  sql=&quot;select * from www where sitename like '%&quot;&amp;key&amp;&quot;%' or faq like '%&quot;&amp;key&amp;&quot;%' or key like '%&quot;&amp;key&amp;&quot;%' &quot;<br>
+&nbsp;&nbsp;  说明：这里的sql语句目的就是检索数据库中sitename字段中是否包含key，faq字段中是否包含key，key字段中是否包含key，这样做的目的是让搜索的范围包含到&ldquo;站点名称&rdquo;、&ldquo;站点简要说明&rdquo;、&ldquo;站点关键字&rdquo;。如果你只想搜索关键字只要使用 sql=&quot;select * from www where key like '%&quot;&amp;key&amp;&quot;%' &quot; 就可以了。&ldquo;like&rdquo;中都使用了&ldquo;or&rdquo;来相连，&ldquo;or&rdquo; &ldquo;或者&rdquo;的意思，意思是不论哪一个like 符合条件，都要把搜索到的资料输出显示出来。<br>
+&nbsp;&nbsp;&nbsp;  ok，现在大可不必去看看能不能执行或者说执行的结果如何，因为搜索引擎大部分功能的实现都是靠sql语句的书写了。等我把其他的相关sql语句的功能实现介绍完后，大家再看看效果，呵呵！别着急！！<br>
+排序<br>
+&nbsp;&nbsp;  上一节我们讲到了模糊搜索，那么搜索出来的结果如何显示呢？看一看数据库中的字段：hot（站点点击次数）、level（站点等级），可以想象一下这些字段存在的意义：站点点击次数是站点人气的体现，那么我们是不是让人气高的站点提前排名呢？当然，这样做还可以调动站长们加入这个搜索引擎的积极性。站点等级是根据站点的大小、重要程度来设定，比如新浪加入了这个搜索引擎，您是不是想让它始终排在一般站点的前面显示出来，很方便的告诉人们你的站点的重要程度，其实网站搜索排名也就是靠这一个来实现的。这两个排序的效果不只是这一两个方面，大家以后会慢慢的体会到，我们要实现的是以站点等级level排序为主，然后在level排出的结果中根据hot再一次排序。看看下面：<br>
+&nbsp;&nbsp;&nbsp;  在sql语句中排序使用&ldquo;order by&rdquo;来实现：<br>
+&nbsp;&nbsp;&nbsp;  sql=sql&amp;&quot;order by level desc,hot desc&quot;<br>
+&nbsp;&nbsp;&nbsp;  说明：asc/desc 升序或降序，缺省升序。 实现目的：等级高的排在最前，排除结果后再按照站点的点击次数排列，点击次数高的排在最前。这里为什么使用sql&amp;&quot;&quot;呢，因为上一节中我们写了sql=&quot;...&quot;，这里我们接着上一个写，为了不再重复写一边，可以使用sql=sql&amp;&quot;order by level desc,hot desc&quot;。以后我们也会经常用到！<br>
+&nbsp;&nbsp;&nbsp;  您是否明白了呢？我们下一节讲解一下&ldquo;多个关键字查询&rdquo;功能的实现！<br>
+</font></p></div></body></html>

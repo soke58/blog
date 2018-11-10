@@ -1,0 +1,70 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>用JS实现高亮显示文章或搜索结果中的关键词-</title></head><body><h1>用JS实现高亮显示文章或搜索结果中的关键词-</h1><div><p>用JS来实现，可以优化影响效率、占用服务器资源方面的问题。代码如下：</p>
+<font face="Verdana">
+<p>
+<table style="border-right: #cccccc 1px dotted; table-layout: fixed; border-top: #cccccc 1px dotted; border-left: #cccccc 1px dotted; border-bottom: #cccccc 1px dotted" cellspacing="0" cellpadding="6" width="95%" align="center" border="0">
+    <tbody>
+        <tr>
+            <td style="word-wrap: break-word" bgcolor="#f3f3f3"><font style="font-weight: bold; color: #990000">以下是引用片段：</font><br>
+            function XP_Highlight() <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;  { <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  this.KeyWords = null; <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  // 格式化关键词 <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  this.formatKeyword = function(content, keyword) <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  { <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  keyword = keyword.replace(/(^\s*)|(\s*$)/g, &quot;&quot;); <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  if(keyword == &rsquo;&rsquo;) <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  return content; <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  var reg = new RegExp(&rsquo;(&rsquo;+keyword+&rsquo;)&rsquo;, &rsquo;gi&rsquo;); <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  return content.replace(reg, &rsquo;&lt;em&gt;$1&lt;/em&gt;&rsquo;); <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  } <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  // 重绘内容区域 <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  this.refreshContent = function(contentID) <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  { <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  var content = document.getElementById(contentID).innerHTML; <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  for(var i = 0; i &lt; keywords.length; i ++) <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  { <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  var strKey = keywords[i].toString(); <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  var arrKey = strKey.split(&rsquo;,&rsquo;); <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  for(var j = 0; j &lt; arrKey.length; j ++) <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  { <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  var key = arrKey[j]; <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  content = this.formatKeyword(content, key); <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  } <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  } <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  document.getElementById(contentID).innerHTML = content; <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  } <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;  }</td>
+        </tr>
+    </tbody>
+</table>
+</p>
+<p><strong>调用方式：</strong></p>
+<font face="Verdana">
+<p>
+<table style="border-right: #cccccc 1px dotted; table-layout: fixed; border-top: #cccccc 1px dotted; border-left: #cccccc 1px dotted; border-bottom: #cccccc 1px dotted" cellspacing="0" cellpadding="6" width="95%" align="center" border="0">
+    <tbody>
+        <tr>
+            <td style="word-wrap: break-word" bgcolor="#f3f3f3"><font style="font-weight: bold; color: #990000">以下是引用片段：</font><br>
+            // 关键词定义 <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;  var keywords = <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;  [ <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  [&rsquo;阿里西西,alixixi.com,,<a class="wordstyle" target="_blank" href="http://www.alixixi.com/">Web开发</a>,真好吃,哈哈,嘻嘻&rsquo;], <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  [&rsquo;头晕脑胀,疲乏气短,索然无味,,,折腾,源码下载,西西,站长,程序员,技术,开发&rsquo;], <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  [&rsquo;怎么了,啊,呀,喂&rsquo;] <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;  ]; <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;  <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;  <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;  $(document).ready(function(){ <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  var hl = new XP_Highlight(); <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  hl.keywords = keywords; // 这里是关键词的定义 <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  hl.refreshContent(&rsquo;res&rsquo;); // 这里是要格式化内容的元素Id号 <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;  });&nbsp;&nbsp;</td>
+        </tr>
+    </tbody>
+</table>
+</p>
+<p><strong>CSS定义（可以设置多种风格，以支持不同类型的关键词）：</strong></p>
+<div class="cnblogs_code">em { font-size:small; color:#CC0033; font-style:normal; }</div>
+</font></font></div></body></html>

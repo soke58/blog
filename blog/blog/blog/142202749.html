@@ -1,0 +1,119 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>ASP用户登录模块的设计</title></head><body><h1>ASP用户登录模块的设计</h1><div>用户登录验证脚本,Chkpwd.asp<br>
+<br>
+&lt;% <br>
+'=======用户登录验证脚本======= <br>
+'如果尚未定义Passed对象,则将其定义为false,表示没有通过验证 <br>
+If IsEmpty(Session(&quot;Passed&quot;)) Then <br>
+Session(&quot;Passed&quot;)=false <br>
+End If <br>
+<br>
+'Session(&quot;Passed&quot;)=False,表示尚未通过验证,则开始读取从表单传来的验证信息 <br>
+If Session(&quot;Passed&quot;)=False Then <br>
+UserName=Request.Form(&quot;UserName&quot;) <br>
+UserPwd=Request.Form(&quot;UserPwd&quot;) <br>
+<br>
+If UserName=&quot;&quot; Then <br>
+Errmsg=&quot;提示:请输入用户名和密码&quot; <br>
+Else <br>
+'===================连接数据库===================== <br>
+Set Conn= Server.CreateObject(&quot;ADODB.Connection&quot;) <br>
+Conn.Connectionstring= &quot;Driver={SQL Server};Server=192.168.1.3;UID=sa;PWD=;Database=zcmrs&quot; <br>
+Conn.open <br>
+'===================从表log中读取用户数据===================== <br>
+'定义RecordSet对象 <br>
+Set rs=Server.CreateObject(&quot;ADODB.Recordset&quot;) <br>
+'设置Connection对象的ConnectionString <br>
+Set rs.ActiveConnection=Conn <br>
+'设置游标类型 <br>
+rs.CursorType=3 <br>
+'打开记录集 <br>
+rs.Open &quot;Select username,password from erpuser Where username='&quot;&amp;UserName&amp;&quot;'&quot; <br>
+'===================身份验证====================== <br>
+If rs.EOF Then <br>
+Errmsg=&quot;提示:用户不存在或密码错误&quot; <br>
+Else <br>
+If UserPwd&lt;&gt;rs.Fields(&quot;password&quot;) Then <br>
+Errmsg=&quot;提示:登录失败!密码错误？&quot; <br>
+Else '登录成功 <br>
+Errmsg=&quot;&quot; <br>
+Session(&quot;Passed&quot;)=True <br>
+Session(&quot;UserName&quot;)=rs.Fields(&quot;username&quot;) <br>
+'标识用户权限 Session(&quot;UserID&quot;)=rs.Fields(&quot;UserID&quot;) <br>
+End If <br>
+End If <br>
+End If <br>
+End If <br>
+'经过登录不成功,则画出登录表单 <br>
+If Not Session(&quot;Passed&quot;)=True Then <br>
+%&gt; <br>
+<br>
+&lt;html&gt; <br>
+&lt;head&gt;&lt;title&gt;无标题文档&lt;/title&gt; <br>
+&lt;style type=&quot;text/css&quot;&gt; <br>
+&lt;!-- <br>
+.STYLE1 {font-size: 12px;font-weight:bold;margin-left:120px;outline:double} <br>
+--&gt; <br>
+&lt;/style&gt; <br>
+&lt;style type=&quot;text/css&quot;&gt; <br>
+&lt;!-- <br>
+.STYLE2 {font-size: 12px;font-weight:bold;outline:double;color:#FF3333} <br>
+--&gt; <br>
+&lt;/style&gt; <br>
+&lt;/head&gt; <br>
+<br>
+&lt;body leftmargin=0 topmargin=0 marginheight=&quot;0&quot; marginwidth=&quot;0&quot; bgcolor=&quot;#000000&quot;&gt; <br>
+&lt;div id=parent style=&quot;height:300;width:450;border-style:solid;border-color:#FFFFFF;margin-top:80px;margin-left:25%;margin-right:25%;background-color:#FFFFFF&quot;&gt; <br>
+<br>
+&lt;div id=denglu style=&quot;font-size:12px;font-weight:bold;background-color:#0099FF;text-align:center;height:40px;&quot;&gt;&lt;br&gt;ERP系统登录&lt;/div&gt; <br>
+&lt;form action=&quot;&lt;%=request.ServerVariables(&quot;path_info&quot;)%&gt;&quot; method=&quot;post&quot; name=&quot;MyForm&quot; id=&quot;MyForm&quot;&gt; <br>
+&lt;p class=&quot;STYLE1&quot;&gt;用户名:&lt;input name=&quot;UserName&quot; type=&quot;text&quot; id=&quot;UserName&quot; size=&quot;18&quot; maxlength=&quot;20&quot;&gt; <br>
+&lt;/p&gt; <br>
+&lt;p class=&quot;STYLE1&quot;&gt;密　码:&lt;input name=&quot;UserPwd&quot; type=&quot;password&quot; id=&quot;UserPwd&quot; size=&quot;18&quot; maxlength=&quot;20&quot;&gt; <br>
+&lt;/p&gt; <br>
+&lt;p align=&quot;center&quot; class=&quot;STYLE2&quot;&gt;&lt;%=Errmsg%&gt; &lt;/p&gt; <br>
+&lt;p&gt;　 <br>
+&lt;input type=&quot;submit&quot; align=&quot;middle&quot; name=&quot;Submit&quot; value=&quot;登录系统&quot;&gt;　 <br>
+&lt;input name=&quot;rege&quot; type=&quot;button&quot; align=&quot;middle&quot; onClick=&quot;location='register.asp'&quot; id=&quot;rege&quot; value=&quot;注册用户&quot;&gt; <br>
+&lt;/p&gt; <br>
+&lt;/form&gt; <br>
+&lt;/div&gt; <br>
+<br>
+&lt;/body&gt; <br>
+<br>
+&lt;/html&gt; <br>
+&lt;% <br>
+'&lt;p class=&quot;STYLE1&quot;&gt;验证码:&lt;input name=&quot;CheckCode&quot; type=&quot;text&quot; id=&quot;CheckCode&quot; size=&quot;6&quot; maxlength=&quot;4&quot;&gt; <br>
+'&lt;IMG style=&quot;MARGIN-RIGHT: 40px&quot; alt=&quot;&quot; src=&quot;common/getcode.asp&quot;&gt;&lt;/p&gt; <br>
+response.End <br>
+End If <br>
+%&gt; <br>
+要访问的页面erp.asp<br>
+<br>
+&lt;!--#include file=&quot;chkpwd.asp&quot;--&gt; <br>
+&lt;body&gt; <br>
+&lt;div style='font-size:12px;font-weight:bold;border:1px solid #001;padding:4px;background:#FFCCFF;margin-top:0;'&gt;欢迎使用ERP查询系统,当前登录用户为: <br>
+&lt;% <br>
+If Session(&quot;Passed&quot;)=True Then <br>
+Response.Write(Session(&quot;UserName&quot;)) <br>
+End If <br>
+%&gt;&lt;a href=&quot;logout.asp&quot;&gt;退出系统&lt;/a&gt; <br>
+&lt;/div&gt; <br>
+&lt;/body&gt; <br>
+以上每次打开erp.asp的时候,都首先执行Chkpwd.asp(),这样可以有效防止未授权用户访问指定网页.<br>
+<br>
+logout.asp系统退出<br>
+<br>
+&lt;body&gt; <br>
+&lt;% <br>
+Session(&quot;Passed&quot;)=false <br>
+Session(&quot;UserName&quot;)=&quot;&quot; <br>
+Response.Redirect(&quot;index.asp&quot;) <br>
+%&gt; <br>
+&lt;/body&gt; <br>
+使用图片提交表单<br>
+<br>
+&lt;form name=&quot;form1&quot; method=&quot;post&quot; action=&quot;&quot;&gt; <br>
+<br>
+&lt;td align=&quot;right&quot;&gt;&lt;input type=&quot;image&quot; method=&quot;submit&quot; name=&quot;submit&quot; src=&quot;image/loginin.gif&quot; width=&quot;70&quot; height=&quot;21&quot; alt=&quot;submit&quot;&gt;&lt;/td&gt; <br>
+<br>
+&lt;/form&gt;</div></body></html>

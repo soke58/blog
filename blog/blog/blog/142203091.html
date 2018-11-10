@@ -1,0 +1,50 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>用ASP创建日志文件的方法</title></head><body><h1>用ASP创建日志文件的方法</h1><div>你是否有时想知道什么人访问你的站点，什么时间，IP地址等。下面我就这个问题向大家来阐述一下。这个例子使用文本文件来写入用户的信息创建一个logfile.asp放在每一个asp的页面的顶端&lt;!--#Include File=&quot;LogFile.asp&quot;--&gt;当有人来访问你的站点logfile.asp自动把他的信息写入LogFile.txt,如果相关的URl一样的话则不写入文件<br>
+file: LogFile.asp <br>
+<br>
+&lt;%<br>
+Dim ValidEntry ' Log variable<br>
+' First set that this log is valid <br>
+ValidEntry = True<br>
+<br>
+' If Session Variable &quot;LogIn&quot; is not empty <br>
+' that mean this person has already been logged<br>
+' then set ValidLog to False<br>
+If not IsEmpty(Session(&quot;LogIn&quot;)) then ValidEntry = False<br>
+<br>
+' Here you can add different restriction<br>
+' If the refering url is from same site <br>
+' don't write to log file<br>
+If Left(Request.ServerVariables(&quot;HTTP_REFERER&quot;), 17)=&quot;http://devasp.com&quot; Then <br>
+ValidEntry = False<br>
+End if<br>
+If Left(Request.ServerVariables(&quot;HTTP_REFERER&quot;), 21)=&quot;http://www.devasp.com&quot; Then<br>
+ValidEntry = False<br>
+End If<br>
+<br>
+' Now if ValidEntry is True then enter to log file<br>
+If ValidEntry Then <br>
+Const ForAppending = 8<br>
+Const Create = true<br>
+Dim FSO<br>
+DIM TS<br>
+DIM MyFileName<br>
+Dim strLog<br>
+<br>
+MyFileName = Server.MapPath(&quot;MyLogFile.txt&quot;)<br>
+Set FSO = Server.CreateObject(&quot;Scripting.FileSystemObject&quot;)<br>
+Set TS = FSO.OpenTextFile(MyFileName, ForAppending, Create)<br>
+<br>
+' Store all required values in strLog <br>
+strLog = &quot;&lt;br&gt;&lt;P&gt;&lt;B&gt;&quot; &amp; now &amp; &quot;&lt;/B&gt; &quot;<br>
+strLog = strLog &amp; Request.ServerVariables(&quot;REMOTE_ADDR&quot;) &amp; &quot; &quot;<br>
+strLog = strLog &amp; Request.ServerVariables(&quot;HTTP_REFERER&quot;) &amp; &quot; &quot;<br>
+strLog = strLog &amp; Request.ServerVariables(&quot;HTTP_USER_AGENT&quot;) &amp; &quot;&lt;BR&gt;&quot;<br>
+' Write current information to Log Text File.<br>
+TS.write strLog<br>
+TS.Writeline &quot;&quot;<br>
+' Create a session varialbe to check next time for ValidEntry<br>
+Session(&quot;LogIn&quot;) = &quot;yes&quot;<br>
+Set TS = Nothing<br>
+Set FSO = Nothing<br>
+End If<br>
+%&gt;</div></body></html>

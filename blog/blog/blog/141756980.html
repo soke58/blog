@@ -1,0 +1,66 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>用ASP建立一个简单的聊天室</title></head><body><h1>用ASP建立一个简单的聊天室</h1><div>经过一个阶段的asp学习,下面我们结合所学过的内容建立一个最简单的聊天室,虽然很简单,但是大家可以通过他来掌握一个聊天室建立的基本过程,并且可以不断的完善其功能. <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp; 　　下面介绍其主要步骤: <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp; 　　1,添加Global.asa文件里面的代码.这部分代码主要处理Application_onStart事件,在此事件中,定义了一个有15个元素的数据,并把它赋给了一个Application对象的属性.Global.asa文件的内容如下. <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp; ＜SCRIPT LANGUAGE=&quot;VBScript&quot; RUNAT=&quot;Server&quot;＞ <br>
+&nbsp;&nbsp; SUB Application_OnStart <br>
+&nbsp;&nbsp; dim maChats(15) 定义一个具有15个元素的数据. <br>
+&nbsp;&nbsp; Application(&quot;gaChats&quot;)=maChats 存储谈话的内容. <br>
+&nbsp;&nbsp; Application(&quot;giCounter&quot;)=0 存储已有的谈话数目. <br>
+&nbsp;&nbsp; END SUB <br>
+&nbsp;&nbsp; ＜/SCRIPT＞ <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp; 　　2,在AspChat.asp文件中添加代码.注意,要把这部分代码添加在主页中的两条水平线之间,也就是文本中的两个＜hr＞之间.程序首先判断申请这幅主页时,是否用的是&quot;Post&quot;方法,因为本例中窗口的提交方法是&quot;post&quot;.而一般第一次申请这幅主页时,用的是&quot;get&quot;方法.所以如果采用的是&quot;post&quot;方法的话,就说明是某一浏览者在提交自己的谈话内容时的重新申请,这就要进行处理,因为又有新的谈话内容了.否则,说明某一浏览者第一次申请此主页,并没有提交什么谈话,因此只需要把当前的谈话内容显示出来就可以了. <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp; ＜p align=&quot;center&quot;＞＜font size=5＞一个简单的聊天室＜/font＞＜/p＞ <br>
+&nbsp;&nbsp; ＜br＞ <br>
+&nbsp;&nbsp; ＜% <br>
+&nbsp;&nbsp; 处理输入 <br>
+&nbsp;&nbsp; if Request.ServerVariables(&quot;Request_Method&quot;)=&quot;POST&quot; then <br>
+&nbsp;&nbsp; 标明讲话者 <br>
+&nbsp;&nbsp; if len(Request(&quot;txtWho&quot;))＞0 then <br>
+&nbsp;&nbsp; Session(&quot;ssWho&quot;)=Request(&quot;txtWho&quot;) <br>
+&nbsp;&nbsp; end if <br>
+&nbsp;&nbsp; 封锁Application对象 <br>
+&nbsp;&nbsp; Application.Lock <br>
+&nbsp;&nbsp; 创建本地引用指针 <br>
+&nbsp;&nbsp; mlCounter=Application(&quot;giCounter&quot;) <br>
+&nbsp;&nbsp; maChats=Application(&quot;gaChats&quot;) <br>
+&nbsp;&nbsp; 如果写入的行数超过10,则重新开始记数. <br>
+&nbsp;&nbsp; if mlCoundter＞9 then <br>
+&nbsp;&nbsp; mlCoundter=0 <br>
+&nbsp;&nbsp; end if <br>
+&nbsp;&nbsp; 增加用户的输入,计数器加1 <br>
+&nbsp;&nbsp; maChat(mlChounter)=Session(&quot;ssWho&quot;)&amp;&quot;:&quot;&amp;Request(&quot;txtCents&quot;) <br>
+&nbsp;&nbsp; mlCounter=mlCounter+1 <br>
+&nbsp;&nbsp; 把局部变量设置为在应用范围内有效. <br>
+&nbsp;&nbsp; Applicati &quot;giCounter&quot;)=mlCounter <br>
+&nbsp;&nbsp; Application(&quot;gaChats&quot;)=maChat <br>
+&nbsp;&nbsp; 消除Application对象的封锁 <br>
+&nbsp;&nbsp; Application.Unlock <br>
+&nbsp;&nbsp; end if <br>
+&nbsp;&nbsp; %＞ <br>
+&nbsp;&nbsp; ＜% <br>
+&nbsp;&nbsp; 写入TextArea <br>
+&nbsp;&nbsp; if Application(&quot;giCounter&quot;)=0 then <br>
+&nbsp;&nbsp; lstemp=Application(&quot;gaChats&quot;)(0) <br>
+&nbsp;&nbsp; else <br>
+&nbsp;&nbsp; for x=0 to Application(&quot;giCounter&quot;)-1 <br>
+&nbsp;&nbsp; lstemp=lstemp&amp;&quot;＜br＞&quot;Application(&quot;gaChats&quot;)(x) <br>
+&nbsp;&nbsp; next <br>
+&nbsp;&nbsp; end if <br>
+&nbsp;&nbsp; Response.white lstemp <br>
+&nbsp;&nbsp; %＞ <br>
+&nbsp;&nbsp; ＜hr＞ <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp; 　　3,最后把txtWho的内容初始化.也就是当浏览者输入过一次自己的姓名以后就不用再次输入了,为了区分每个不同的浏览者,在这里使用了&quot;Session&quot;对象.利用Session(&quot;ssWho&quot;)记载浏览者的姓名.下面的代码直接写在以上代码的下面存入AspChat.asp中. <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp; ＜form method=&quot;POST&quot; action=&quot;aspchat.asp&quot; name=&quot;frmAsp&quot;＞ <br>
+&nbsp;&nbsp; ＜div align=&quot;center&quot;＞＜center＞＜p＞发言:＜input type=&quot;text&quot; name=&quot;txtCents&quot; size=&quot;34&quot;＞＜/p＞ <br>
+&nbsp;&nbsp; ＜/center＞＜/div＞＜div align=&quot;center&quot;＞＜center＞＜p＞对象:＜input type=&quot;submit&quot; value=&quot;送出&quot; name=&quot;B1&quot;＞＜/p＞ <br>
+&nbsp;&nbsp; ＜/center＞＜/div＞ <br>
+&nbsp;&nbsp; ＜/form＞ <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp; 　　4.完成.只要把2,3步的代码前后加入完整的htm文件代码然后存为aspchat.asp就可以了,这是一个很简单的asp聊天室程序,大家可以随着学习的深入不断加强它的功能! <br></div></body></html>

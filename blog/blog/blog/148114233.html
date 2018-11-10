@@ -1,0 +1,32 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>按字符串大小排序的ASP函数</title></head><body><h1>按字符串大小排序的ASP函数</h1><div><p><br>
+数组排序函数<br>
+function  Sort(ary) <br>
+KeepChecking = TRUE <br>
+Do Until KeepChecking = FALSE <br>
+KeepChecking = FALSE <br>
+For I = 0 to UBound(ary) <br>
+If I = UBound(ary) Then Exit For <br>
+If ary(I) &gt; ary(I+1) Then <br>
+FirstValue = ary(I) <br>
+SecondValue = ary(I+1) <br>
+ary(I) = SecondValue <br>
+ary(I+1) = FirstValue <br>
+KeepChecking = TRUE <br>
+End If <br>
+Next <br>
+Loop <br>
+Sort = ary <br>
+End function..</p>
+<p>调用上面数组排序函数<br>
+Dim MyArray <br>
+MyArray = Array(1,5,123,12,98)<br>
+MyArray = Sort(MyArray) <br>
+For I = Lbound(MyArray) to Ubound(MyArray) <br>
+Response.Write MyArray(I) &amp; &quot;&lt;br&gt;&quot;<br>
+Next <br>
+ 返回结果是:</p>
+<p>1<br>
+5<br>
+12<br>
+98<br>
+123</p></div></body></html>

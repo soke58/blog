@@ -1,0 +1,461 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>简单的ASP用数据库语句</title></head><body><h1>简单的ASP用数据库语句</h1><div>简单的ASP<br>
+用数据库语句<br>
+1.select 语句：命令数据库引擎从数据库里返回信息，作为一组记录。<br>
+　　2.insert into 语句：添加一个或多个记录至一个表。<br>
+　　3.update 语句：创建更新查询来改变基于特定准则的指定表中的字段值。<br>
+　　4.delete 语句：创建一个删除查询把记录从 from 子句列出并符合 where 子句的一个或更多的表中清除。<br>
+　　5.execute 语句：用于激活 procedure（过程）<br>
+<br>
+用 asp 来做一个自己的通讯录练练手吧……<br>
+<br>
+一、建立数据库：<br>
+<br>
+　　用 microsoft access 建立一个名为 data.mdb 的空数据库，使用设计器创建一个新表。输入以下几个字段：<br>
+<br>
+　　字段名称　　数据类型　　说明　　　　　　其它<br>
+　　id　　　　　自动编号　　数据标识　　　　字段大小：长整型　新值：递增　索引：有（无重复）<br>
+　　username　　文本　　　　姓名　　　　　　缺省值<br>
+　　usermail　　文本　　　　e-mail　　　　　缺省值<br>
+　　view　　　　数字　　　　查看次数　　　　字段大小：长整型　默认值：0　索引：无<br>
+　　indate　　　时间日期　　加入时间　　　　缺省值<br>
+<br>
+　　保存为 data.mdb 文件，为了便于说明，只是做了一个比较简单的库。<br>
+<br>
+二、连接数据库<br>
+<br>
+　　方*1：<br>
+　　set conn = server.createobject(&quot;adodb.connection&quot;<br>
+　　conn.open &quot;driver={microsoft access driver (*.mdb)};dbq=&quot;&amp;server.mappath(&quot;data.mdb&quot;<br>
+<br>
+　　方*2：<br>
+　　set conn = server.createobject(&quot;adodb.connection&quot;<br>
+　　conn.open &quot;provider=microsoft.jet.oledb.4.0;data source=&quot;&amp;server.mappath(&quot;data.mdb&quot;<br>
+<br>
+　　注意：一个页面中，只要连接一次就可以了，数据库使用完后要及时关闭连接。<br>
+　　conn.close<br>
+　　set conn = nothing<br>
+<br>
+三、添加新记录到数据库<br>
+<br>
+　　set conn = server.createobject(&quot;adodb.connection&quot;<br>
+　　conn.open &quot;driver={microsoft access driver (*.mdb)};dbq=&quot;&amp;server.mappath(&quot;data.mdb&quot;<br>
+<br>
+　　username = &quot;风云突变&quot;<br>
+　　usermail = &quot;fytb@163.com&quot;<br>
+　　indate = now()<br>
+<br>
+　　sql = &quot;insert into data (username,usermail,indata) values('&quot;&amp;username&amp;&quot;','&quot;&amp;usermail&amp;&quot;','&quot;&amp;indate&amp;&quot;')&quot;<br>
+　　conn.execute(sql)<br>
+<br>
+　　conn.close<br>
+　　set conn = nothing<br>
+<br>
+　　说明：建立数据库连接；通过表单获取姓名、e-mail 字符串，now()获取当前时间日期；使用 insert into 语句添加新记录；conn.execute 来执行；最后关闭。<br>
+<br>
+四、选择数据库里的记录<br>
+<br>
+　　1.选择所有记录的字段（按记录倒序排序）：sql = &quot;select * from data order by id desc&quot;<br>
+　　2.选择所有记录的姓名和e-mail字段（不排序）：sql = &quot;select username,usermail from data&quot;<br>
+　　3.选择姓名为&ldquo;风云突变&rdquo;的所有记录：sql = &quot;select * from data where username='&quot;风云突变&quot;'&quot;<br>
+　　4.选择使用 163 信箱的所有记录（按查看次数排序）：sql = &quot;select * from data where usermail like '%&quot;@163.com&quot;%' order by view desc&quot;<br>
+　　5.选择最新的10个记录：sql = &quot;select top 10 * from data order by id desc&quot;<br>
+<br>
+　　sql 语句已经知道了，不过在web应用时，还得创建一个 recordset 对象得到记录集，才能把从数据库里取出的值应用在网页上，如果现在将所有的记录显示在网页上就这样：<br>
+<br>
+　　set conn = server.createobject(&quot;adodb.connection&quot;<br>
+　　conn.open &quot;driver={microsoft access driver (*.mdb)};dbq=&quot;&amp;server.mappath(&quot;data.mdb&quot;<br>
+<br>
+　　sql = &quot;select * from data&quot;<br>
+　　set rs = server.createobject(&quot;adodb.recordset&quot;<br>
+　　rs.open sql,conn,1,1<br>
+<br>
+　　do while not rs.eof<br>
+　　　　response.write &quot;&lt;p&gt;姓名：&quot;&amp; rs(&quot;username&quot; &amp;&quot;　e-mail：&quot;&amp; rs(&quot;usermail&quot;) &amp;&quot;　查看：&quot;&amp; rs(&quot;view&quot;) &amp;&quot;次　&quot;&amp; rs(&quot;indate&quot;) &amp;&quot;加入&lt;/p&gt;&quot;<br>
+　　　　rs.movenext<br>
+　　loop<br>
+<br>
+　　rs.close<br>
+　　set rs = nothing<br>
+　　conn.close<br>
+　　set conn = nothing<br>
+<br>
+　　说明：建立数据库连接；创建 rs 得到记录集；循环显示记录，rs.eof 表示记录末，rs.movenext 表示移到下一个记录；最后关闭。<br>
+<br>
+五、修改（更新）数据库记录<br>
+<br>
+　　修改记录的e-mail：<br>
+<br>
+　　set conn = server.createobject(&quot;adodb.connection&quot;)<br>
+　　conn.open &quot;driver={microsoft access driver (*.mdb)};dbq=&quot;&amp;server.mappath(&quot;data.mdb&quot;)<br>
+<br>
+　　id = 1<br>
+　　usermail = &quot;fytb@163.com&quot;<br>
+<br>
+　　sql = &quot;update data set usermail='&quot;&amp;usermail&amp;&quot;' where id=&quot;&amp;cint(id)<br>
+　　conn.execute(sql)<br>
+<br>
+　　conn.close<br>
+　　set conn = nothing<br>
+<br>
+　　说明：建立数据库连接；获取记录id、新 e-mail 字符串；使用 update 语句修改记录；conn.execute 来执行；最后关闭。<br>
+　　如果使记录的查看值加1，则：sql = &quot;update data set view=view+1 where id=&quot;&amp;cint(id)<br>
+<br>
+六、删除数据库记录<br>
+<br>
+　　删除某一条记录：<br>
+<br>
+　　set conn = server.createobject(&quot;adodb.connection&quot;)<br>
+　　conn.open &quot;driver={microsoft access driver (*.mdb)};dbq=&quot;&amp;server.mappath(&quot;data.mdb&quot;)<br>
+<br>
+　　id = 1<br>
+<br>
+　　sql = &quot;delete from data where id=&quot;&amp;cint(id)<br>
+　　conn.execute(sql)<br>
+<br>
+　　conn.close<br>
+　　set conn = nothing<br>
+<br>
+　　说明：建立数据库连接；获取记录id；使用 delete 语句删除记录；conn.execute 来执行；最后关闭。<br>
+　　删除多条记录为：sql = &quot;delete from data where id in (id1,id2,id3)&quot;<br>
+　　删除所有记录为：sql = &quot;delete from data&quot;<br>
+<br>
+<br>
+1.如何用Asp判断你的网站的虚拟物理路径<br>
+答：使用Mappath方*<br>
+&lt;%= Server.MapPath(&quot;\&quot;)%&gt;<br>
+<br>
+2.我如何知道使用者所用的浏览器？<br>
+答：使用the Request object方*<br>
+strBrowser=Request.ServerVariables(&quot;HTTP_USER_AGENT&quot;)<br>
+If Instr(strBrowser,&quot;MSIE&quot;) &lt;&gt; 0 Then<br>
+　　Response.redirect(&quot;ForMSIEOnly.htm&quot;)<br>
+Else<br>
+　　Response.redirect(&quot;ForAll.htm&quot;)<br>
+End If<br>
+<br>
+3.如何计算每天的平均反复访问人数<br>
+答：解决方*<br>
+&lt;% startdate=DateDiff(&quot;d&quot;,Now,&quot;01/01/1990&quot;)<br>
+if strdate&lt;0 then startdate=startdate*-1<br>
+avgvpd=Int((usercnt)/startdate) %&gt;<br>
+显示结果<br>
+&lt;% response.write(avgvpd) %&gt;<br>
+that is it.this page have been viewed since November 10,1998<br>
+<br>
+4.如何显示随机图象<br>
+&lt;% dim p,ppic,dpic<br>
+ppic=12<br>
+randomize<br>
+p=Int((ppic*rnd)+1)<br>
+dpic=&quot;graphix/randompics/&quot;&amp;p&amp;&quot;.gif&quot;<br>
+%&gt;<br>
+显示<br>
+&lt;img src=&quot;&lt;%=dpic%&gt;&quot;&gt;<br>
+<br>
+5.如何回到先前的页面<br>
+答：&lt;a href=&quot;&lt;%=request.serverVariables(&quot;Http_REFERER&quot;)%&gt;&quot;&gt;preivous page&lt;/a&gt;<br>
+或用图片如：&lt;img src=&quot;/stblog/arrowback.gif&quot; alt=&quot;&lt;%=request.serverVariables(&quot;HTTP_REFERER&quot;)%&gt;&quot;&gt;<br>
+<br>
+6.如何确定对方的IP地址<br>
+答：&lt;%=Request.serverVariables(&quot;REMOTE_ADDR)%&gt;<br>
+<br>
+7.如何链结到一副图片上<br>
+答：&lt;% @Languages=vbs cript %&gt;<br>
+&lt;% response.expires=0<br>
+strimagename=&quot;graphix/errors/erroriamge.gif&quot;<br>
+response.redirect(strimagename)<br>
+%&gt;<br>
+<br>
+8.强迫输入密码对话框<br>
+答：把这句话放载页面的开头<br>
+&lt;% response.status=&quot;401 not Authorized&quot;<br>
+response.end<br>
+%&gt;<br>
+<br>
+9.如何传递变量从一页到另一页<br>
+答：用 HIDDEN 类型来传递变量<br>
+&lt;% form method=&quot;post&quot; action=&quot;mynextpage.asp&quot;&gt;<br>
+&lt;% for each item in request.form %&gt;<br>
+&lt;input namee=&quot;&lt;%=item%&gt;&quot; type=&quot;HIDDEN&quot;<br>
+value=&quot;&lt;%=server.HTMLEncode(Request.form(item)) %&gt;&quot;&gt;<br>
+&lt;% next %&gt;<br>
+&lt;/form&gt;<br>
+<br>
+10.为何我在 asp 程序内使用 msgbox，程序出错说没有权限<br>
+答：由于 asp 是服务器运行的，如果可以在服务器显示一个对话框，那么你只好等有人按了确定之后，你的程序才能继续执行，而一般服务器不会有人守着，所以微软不得不禁止这个函数，并胡乱告诉你 ( 呵呵) 没有权限。但是ASP和客户端脚本结合倒可以显示一个对话框，as follows:<br>
+&lt;% yourVar=&quot;测试对话框&quot;%&gt;<br>
+&lt;% script language=javas cript&gt;<br>
+alert(&quot;&lt;%=yourvar%&gt;&quot;)<br>
+&lt;/script&gt;<br>
+<br>
+11.有没有办*保护自己的源代码，不给人看到<br>
+答：可以去下载一个微软的Windows s cript Encoder，它可以对asp的脚本和客户端javas cript/vbs cript脚本进行加密。。。不过客户端加密后，只有ie5才能执行，服务器端脚本加密后，只有服务器上安装有s cript engine 5（装一个ie5就有了）才能执行。<br>
+<br>
+12.怎样才能将 query string 从一个 asp 文件传送到另一个？<br>
+答：前者文件加入下句： Response.Redirect(&quot;second.asp?&quot; &amp; Request.ServerVariables(&quot;QUERY_STRING&quot;))<br>
+<br>
+13.global.asa文件总是不起作用?<br>
+答：只有web目录设置为web application, global.asa才有效，并且一个web application的根目录下 global.asa才有效。IIS4可以使用Internet Service Manager设置application setting 怎样才能使得htm文件如同asp文件一样可以执行脚本代码？<br>
+<br>
+14.怎样才能使得htm文件如同asp文件一样可以执行脚本代码？<br>
+答：Internet Sevices Manager -&gt; 选择default web site -&gt;右鼠键-&gt;菜单属性-〉主目录-&gt; 应用程序设置（Application Setting）-&gt; 点击按钮 &quot;配置&quot;-&gt; app mapping -&gt;点击按钮&quot;Add&quot; -&gt; executable browse选择 \WINNT\SYSTEM32\INETSRV\ASP.DLL EXTENSION 输入 htm method exclusions 输入PUT.Delete 全部确定即可。但是值得注意的是这样对htm也要由asp.dll处理，效率将降低。<br>
+<br>
+15.如何注册组件<br>
+答：有两种方*。<br>
+第一种方*：手工注册 DLL 这种方*从IIs 3.0一直使用到IIs 4.0和其它的Web Server。它需要你在命令行方式下来执行，进入到包含有DLL的目录，并输入：regsvr32 component_name.dll 例如 c:\temp\regsvr32 AspEmail.dll 它会把dll的特定信息注册入服务器中的注册表中。然后这个组件就可以在服务器上使用了，但是这个方*有一个缺陷。当使用这种方*注册完毕组件后，该组件必须要相应的设置NT的匿名帐号有权限执行这个dll。特别是一些组件需要读取注册表，所以，这个注册组件的方*仅仅是使用在服务器上没有MTS的情况下，要取消注册这个dll，使用：regsvr32 /u aspobject.dll example c:\temp\regsvr32 /u aneiodbc.dll<br>
+<br>
+第二种方*：使用MTS(Microsoft Transaction Server) MTS是IIS 4新增特*，但是它提供了巨大的改进。MTS允许你指定只有有特权的用户才能够访问组件，大大提高了网站服务器上的安全性设置。在MTS上注册组件的步骤如下：<br>
+1) 打开IIS管理控制台。<br>
+2) 展开transaction server，右键单击&quot;pkgs installed&quot;然后选择&quot;new package&quot;。<br>
+3) 单击&quot;create an empty package&quot;。<br>
+4) 给该包命名。<br>
+5) 指定administrator帐号或则使用&quot;interactive&quot;（如果服务器经常是使用administrator 登陆的话）。<br>
+6) 现在使用右键单击你刚建立的那个包下面展开后的&quot;components&quot;。选择 &quot;new then component&quot;。<br>
+7) 选择 &quot;install new component&quot; 。<br>
+8) 找到你的.dll文件然后选择next到完成。<br>
+要删除这个对象，只要选择它的图标，然后选择delete。<br>
+附注：特别要注意第二种方*，它是用来调试自己编写组件的最好方*，而不必每次都需要重新启动机器了。<br>
+<br>
+16. ASP与Access数据库连接：<br>
+<br>
+&lt;%@ language=VBs cript%&gt;<br>
+&lt;%<br>
+dim conn,mdbfile<br>
+mdbfile=server.mappath(&quot;数据库名称.mdb&quot;)<br>
+set conn=server.createobject(&quot;adodb.connection&quot;)<br>
+conn.open &quot;driver={microsoft access driver (*.mdb)};uid=admin;pwd=数据库密码;dbq=&quot;&amp;mdbfile<br>
+%&gt;<br>
+<br>
+17. ASP与SQL数据库连接：<br>
+<br>
+&lt;%@ language=VBs cript%&gt;<br>
+&lt;%<br>
+dim conn<br>
+set conn=server.createobject(&quot;ADODB.connection&quot;)<br>
+con.open &quot;PROVIDER=SQLOLEDB;DATA SOURCE=SQL服务器名称或IP地址;UID=sa;PWD=数据库密码;DATABASE=数据库名称<br>
+%&gt;<br>
+<br>
+建立记录集对象：<br>
+<br>
+set rs=server.createobject(&quot;adodb.recordset&quot;)<br>
+rs.open SQL语句,conn,3,2<br>
+<br>
+18. SQL常用命令使用方*：<br>
+<br>
+(1) 数据记录筛选：<br>
+<br>
+sql=&quot;select * from 数据表 where 字段名=字段值 order by 字段名 [desc]&quot;<br>
+<br>
+sql=&quot;select * from 数据表 where 字段名 like %字段值% order by 字段名 [desc]&quot;<br>
+<br>
+sql=&quot;select top 10 * from 数据表 where 字段名 order by 字段名 [desc]&quot;<br>
+<br>
+sql=&quot;select * from 数据表 where 字段名 in (值1,值2,值3)&quot;<br>
+<br>
+sql=&quot;select * from 数据表 where 字段名 between 值1 and 值2&quot;<br>
+<br>
+(2) 更新数据记录：<br>
+<br>
+sql=&quot;update 数据表 set 字段名=字段值 where 条件表达式&quot;<br>
+<br>
+sql=&quot;update 数据表 set 字段1=值1,字段2=值2 …… 字段n=值n where 条件表达式&quot;<br>
+<br>
+(3) 删除数据记录：<br>
+<br>
+sql=&quot;delete from 数据表 where 条件表达式&quot;<br>
+<br>
+sql=&quot;delete from 数据表&quot; (将数据表所有记录删除)<br>
+<br>
+(4) 添加数据记录：<br>
+<br>
+sql=&quot;insert into 数据表 (字段1,字段2,字段3 …) valuess (值1,值2,值3 …)&quot;<br>
+<br>
+sql=&quot;insert into 目标数据表 select * from 源数据表&quot; (把源数据表的记录添加到目标数据表)<br>
+<br>
+(5) 数据记录统计函数：<br>
+<br>
+***G(字段名) 得出一个表格栏平均值<br>
+COUNT(*|字段名) 对数据行数的统计或对某一栏有值的数据行数统计<br>
+MAX(字段名) 取得一个表格栏最大的值<br>
+MIN(字段名) 取得一个表格栏最小的值<br>
+SUM(字段名) 把数据栏的值相加<br>
+<br>
+引用以上函数的方*：<br>
+<br>
+sql=&quot;select sum(字段名) as 别名 from 数据表 where 条件表达式&quot;<br>
+set rs=conn.excute(sql)<br>
+<br>
+用 rs(&quot;别名&quot;) 获取统的计值，其它函数运用同上。<br>
+<br>
+(5) 数据表的建立和删除：<br>
+<br>
+Create TABLE 数据表名称(字段1 类型1(长度),字段2 类型2(长度) …… )<br>
+<br>
+例：Create TABLE tab01(name varchar(50),datetime default now())<br>
+<br>
+Drop TABLE 数据表名称 (永久性删除一个数据表)<br>
+<br>
+19. 记录集对象的方*：<br>
+<br>
+rs.movenext 将记录指针从当前的位置向下移一行<br>
+rs.moveprevious 将记录指针从当前的位置向上移一行<br>
+rs.movefirst 将记录指针移到数据表第一行<br>
+rs.movelast 将记录指针移到数据表最后一行<br>
+rs.absoluteposition=N 将记录指针移到数据表第N行<br>
+rs.absolutepage=N 将记录指针移到第N页的第一行<br>
+rs.pagesize=N 设置每页为N条记录<br>
+rs.pagecount 根据 pagesize 的设置返回总页数<br>
+rs.recordcount 返回记录总数<br>
+rs.bof 返回记录指针是否超出数据表首端，true表示是，false为否<br>
+rs.eof 返回记录指针是否超出数据表末端，true表示是，false为否<br>
+rs.delete 删除当前记录，但记录指针不会向下移动<br>
+rs.addnew 添加记录到数据表末端<br>
+rs.update 更新数据表记录<br>
+<br>
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－<br>
+<br>
+20 Recordset对象方*<br>
+<br>
+Open方*<br>
+<br>
+recordset.Open Source,ActiveConnection,CursorType,LockType,Options<br>
+<br>
+Source<br>
+Recordset对象可以通过Source属性来连接Command对象。Source参数可以是一个Command对象名称、一段SQL命令、一个指定的数据表名称或是一个Stored Procedure。假如省略这个参数，系统则采用Recordset对象的Source属性。<br>
+<br>
+ActiveConnection<br>
+Recordset对象可以通过ActiveConnection属性来连接Connection对象。这里的ActiveConnection可以是一个Connection对象或是一串包含数据库连接信息（ConnectionString）的字符串参数。<br>
+<br>
+CursorType<br>
+Recordset对象Open方*的CursorType参数表示将以什么样的游标类型启动数据，包括adOpenForwardOnly、adOpenKeyset、adOpenDynamic及adOpenStatic，分述如下：<br>
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－<br>
+常数 常数值 说明<br>
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－<br>
+adOpenForwardOnly 0 缺省值，启动一个只能向前移动的游标（Forward Only）。<br>
+adOpenKeyset 1 启动一个Keyset类型的游标。<br>
+adOpenDynamic 2 启动一个Dynamic类型的游标。<br>
+adOpenStatic 3 启动一个Static类型的游标。<br>
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－<br>
+以上几个游标类型将直接影响到Recordset对象所有的属性和方*，以下列表说明他们之间的区别。<br>
+AbsolutePage 不支持 不支持 可读写 可读写<br>
+AbsolutePosition 不支持 不支持 可读写 可读写<br>
+ActiveConnection 可读写 可读写 可读写 可读写<br>
+BOF 只读 只读 只读 只读<br>
+Bookmark 不支持 不支持 可读写 可读写<br>
+CacheSize 可读写 可读写 可读写 可读写<br>
+CursorLocation 可读写 可读写 可读写 可读写<br>
+CursorType 可读写 可读写 可读写 可读写<br>
+EditMode 只读 只读 只读 只读<br>
+EOF 只读 只读 只读 只读<br>
+Filter 可读写 可读写 可读写 可读写<br>
+LockType 可读写 可读写 可读写 可读写<br>
+MarshalOptions 可读写 可读写 可读写 可读写<br>
+MaxRecords 可读写 可读写 可读写 可读写<br>
+PageCount 不支持 不支持 只读 只读<br>
+PageSize 可读写 可读写 可读写 可读写<br>
+RecordCount 不支持 不支持 只读 只读<br>
+Source 可读写 可读写 可读写 可读写<br>
+State 只读 只读 只读 只读<br>
+Status 只读 只读 只读 只读<br>
+AddNew 支持 支持 支持 支持<br>
+CancelBatch 支持 支持 支持 支持<br>
+CancelUpdate 支持 支持 支持 支持<br>
+Clone 不支持 不支持<br>
+Close 支持 支持 支持 支持<br>
+Delete 支持 支持 支持 支持<br>
+GetRows 支持 支持 支持 支持<br>
+Move 不支持 支持 支持 支持<br>
+MoveFirst 支持 支持 支持 支持<br>
+MoveLast 不支持 支持 支持 支持<br>
+MoveNext 支持 支持 支持 支持<br>
+MovePrevious 不支持 支持 支持 支持<br>
+NextRecordset 支持 支持 支持 支持<br>
+Open 支持 支持 支持 支持<br>
+Requery 支持 支持 支持 支持<br>
+Resync 不支持 不支持 支持 支持<br>
+Supports 支持 支持 支持 支持<br>
+Update 支持 支持 支持 支持<br>
+UpdateBatch 支持 支持 支持 支持<br>
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－<br>
+其中NextRecordset方*并不适用于Microsoft Access数据库。<br>
+<br>
+LockType<br>
+Recordset对象Open方*的LockType参数表示要采用的Lock类型，如果忽略这个参数，那么系统会以Recordset对象的LockType属性为预设值。LockType参数包含adLockReadOnly、adLockPrssimistic、adLockOptimistic及adLockBatchOptimistic等，分述如下：<br>
+<br>
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－<br>
+常数 常数值 说明<br>
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－<br>
+adLockReadOnly 1 缺省值，Recordset对象以只读方式启动，无*运行AddNew、Update及Delete等方*<br>
+adLockPrssimistic 2 当数据源正在更新时，系统会暂时锁住其他用户的动作，以保持数据一致性。<br>
+adLockOptimistic 3 当数据源正在更新时，系统并不会锁住其他用户的动作，其他用户可以对数据进行增、删、改的xx作。<br>
+adLockBatchOptimistic 4 当数据源正在更新时，其他用户必须将CursorLocation属性改为adUdeClientBatch才能对数据进行增、删、改的xx作。 <br>
+SQL语法<br>
+说明：复制表(只复制结构,源表名：a 新表名：b)<br>
+SQL: select * into b from a where 1&lt;&gt;1<br>
+<br>
+说明：拷贝表(拷贝数据,源表名：a 目标表名：b)<br>
+SQL: insert into b(a, b, c) select d,e,f from b;<br>
+<br>
+说明：显示文章、提交人和最后回复时间<br>
+SQL: select a.title,a.username,b.adddate from table a,(select max(adddate) adddate from table where table.title=a.title) b<br>
+<br>
+说明：外连接查询(表名1：a 表名2：b)<br>
+SQL: select a.a, a.b, a.c, b.c, b.d, b.f from a LEFT OUT JOIN b ON a.a = b.c<br>
+<br>
+说明：日程安排提前五分钟提醒<br>
+SQL: select * from 日程安排 where datediff('minute',f开始时间,getdate())&gt;5<br>
+<br>
+<br>
+说明：两张关联表，删除主表中已经在副表中没有的信息<br>
+SQL: <br>
+delete from info where not exists ( select * from infobz where info.infid=infobz.infid ) <br>
+<br>
+说明：--<br>
+SQL: <br>
+Select A.NUM, A.NAME, B.UPD_DATE, B.PREV_UPD_DATE<br>
+FROM TABLE1, <br>
+(Select X.NUM, X.UPD_DATE, Y.UPD_DATE PREV_UPD_DATE<br>
+FROM (Select NUM, UPD_DATE, INBOUND_QTY, STOCK_ONHAND<br>
+FROM TABLE2<br>
+Where TO_CHAR(UPD_DATE,'YYYY/MM') = TO_CHAR(SYSDATE, 'YYYY/MM')) X, <br>
+(Select NUM, UPD_DATE, STOCK_ONHAND<br>
+FROM TABLE2<br>
+Where TO_CHAR(UPD_DATE,'YYYY/MM') = <br>
+TO_CHAR(TO_DATE(TO_CHAR(SYSDATE, 'YYYY/MM') &brvbar;&brvbar; '/01','YYYY/MM/DD') - 1, 'YYYY/MM') ) Y, <br>
+Where X.NUM = Y.NUM （+）<br>
+AND X.INBOUND_QTY + NVL(Y.STOCK_ONHAND,0) &lt;&gt; X.STOCK_ONHAND ) B<br>
+Where A.NUM = B.NUM<br>
+<br>
+说明：--<br>
+SQL: <br>
+select * from studentinfo where not exists(select * from student where studentinfo.id=student.id) and 系名称='&quot;&amp;strdepartmentname&amp;&quot;' and 专业名称='&quot;&amp;strprofessionname&amp;&quot;' order by 性别,生源地,高考总成绩<br>
+<br>
+说明：<br>
+从数据库中去一年的各单位电话费统计(电话费定额贺电化肥清单两个表来源）<br>
+SQL: <br>
+Select a.userper, a.tel, a.standfee, TO_CHAR(a.telfeedate, 'yyyy') AS telyear,<br>
+SUM(decode(TO_CHAR(a.telfeedate, 'mm'), ?', a.factration)) AS JAN,<br>
+SUM(decode(TO_CHAR(a.telfeedate, 'mm'), ?', a.factration)) AS FRI,<br>
+SUM(decode(TO_CHAR(a.telfeedate, 'mm'), ?', a.factration)) AS MAR,<br>
+SUM(decode(TO_CHAR(a.telfeedate, 'mm'), ?', a.factration)) AS APR,<br>
+SUM(decode(TO_CHAR(a.telfeedate, 'mm'), ?', a.factration)) AS MAY,<br>
+SUM(decode(TO_CHAR(a.telfeedate, 'mm'), ?', a.factration)) AS JUE,<br>
+SUM(decode(TO_CHAR(a.telfeedate, 'mm'), ?', a.factration)) AS JUL,<br>
+SUM(decode(TO_CHAR(a.telfeedate, 'mm'), ?', a.factration)) AS AGU,<br>
+SUM(decode(TO_CHAR(a.telfeedate, 'mm'), ?', a.factration)) AS SEP,<br>
+SUM(decode(TO_CHAR(a.telfeedate, 'mm'), ?', a.factration)) AS OCT,<br>
+SUM(decode(TO_CHAR(a.telfeedate, 'mm'), ?', a.factration)) AS NOV,<br>
+SUM(decode(TO_CHAR(a.telfeedate, 'mm'), ?', a.factration)) AS DEC<br>
+FROM (Select a.userper, a.tel, a.standfee, b.telfeedate, b.factration<br>
+FROM TELFEESTAND a, TELFEE b<br>
+Where a.tel = b.telfax) a<br>
+GROUP BY a.userper, a.tel, a.standfee, TO_CHAR(a.telfeedate, 'yyyy')<br>
+<br>
+说明：四表联查问题：<br>
+SQL: select * from a left inner join b on a.a=b.b right inner join c on a.a=c.c inner join d on a.a=d.d where .....<br>
+<br>
+说明：得到表中最小的未使用的ID号<br>
+SQL:<br>
+Select (CASE WHEN EXISTS(Select * FROM Handle b Where b.HandleID = 1) THEN MIN(HandleID) + 1 ELSE 1 END) as HandleID<br>
+FROM Handle<br>
+Where NOT HandleID IN (Select a.HandleID - 1 FROM Handle a)</div></body></html>

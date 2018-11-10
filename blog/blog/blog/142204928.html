@@ -1,0 +1,124 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>在ASP中用集合成批操作数据库</title></head><body><h1>在ASP中用集合成批操作数据库</h1><div><table class="tableborder" cellspacing="0" cellpadding="0" width="100%" border="0">
+    <tbody>
+        <tr height="30">
+            <td align="right"> </td>
+            <td align="left" colspan="3">我们知道，一般的关系数据库（如SQL Server、Oracle、Access等）中的查询操作是支持集合操作的，<br>
+            例如可以用&ldquo;Update ATable Set Field1 = AValue where Field2 in (Value21,Value22)&rdquo;来完成对数据<br>
+            库的成批更新操作。我们可以充分利用数据库的这种集合特性来提高ＡＳＰ页面操作数据库的效率。如我们<br>
+            可以在页面上列出多个记录，让用户选择要操作的记录，然后在用户确定操作后进行成批操作，这与一个记<br>
+            录操作一次的方法相比效率明显要高的多了。<br>
+            <br>
+            一、ＨＴＭＬ的集合属性<br>
+            　　首先，让我们来熟悉一下ＨＴＭＬ的集合属性。在表单（FORM）数据或查询（Query）参数中，当<br>
+            提交的多个参数采用同一个名称时，这些参数值将构成一个集合，在ＡＳＰ页面可以获取这些参数值或<br>
+            同名参数的个数。如在下面的页面（Set.HTM）中，６个复选框采用同一个参数名MyCheckBox，其值分别<br>
+            为1、2、3、4、5、6。<br>
+            &lt;!-- Set.HTM --&gt;<br>
+            &lt;html&gt;&lt;head&gt;&lt;title&gt;集合属性应用&lt;/title&gt;&lt;/head&gt;&lt;body&gt;<br>
+            &lt;p&gt;请选择要操作的项目，提交数据后，将会显示您选择的项目。<br>
+            &lt;form method=&quot;POST&quot; action=&quot;set.asp&quot;&gt;<br>
+            &lt;br&gt;1、&lt;input type=&quot;checkbox&quot; name=&quot;MyCheckBox&quot; value=&quot;1&quot;&gt;<br>
+            &lt;br&gt;2、&lt;input type=&quot;checkbox&quot; name=&quot;MyCheckBox&quot; value=&quot;2&quot;&gt;<br>
+            &lt;br&gt;3、&lt;input type=&quot;checkbox&quot; name=&quot;MyCheckBox&quot; value=&quot;3&quot;&gt;<br>
+            &lt;br&gt;4、&lt;input type=&quot;checkbox&quot; name=&quot;MyCheckBox&quot; value=&quot;4&quot;&gt;<br>
+            &lt;br&gt;5、&lt;input type=&quot;checkbox&quot; name=&quot;MyCheckBox&quot; value=&quot;5&quot;&gt;<br>
+            &lt;br&gt;6、&lt;input type=&quot;checkbox&quot; name=&quot;MyCheckBox&quot; value=&quot;6&quot;&gt;<br>
+            &lt;br&gt;&lt;input type=&quot;submit&quot; value=&quot;提交数据&quot; name=&quot;B1&quot;&gt;<br>
+            &lt;/form&gt;&lt;/body&gt;&lt;/html&gt;<br>
+            　　当客户端选择了要显示的项目后，下面的ＡＳＰ页面(Set.ASP)给出客户端选择的项目个数及其值。<br>
+            &lt;!-- Set.ASP --&gt;<br>
+            &lt;%@ LANGUAGE = VBScript %&gt;<br>
+            &lt;html&gt;&lt;head&gt;&lt;title&gt;集合操作测试&lt;/title&gt;&lt;/head&gt;<br>
+            &lt;body&gt;<br>
+            &lt;% <br>
+            Response.Write &quot;&lt;br&gt;您一共选择了&quot;&amp;request(&quot;MyCheckBox&quot;).count&amp;&quot;项，&quot;<br>
+            Response.Write &quot;&lt;br&gt;您选择的项目有：&quot;&amp;request(&quot;MyCheckBox&quot;)<br>
+            %&gt;<br>
+            &lt;/body&gt;&lt;/html&gt;<br>
+            如当客户端选择了第二、三、五项并提交数据后，将会看到如下结果：<br>
+            您一共选择了3项，<br>
+            您选择的项目有：2, 3, 5 <br>
+            应该注意到，&ldquo;2, 3, 5&rdquo;的形式与ＳＱＬ语句要求的形式是一致的，我们可以直接或间接地利用这种<br>
+            形式的结果，如 &quot;Select * from ATable where AFiled in(&quot; &amp; request(&quot;MyCheckBox&quot;) &amp; &quot;)&quot;的实际<br>
+            ＳＱＬ查询语句为&ldquo;Select * from ATable where AFiled in(2, 3, 5)&rdquo;。<br>
+            <br>
+            二、ＨＴＭＬ的集合属性的应用<br>
+            　　下面我们结合一个实际的例子，讨论一下如何在ＡＳＰ页面中利用ＨＴＭＬ的集合属性来成批操作<br>
+            数据库。现在我们有一个记录客户电子信箱的ＡＣＣＥＳＳ数据库EMail，其中有一个数据表EmailList，<br>
+            包含CustomerId、CustomerName、CustomerEmail三个字段，分别表示客户编号、客户名称、客户电子信箱。<br>
+            在ＡＳＰ页面SelectId.ASP中，我们采用CheckBox列出所有客户的客户名称（各个CheckBox的值为对应的<br>
+            客户编号），让用户选择给哪些客户发送电子邮件。当用户选择了客户并提交数据后，SendMail.ASP将检<br>
+            索到这些客户的电子信箱，并给这些客户发送电子邮件。具体的信息请参见下面ＡＳＰ程序代码和注释信息。<br>
+            <br>
+            &lt;!-- SelectId.ASP：列出所有客户的客户名称 --&gt;<br>
+            &lt;html&gt;&lt;head&gt;&lt;title&gt;所有客户的客户名称&lt;/title&gt;&lt;/head&gt;&lt;body&gt;<br>
+            &lt;p align=center&gt;&lt;font style=&quot;font-family:宋体;font-size:9pt&quot;&gt;<br>
+            请选择要给哪些客户发送&ldquo;新年问候&rdquo;的电子邮件<br>
+            &lt;form method=&quot;POST&quot; action=&quot;SendMail.asp&quot;&gt;<br>
+            &lt;%'建立与ACCESS数据库的连接<br>
+            Set dbConnection = Server.CreateObject(&quot;ADODB.Connection&quot;)<br>
+            dbConnection.open &quot;Driver={Microsoft Access Driver (*.mdb)};&quot;&amp;_<br>
+            &quot;DBQ=C:\inetpub\wwwroot\test\Email.mdb&quot;<br>
+            '获取所有客户的客户编号、客户名称<br>
+            Set rsCustomers = Server.CreateObject(&quot;ADODB.RecordSet&quot;)<br>
+            rsCustomers.Open &quot;Select CustomerId,CustomerName,CustomerEmail From EmailList&quot;,_<br>
+            dbConnection,1,3,1<br>
+            '显示所有客户的客户名称<br>
+            while not rsCustomers.eof<br>
+            %&gt;<br>
+            &lt;br&gt;&lt;input type=&quot;checkbox&quot; name=&quot;CustomerId&quot; value=&quot;&lt;%=rsCustomers(&quot;CustomerId&quot;)%&gt;&quot;&gt;<br>
+            &lt;a href=&quot;mailto:&lt;%=rsCustomers(&quot;CustomerEmail&quot;)%&gt;&quot;&gt;<br>
+            &lt;%=rsCustomers(&quot;CustomerName&quot;)%&gt;&lt;/a&gt;<br>
+            &lt;%rsCustomers.MoveNext<br>
+            wend<br>
+            rsCustomers.close<br>
+            set rsCustomers = nothing<br>
+            dbConnection.close<br>
+            set dbConnection = nothing<br>
+            %&gt;<br>
+            &lt;br&gt;&lt;input type=&quot;submit&quot; value=&quot;给客户发送电子邮件&quot; name=&quot;B1&quot; <br>
+            style=&quot;font-family:宋体;font-size:9pt&quot;&gt;<br>
+            &lt;/form&gt;&lt;/body&gt;&lt;/html&gt;<br>
+            <br>
+            &lt;!-- SendMail.ASP：给所选择客户发电子邮件 --&gt;<br>
+            &lt;html&gt;&lt;head&gt;&lt;title&gt;给所选择客户发电子邮件&lt;/title&gt;&lt;/head&gt;&lt;body&gt;<br>
+            &lt;p align=center&gt;&lt;font style=&quot;font-family:宋体;font-size:9pt&quot;&gt;<br>
+            正在给下面客户发送电子邮件<br>
+            &lt;%'建立与ACCESS数据库的连接<br>
+            Set dbConnection = Server.CreateObject(&quot;ADODB.Connection&quot;)<br>
+            dbConnection.open &quot;Driver={Microsoft Access Driver (*.mdb)};&quot;&amp;_<br>
+            &quot;DBQ=C:\inetpub\wwwroot\test\Email.mdb&quot;<br>
+            '获取所选择客户的电子信箱<br>
+            Set rsCustomers = Server.CreateObject(&quot;ADODB.RecordSet&quot;)<br>
+            rsCustomers.Open &quot;Select CustomerName,CustomerEmail From EmailList where CustomerId in (&quot;&amp;_<br>
+            Request(&quot;CustomerId&quot;)&amp;&quot;)&quot;,dbConnection,1,3,1<br>
+            while not rsCustomers.eof<br>
+            '给一个客户发电子邮件<br>
+            Set myMail = CreateObject(&quot;CDONTS.NewMail&quot;) <br>
+            myMail.From = &quot;sales@test.com&quot;<br>
+            myMail.value(&quot;Reply-To&quot;) = &quot;sales@test.com&quot;<br>
+            myMail.To = rsCustomers(&quot;CustomerEmail&quot;)<br>
+            myMail.Subject = &quot;来自王发军的新年问候&quot; <br>
+            myMail.BodyFormat = 1<br>
+            myMail.MailFormat = 1 <br>
+            myMail.Body = &quot;王发军向&quot;&amp;rsCustomers(&quot;CustomerName&quot;)&amp;&quot;问好！&quot;<br>
+            myMail.Send <br>
+            Set myMail = Nothing <br>
+            %&gt;<br>
+            &lt;br&gt;给&lt;a href=&quot;mailto:&lt;%=rsCustomers(&quot;CustomerEmail&quot;)%&gt;&quot;&gt;&lt;%=rsCustomers(&quot;CustomerName&quot;)%&gt;&lt;/a&gt;<br>
+            发送电子邮件成功！<br>
+            &lt;%<br>
+            rsCustomers.MoveNext<br>
+            wend<br>
+            rsCustomers.close<br>
+            set rsCustomers = nothing<br>
+            dbConnection.close<br>
+            set dbConnection = nothing<br>
+            %&gt;<br>
+            &lt;br&gt;在所选择的客户发送电子邮件完毕！<br>
+            &lt;/body&gt;&lt;/html&gt;<br>
+            <br>
+            以上程序在WINNT4.0+IIS4.0+ASP2.0+Access97下调试通过。</td>
+        </tr>
+    </tbody>
+</table></div></body></html>

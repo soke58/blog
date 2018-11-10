@@ -1,0 +1,27 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>将长字符串插入分割后再拆分成数组</title></head><body><h1>将长字符串插入分割后再拆分成数组</h1><div><p>Dim str <br>
+Dim strSplit <br>
+Dim strRet <br>
+str =Trim(Request(&quot;key&quot;)) ''此处获得表单传来的值或者是变量值 <br>
+str=Replace(str,&quot;的&quot;,&quot;&quot;) ''此处获得表单传来的值或者是变量值中的字符替换为空<br>
+strSplit = &quot;,&quot;</p>
+<p>For j = 1 To Len(str) <br>
+strRet = strRet &amp; Mid(str, j, 2) &amp; strSplit <br>
+Next <br>
+if Len(strRet)&gt;=3 then<br>
+strRet = Left(strRet, Len(strRet) - 3) <br>
+end if<br>
+if Len(strRet)=1 then<br>
+strRet = Left(strRet, Len(strRet) - 0) <br>
+end if<br>
+if Len(strRet)=2 then<br>
+strRet = Left(strRet, Len(strRet) - 2) <br>
+end if<br>
+response.write strRet</p>
+<p>str=strRet  ''此处获得分割后的数组再次拆分成若干数组<br>
+&nbsp;&nbsp;&nbsp;&nbsp;  aryReturn=Split(str,&quot;,&quot;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;  a=UBound(aryReturn)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;  For j = 2 To a<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Response.Write(&quot;&lt;a href='&quot;&amp;aryReturn(j)&amp;&quot;' class='content'&gt;&quot;&amp;aryReturn(j)&amp;&quot;&lt;/a&gt;&amp;nbsp;&quot;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;  Next</p></div></body></html>

@@ -1,0 +1,49 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>小偷程序ASP也可以实现</title></head><body><h1>小偷程序ASP也可以实现</h1><div>（一）原理 <br>
+<br>
+小偷程序实际上是通过了XML中的XMLHTTP组件调用其它网站上的网页。比如新闻小偷程序，很多都是调用了sina的新闻网页，并且对其中的html进行了一些替换，同时对广告也进行了过滤。用小偷程序的优点有：无须维护网站，因为小偷程序中的数据来自其他网站，它将随着该网站的更新而更新；可以节省服务器资源，一般小偷程序就几个文件，所有网页内容都是来自其他网站。缺点有：不稳定，如果目标网站出错，程序也会出错，而且，如果目标网站进行升级维护，那么小偷程序也要进行相应修改；速度，因为是远程调用，速度和在本地服务器上读取数据比起来，肯定要慢一些。 <br>
+<br>
+（二）事例 <br>
+<br>
+下面就XMLHTTP在ASP中的应用做个简单说明 <br>
+<br>
+'常用函数 <br>
+<br>
+'1、输入url目标网页地址，返回值getHTTPPage是目标网页的html代码 <br>
+function getHTTPPage(url) <br>
+dim Http <br>
+set Http=server.createobject(&quot;MSXML2.XMLHTTP&quot;) <br>
+Http.open &quot;GET&quot;,url,false <br>
+Http.send() <br>
+if Http.readystate＜＞4 then <br>
+exit function <br>
+end if <br>
+getHTTPPage=bytesToBSTR(Http.responseBody,&quot;GB2312&quot;) <br>
+set http=nothing <br>
+if err.number＜＞0 then err.Clear <br>
+end function <br>
+<br>
+<br>
+<br>
+'2、转换乱玛，直接用xmlhttp调用有中文字符的网页得到的将是乱玛，可以通过adodb.stream组件进行转换 <br>
+Function BytesToBstr(body,Cset) <br>
+dim objstream <br>
+set objstream = Server.CreateObject(&quot;adodb.stream&quot;) <br>
+objstream.Type = 1 <br>
+objstream.Mode =3 <br>
+objstream.Open <br>
+objstream.Write body <br>
+objstream.Position = 0 <br>
+objstream.Type = 2 <br>
+objstream.Charset = Cset <br>
+BytesToBstr = objstream.ReadText <br>
+objstream.Close <br>
+set objstream = nothing <br>
+End Function <br>
+<br>
+<br>
+'下面试着调用http://www.3doing.com/earticle/的html内容 <br>
+Dim Url,Html <br>
+Url=&quot;http://www.3doing.com/earticle/&quot; <br>
+Html = getHTTPPage(Url) <br>
+Response.write Html <br>
+%＞</div></body></html>

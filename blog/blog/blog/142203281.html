@@ -1,0 +1,124 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>ASP脚本变量、函数、过程和条件语句</title></head><body><h1>ASP脚本变量、函数、过程和条件语句</h1><div>给大家讲解 VBScript 的脚本编写方法，并通过展示 VBScript 在 ASP 程序编写过程中的一系列实例使大家对 VBScript 有更进一层的理解。<br>
+<br>
+大家在学习了脚本语言 VBScript 的变量、常量和过程的基本概念后，本期将继续向各位介绍 VBScript 的函数和语法。<br>
+<br>
+函数和过程一样都是命名了的代码块，但它们却有很大的区别，过程完成程序任务，函数则返回值。我们可以这样理解，过程象一个完整的句子，而函数则象一个单词。举个例子，当你想获取某个数的平方根，你只要将该数传给 VBScript 的 Sqr() 函数，此函数会立即返回该数的平方根。如：<br>
+<br>
+A=sqr(9)<br>
+<br>
+则 A=3。熟练掌握脚本语言的函数将给你编写 ASP 程序带来极大的方便，就以上一期结尾处作者布置给大家的课后练习来说，如果你对脚本语言的函数掌握不够全面，那么解决如此之小的一个问题将很有可能花费你相当大的精力。现在让我们来回顾一下这道课后练习。<br>
+<br>
+&ldquo;作者正在用 ASP 制作一套基于 WEB 的 BBS 系统，希望能在其中添加一项特殊功能，即当任何用户登陆该 BBS 后都能够查阅近七天来所有新发布的信息。&rdquo;<br>
+<br>
+如果你不熟悉 VBScrip，就不会知道 VBScrip 本身提供了一个用来取得日期之间的差或和的函数 DateSerial，它的语法如下：<br>
+<br>
+DateSerial(year, month, day)<br>
+<br>
+如果你要指定一个日期，例如：1998 年11月10日，那么 DateSerial 函数中每个参数的取值范围都应该是可接受的，即日的取值应在1和31之间，月的取值应在1和12之间。但是，也可以使用表示某日之前或之后的年、月、日数目的数值表达式为每个参数指定相对日期。以下样例中使用了数值表达式代替绝对日期。在这里，DateSerial 函数返回1998年11月10日之前二十年 (1990-20) 零两个月 (11-2) 又一天 (10-1) 的日期：即 1978 年9月9日。程序如下：<br>
+<br>
+Datep=DateSerial(1998-20, 11-2,10-1)<br>
+<br>
+对于 year 参数，若取值范围是从 0 到99，则被解释为 1900 到 1999 年。对于此范围之外的 year 参数，则使用四位数字表示年份（例如 1800 年）。当任何一个参数的取值超出可接受的范围时，则会适当地进位到下一个较大的时间单位。例如，如果指定了35 天，则这个天数将被解释成一个月加上多出来的日数，多出来的日数取决于其年份和月份。但是如果参数值超出 -32,768 到 32,767 的范围，或者由三个参数指定（无论是直接还是通过表达式指定）的日期超出了可以接受的日期范围，就会发生错误。<br>
+<br>
+当我们了解并掌握了函数 DateSerial 的使用方法后，再来看看作者布置的这道题目，一切就迎刃而解了。下面我将程序中的此部分代码公布如下： <br>
+itemp=DateSerial(Year2009-04-19, month2009-04-19, day2009-04-19-7)<br>
+<br>
+itemp=DateValue(itemp)<br>
+sql=&quot;Select * from message Where message.creatime Between #&quot;&amp;date&amp;&quot;# And #&quot;&amp;itemp&amp;&quot;# &quot;<br>
+<br>
+在这里我们又接触到了一组函数 Year,month,day，它们是用来得到一个日期的年、月、日。date 是常数，表示今天日期，而函数 DateValue 则是将字符串变量转化为日期格式的变量。在本段程序的第三行，我们第一次接触到了标准的 SQL 查询语句，这句语句是什么意思呢？<br>
+<br>
+&ldquo;Select&rdquo;是标准的 SQL 数据库查询命令，通过 SELECT 语句我们可以在数据库中检索数据，并将查询结果提供给用户，此处的&ldquo;*&rdquo;表示查询该名为&ldquo;message&rdquo;的数据库中的所有记录，而&ldquo;where&rdquo;的作用是设定一个查询条件，是为了将数据库中符合条件的记录取出来，&ldquo;message.creatime&rdquo;是一个储存了数据库中记录创建日期的变量。将整句语句连起来理解就是：查询名为 message 的数据库中的所有记录，并将其中创建日期在今天和今天以前七日以内的所有记录存储在变量 sql 中。可能由于大家第一次接触 SQL 语句，一时间无法完全理解它的作用，不过不用担心在今后的章节中作者将专门用一期给大家介绍 SQL 的使用方法。<br>
+<br>
+通过上面的学习，大家应该已经能够理解函数在程序中的作用，当然我们不必去死背函数，但要做到熟练运用只有一条捷径 -- 多实践。接下来让我们来看看 VBScript 的基本语法。<br>
+<br>
+了解编程语言的朋友一定知道在程序中控制程序流程的语句主要可以分为条件语句和循环语句，在 VBScript 中可使用以下条件语句： If...Then...Else 语句<br>
+<br>
+Select Case 语句<br>
+<br>
+If...Then...Else 语句用于计算条件是否为 True 或 False，并且根据计算结果指定要运行的语句。通常，条件是使用比较运算符对值或变量进行比较的表达式，If...Then...Else 语句可以按照需要进行嵌套。<br>
+<br>
+让我们来创建两个范例文件：if1.asp 和 if2.asp<br>
+<br>
+将以下语句剪贴到记事簿中，并保存为 if1.asp( 注意：请将程序中&ldquo;&lt;&rdquo;后的空格去掉 ) &lt; html&gt;<br>
+<br>
+&lt; head&gt;<br>
+&lt; TITLE&gt;if1.asp&lt; /TITLE&gt;<br>
+&lt; /head&gt;&lt; body bgcolor=&quot;#FFFFFF&quot;&gt;<br>
+&lt; form action=&quot;if2.asp&quot; method=get&gt;<br>
+Your First Name&lt; INPUT NAME=&quot;FirstName&quot; MaxLength=20&gt;&lt; p&gt;<br>
+Your Last Name&lt; INPUT NAME=&quot;LastName&quot; MaxLength=20&gt;&lt; p&gt;<br>
+&lt; INPUT TYPE=submit&gt;&lt; INPUT TYPE=reset&gt;<br>
+&lt; /form&gt;<br>
+&lt; /body&gt;<br>
+&lt; /html&gt;<br>
+<br>
+将以下语句剪贴到记事簿中，并保存为 if2.asp <br>
+<br>
+&lt; html&gt;<br>
+&lt; head&gt;<br>
+&lt; TITLE&gt;ifrespond.asp&lt; /TITLE&gt;<br>
+&lt; /head&gt;<br>
+&lt; % fname=request.querystring(&quot;Firstname&quot;)<br>
+lname=request.querystring(&quot;Lastname&quot;)<br>
+If fname=&quot;George&quot; and lname=&quot;Washington&quot; then %&gt;<br>
+Hi.You must be the first president!<br>
+&lt; % else %&gt;<br>
+Hi!Nice to Meet You<br>
+&lt; %end if %&gt;<br>
+&lt; /body&gt;<br>
+&lt; /html&gt;<br>
+<br>
+asp1.asp 产生一个文本输入框，要求用户输入姓、名，如下图： <br>
+<br>
+<br>
+<br>
+<br>
+asp2.asp 则是用 IF 语句判断用户输入的姓名是否为&ldquo;George Washington&rdquo;, 并做出相应的反馈。在此我们遇到了一个 ASP 的内建对象 request，通过使用 request 对象可以访问任何用 HTTP 请求传递的信息，包括从 HTML 表格中用 POST 方法或 GET 方法传递的参数、cookie 和用户认证。而 QueryString 集合检索 HTTP 查询字符串中变量的值，HTTP 查询字符串由问号 (?) 后的值指定。如：<br>
+<br>
+http://localhost/if2.asp?Firstname=George&amp;Lastname=Washington<br>
+<br>
+生成值为 &quot;Firstname=George&amp;Lastname=Washington&quot; 的变量名字符串。关于 ASP 对象作者将在今后的几篇里重点讲述。<br>
+<br>
+If...Then...Else 语句的一种变形允许您从多个条件中选择，即添加 ElseIf 子句以扩充 If...Then...Else 语句的功能，使您可以控制基于多种可能的程序流程。<br>
+<br>
+我们将 asp2.asp 的程序部分扩充如下：&lt; %<br>
+<br>
+fname=lcase(request.querystring(&quot;Firstname&quot;))<br>
+lname=lcase(request.querystring(&quot;Lastname&quot;))<br>
+If fname=&quot;george&quot; and lname=&quot;washington&quot; then %&gt;<br>
+Hi.You must be the first president!&lt; p&gt;<br>
+&lt; % elseIf fname=&quot;ronald&quot; and lname=&quot;reagan&quot; then %&gt;<br>
+Hi.You must be the actor president!&lt; p&gt;<br>
+&lt; % elseIf fname=&quot;jimmy&quot; and lname=&quot;carter&quot; then %&gt;<br>
+Hi.You must be the peanut farmer president!&lt; p&gt;<br>
+&lt; % elseIf fname=&quot;naoko&quot; or fname=&quot;charles&quot; then %&gt;<br>
+Hi.Your name reminds me of someone,but I am not sure who!&lt; p&gt;<br>
+&lt; % else %&gt;<br>
+Hi!Nice to Meet You<br>
+&lt; % end if %&gt;<br>
+<br>
+可以添加任意多个 ElseIf 子句以提供多种选择。但使用多个 ElseIf 子句经常会使程序变得很累赘。在多个条件中进行选择的更好方法是使用 Select Case 语句。 <br>
+<br>
+Select Case 结构提供了 If...Then...ElseIf 结构的一个变通形式，可以从多个语句块中选择执行其中的一个。Select Case 语句提供的功能与 If...Then...Else 语句类似，但是可以使代码更加简练易读。Select Case 结构在其开始处使用一个只计算一次的简单测试表达式。表达式的结果将与结构中每个 Case 的值比较。如果匹配，则执行与该 Case 关联的语句块，我们同样可以用 Select Case 语句来写 asp2.asp 文件：<br>
+<br>
+&lt; %<br>
+fname=lcase(request.querystring(&quot;Firstname&quot;))<br>
+lname=lcase(request.querystring(&quot;Lastname&quot;))<br>
+name=fname+lname<br>
+Select case name<br>
+case &quot;georgewashington&quot;<br>
+response.write &quot;Hi.You must be the first president!&lt; p&gt;&quot;<br>
+case &quot;ronaldreagan&quot;<br>
+response.write &quot;Hi.You must be the actor president!&lt; p&gt;&quot;<br>
+case &quot;jimmycarter&quot;<br>
+response.write &quot;Hi.You must be the peanut farmer president!&lt; p&gt;&quot;<br>
+case &quot;naokocharles&quot;<br>
+response.write &quot;Hi.Your name reminds me of someone,but I am not sure who!&lt; p&gt;&quot;<br>
+case else<br>
+response.write &quot;Hi!Nice to Meet You&quot;<br>
+End Select %&gt;<br>
+<br>
+请注意 Select Case 结构只计算开始处的一个表达式，并且只计算一次，而 If...Then...ElseIf 结构计算每个 ElseIf 语句的表达式，这些表达式可以各不相同。因此仅当每个 ElseIf 语句计算的表达式都相同时，才可以使用 Select Case 结构代替 If...Then...ElseIf 结构。Select Case 语句也是可以是嵌套的，每一层嵌套的 Select Case 语句必须有与之匹配的 End Select 语句。<br>
+<br>
+以上给大家介绍的脚本语言 VBScript 的函数和条件语句的使用方法，由于篇幅的缘故不能详细展开，希望各位有志学习 ASP 的朋友，能在课后进行一定程度的自学和练习。在日常开发 ASP 应用程序的过程中作者本人日渐体会到了脚本语言的重要性，灵活运用脚本语言将非但可以大大提高 ASP 应用程序的开发过程，给广大网站制作人员节省大量的时间，而且还能够增强 ASP 应用程序的执行效率和功能。欲善其事必先利其器，因此作者在此强烈建议诸君，熟练掌握脚本语言，这将对你的 ASP 程序开发大有帮助。由于本文不是 VBScript 教程，因此只能用较小的篇幅给大家简要介绍一些 VBScript 基本常识，在下一期介绍完 VBScript 的循环语句后，我们将正式开始学习 ASP 的内建对象，要深入 VBScript，建议大家找些教材进行自学。如果你在看完本文后有任何问题请及时 Mail 我，如果你有什么好的建议也请来信告知，谢谢。</div></body></html>

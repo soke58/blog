@@ -1,0 +1,420 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>验证码的程序及原理</title></head><body><h1>验证码的程序及原理</h1><div>一共4个页面：form.asp; chk.asp; num.asp; count.asp <br>
+  得到一个随即数字。加密！ <br>
+  解密后成成XBM图片 <br>
+  利用session 判断 <br>
+&nbsp;&nbsp;  <br>
+  form.asp <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;  <br>
+  &lt;% <br>
+  '### To encrypt/decrypt include this code in your page <br>
+  '### strMyEncryptedString = EncryptString(strString) <br>
+  '### strMyDecryptedString = DeCryptString(strMyEncryptedString) <br>
+  '### You are free to use this code as long as credits remain in place <br>
+  '### also if you improve this code let me know. <br>
+&nbsp;&nbsp;  <br>
+  Private Function EncryptString(strString) <br>
+  '#################################################################### <br>
+  '### Crypt Function (C) 2001 by Slavic Kozyuk <a href="mailto:grindkore@yahoo.com">grindkore@yahoo.com</a> ### <br>
+  '### Arguments: strString &lt;--- String you wish to encrypt ### <br>
+  '### Output: Encrypted HEX string ### <br>
+  '#################################################################### <br>
+&nbsp;&nbsp;  <br>
+  Dim CharHexSet, intStringLen, strTemp, strRAW, i, intKey, intOffSet <br>
+  Randomize Timer <br>
+&nbsp;&nbsp;  <br>
+  intKey = Round((RND * 1000000) + 1000000) '##### Key Bitsize <br>
+  intOffSet = Round((RND * 1000000) + 1000000) '##### KeyOffSet Bitsize <br>
+&nbsp;&nbsp;  <br>
+  If IsNull(strString) = False Then <br>
+  strRAW = strString <br>
+  intStringLen = Len(strRAW) <br>
+&nbsp;&nbsp;  <br>
+  For i = 0 to intStringLen - 1 <br>
+  strTemp = Left(strRAW, 1) <br>
+  strRAW = Right(strRAW, Len(strRAW) - 1) <br>
+  CharHexSet = CharHexSet &amp; Hex(Asc(strTemp) * intKey)&amp; Hex(intKey) <br>
+  Next <br>
+&nbsp;&nbsp;  <br>
+  EncryptString = CharHexSet &amp; &quot;|&quot; &amp; Hex(intOffSet + intKey) &amp; &quot;|&quot; &amp; Hex(intOffSet) <br>
+  Else <br>
+  EncryptString = &quot;&quot; <br>
+  End If <br>
+  End Function <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;  <br>
+  Private Function DeCryptString(strCryptString) <br>
+  '#################################################################### <br>
+  '### Crypt Function (C) 2001 by Slavic Kozyuk <a href="mailto:grindkore@yahoo.com">grindkore@yahoo.com</a> ### <br>
+  '### Arguments: Encrypted HEX stringt ### <br>
+  '### Output: Decrypted ASCII string ### <br>
+  '#################################################################### <br>
+  '### Note this function uses HexConv() and get_hxno() functions ### <br>
+  '### so make sure they are not removed ### <br>
+  '#################################################################### <br>
+&nbsp;&nbsp;  <br>
+  Dim strRAW, arHexCharSet, i, intKey, intOffSet, strRawKey, strHexCrypData <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;  <br>
+  strRawKey = Right(strCryptString, Len(strCryptString) - InStr(strCryptString, &quot;|&quot;)) <br>
+  intOffSet = Right(strRawKey, Len(strRawKey) - InStr(strRawKey,&quot;|&quot;)) <br>
+  intKey = HexConv(Left(strRawKey, InStr(strRawKey, &quot;|&quot;) - 1)) - HexConv(intOffSet) <br>
+  strHexCrypData = Left(strCryptString, Len(strCryptString) - (Len(strRawKey) + 1)) <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;  <br>
+  arHexCharSet = Split(strHexCrypData, Hex(intKey)) <br>
+&nbsp;&nbsp;  <br>
+  For i=0 to UBound(arHexCharSet) <br>
+  strRAW = strRAW &amp; Chr(HexConv(arHexCharSet(i))/intKey) <br>
+  Next <br>
+&nbsp;&nbsp;  <br>
+  DeCryptString = strRAW <br>
+  End Function <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;  <br>
+  Private Function HexConv(hexVar) <br>
+  Dim hxx, hxx_var, multiply <br>
+  IF hexVar &lt;&gt; &quot;&quot; THEN <br>
+  hexVar = UCASE(hexVar) <br>
+  hexVar = StrReverse(hexVar) <br>
+  DIM hx() <br>
+  REDIM hx(LEN(hexVar)) <br>
+  hxx = 0 <br>
+  hxx_var = 0 <br>
+  FOR hxx = 1 TO LEN(hexVar) <br>
+  IF multiply = &quot;&quot; THEN multiply = 1 <br>
+  hx(hxx) = mid(hexVar,hxx,1) <br>
+  hxx_var = (get_hxno(hx(hxx)) * multiply) + hxx_var <br>
+  multiply = (multiply * 16) <br>
+  NEXT <br>
+  hexVar = hxx_var <br>
+  HexConv = hexVar <br>
+  END IF <br>
+  End Function <br>
+&nbsp;&nbsp;  <br>
+  Private Function get_hxno(ghx) <br>
+  If ghx = &quot;A&quot; Then <br>
+  ghx = 10 <br>
+  ElseIf ghx = &quot;B&quot; Then <br>
+  ghx = 11 <br>
+  ElseIf ghx = &quot;C&quot; Then <br>
+  ghx = 12 <br>
+  ElseIf ghx = &quot;D&quot; Then <br>
+  ghx = 13 <br>
+  ElseIf ghx = &quot;E&quot; Then <br>
+  ghx = 14 <br>
+  ElseIf ghx = &quot;F&quot; Then <br>
+  ghx = 15 <br>
+  End If <br>
+  get_hxno = ghx <br>
+  End Function <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;  <br>
+  %&gt; <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;  <br>
+  &lt;% <br>
+  randomize <br>
+  num = int(7999*rnd+2000) '计数器的值 <br>
+  num2 = EncryptString(num) <br>
+  session(&quot;pwdt&quot;)=num <br>
+  %&gt; <br>
+  &lt;form action=&quot;chk.asp&quot; method=post&gt; <br>
+  请输入验证码： &lt;input type=&quot;text&quot; name=&quot;pwds&quot;&gt; <br>
+  &lt;img src=&quot;count.asp?sksid=&lt;%=num2%&gt;&quot;&gt; &lt;input type=submit value=提交&gt; <br>
+  &lt;/form&gt; <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;  <br>
+  chk.asp <br>
+  &lt;% <br>
+  if trim(request.form(&quot;pwds&quot;))&lt;&gt;trim(session(&quot;pwdt&quot;)) then <br>
+  %&gt; <br>
+  输入错误： 应该为：&lt;%=session(&quot;pwdt&quot;)%&gt;，可你输入的是:&lt;%=request.form(&quot;pwds&quot;)%&gt; <br>
+  &lt;% <br>
+  else <br>
+  %&gt; <br>
+  输入正确 <br>
+  &lt;%end if%&gt; <br>
+&nbsp;&nbsp;  <br>
+  count.asp <br>
+&nbsp;&nbsp;  <br>
+  &lt;!--＃i nclude file=&quot;num.asp&quot;--&gt; <br>
+&nbsp;&nbsp;  <br>
+  &lt;% <br>
+  '### To encrypt/decrypt include this code in your page <br>
+  '### strMyEncryptedString = EncryptString(strString) <br>
+  '### strMyDecryptedString = DeCryptString(strMyEncryptedString) <br>
+  '### You are free to use this code as long as credits remain in place <br>
+  '### also if you improve this code let me know. <br>
+&nbsp;&nbsp;  <br>
+  Private Function EncryptString(strString) <br>
+  '#################################################################### <br>
+  '### Crypt Function (C) 2001 by Slavic Kozyuk <a href="mailto:grindkore@yahoo.com">grindkore@yahoo.com</a> ### <br>
+  '### Arguments: strString &lt;--- String you wish to encrypt ### <br>
+  '### Output: Encrypted HEX string ### <br>
+  '#################################################################### <br>
+&nbsp;&nbsp;  <br>
+  Dim CharHexSet, intStringLen, strTemp, strRAW, i, intKey, intOffSet <br>
+  Randomize Timer <br>
+&nbsp;&nbsp;  <br>
+  intKey = Round((RND * 1000000) + 1000000) '##### Key Bitsize <br>
+  intOffSet = Round((RND * 1000000) + 1000000) '##### KeyOffSet Bitsize <br>
+&nbsp;&nbsp;  <br>
+  If IsNull(strString) = False Then <br>
+  strRAW = strString <br>
+  intStringLen = Len(strRAW) <br>
+&nbsp;&nbsp;  <br>
+  For i = 0 to intStringLen - 1 <br>
+  strTemp = Left(strRAW, 1) <br>
+  strRAW = Right(strRAW, Len(strRAW) - 1) <br>
+  CharHexSet = CharHexSet &amp; Hex(Asc(strTemp) * intKey)&amp; Hex(intKey) <br>
+  Next <br>
+&nbsp;&nbsp;  <br>
+  EncryptString = CharHexSet &amp; &quot;|&quot; &amp; Hex(intOffSet + intKey) &amp; &quot;|&quot; &amp; Hex(intOffSet) <br>
+  Else <br>
+  EncryptString = &quot;&quot; <br>
+  End If <br>
+  End Function <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;  <br>
+  Private Function DeCryptString(strCryptString) <br>
+  '#################################################################### <br>
+  '### Crypt Function (C) 2001 by Slavic Kozyuk <a href="mailto:grindkore@yahoo.com">grindkore@yahoo.com</a> ### <br>
+  '### Arguments: Encrypted HEX stringt ### <br>
+  '### Output: Decrypted ASCII string ### <br>
+  '#################################################################### <br>
+  '### Note this function uses HexConv() and get_hxno() functions ### <br>
+  '### so make sure they are not removed ### <br>
+  '#################################################################### <br>
+&nbsp;&nbsp;  <br>
+  Dim strRAW, arHexCharSet, i, intKey, intOffSet, strRawKey, strHexCrypData <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;  <br>
+  strRawKey = Right(strCryptString, Len(strCryptString) - InStr(strCryptString, &quot;|&quot;)) <br>
+  intOffSet = Right(strRawKey, Len(strRawKey) - InStr(strRawKey,&quot;|&quot;)) <br>
+  intKey = HexConv(Left(strRawKey, InStr(strRawKey, &quot;|&quot;) - 1)) - HexConv(intOffSet) <br>
+  strHexCrypData = Left(strCryptString, Len(strCryptString) - (Len(strRawKey) + 1)) <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;  <br>
+  arHexCharSet = Split(strHexCrypData, Hex(intKey)) <br>
+&nbsp;&nbsp;  <br>
+  For i=0 to UBound(arHexCharSet) <br>
+  strRAW = strRAW &amp; Chr(HexConv(arHexCharSet(i))/intKey) <br>
+  Next <br>
+&nbsp;&nbsp;  <br>
+  DeCryptString = strRAW <br>
+  End Function <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;  <br>
+  Private Function HexConv(hexVar) <br>
+  Dim hxx, hxx_var, multiply <br>
+  IF hexVar &lt;&gt; &quot;&quot; THEN <br>
+  hexVar = UCASE(hexVar) <br>
+  hexVar = StrReverse(hexVar) <br>
+  DIM hx() <br>
+  REDIM hx(LEN(hexVar)) <br>
+  hxx = 0 <br>
+  hxx_var = 0 <br>
+  FOR hxx = 1 TO LEN(hexVar) <br>
+  IF multiply = &quot;&quot; THEN multiply = 1 <br>
+  hx(hxx) = mid(hexVar,hxx,1) <br>
+  hxx_var = (get_hxno(hx(hxx)) * multiply) + hxx_var <br>
+  multiply = (multiply * 16) <br>
+  NEXT <br>
+  hexVar = hxx_var <br>
+  HexConv = hexVar <br>
+  END IF <br>
+  End Function <br>
+&nbsp;&nbsp;  <br>
+  Private Function get_hxno(ghx) <br>
+  If ghx = &quot;A&quot; Then <br>
+  ghx = 10 <br>
+  ElseIf ghx = &quot;B&quot; Then <br>
+  ghx = 11 <br>
+  ElseIf ghx = &quot;C&quot; Then <br>
+  ghx = 12 <br>
+  ElseIf ghx = &quot;D&quot; Then <br>
+  ghx = 13 <br>
+  ElseIf ghx = &quot;E&quot; Then <br>
+  ghx = 14 <br>
+  ElseIf ghx = &quot;F&quot; Then <br>
+  ghx = 15 <br>
+  End If <br>
+  get_hxno = ghx <br>
+  End Function <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;  <br>
+  %&gt; <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;  <br>
+  &lt;% <br>
+  Dim Image <br>
+  Dim Width, Height <br>
+  Dim num <br>
+  Dim digtal <br>
+  Dim Length <br>
+  Dim sort <br>
+  Length = 4 '自定计数器长度 <br>
+&nbsp;&nbsp;  <br>
+  Redim sort( Length ) <br>
+&nbsp;&nbsp;  <br>
+  num=cint(DeCryptString(request.querystring(&quot;sksid&quot;))) <br>
+  digital = &quot;&quot; <br>
+  For I = 1 To Length -Len( num ) '补0 <br>
+  digital = digital &amp; &quot;0&quot; <br>
+  Next <br>
+  For I = 1 To Len( num ) <br>
+  digital = digital &amp; Mid( num, I, 1 ) <br>
+  Next <br>
+  For I = 1 To Len( digital ) <br>
+  sort(I) = Mid( digital, I, 1 ) <br>
+  Next <br>
+  Width = 8 * Len( digital ) '图像的宽度 <br>
+  Height = 10 '图像的高度，在本例中为固定值 <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;  <br>
+  Response.ContentType=&quot;image/x-xbitmap&quot; <br>
+&nbsp;&nbsp;  <br>
+  hc=chr(13) &amp; chr(10) <br>
+&nbsp;&nbsp;  <br>
+  Image = &quot;#define counter_width &quot; &amp; Width &amp; hc <br>
+  Image = Image &amp; &quot;#define counter_height &quot; &amp; Height &amp; hc <br>
+  Image = Image &amp; &quot;static unsigned char counter_bits[]={&quot; &amp; hc <br>
+&nbsp;&nbsp;  <br>
+  For I = 1 To Height <br>
+  For J = 1 To Length <br>
+  Image = Image &amp; a(sort(J),I) &amp; &quot;,&quot; <br>
+  Next <br>
+  Next <br>
+&nbsp;&nbsp;  <br>
+  Image = Left( Image, Len( Image ) - 1 ) '去掉最后一个逗号 <br>
+  Image = Image &amp; &quot;};&quot; &amp; hc <br>
+  %&gt; <br>
+  &lt;% <br>
+  Response.Write Image <br>
+&nbsp;&nbsp;  <br>
+  %&gt; <br>
+&nbsp;&nbsp;  <br>
+  num.asp <br>
+&nbsp;&nbsp;  <br>
+  &lt;% <br>
+  Dim a(10,10) <br>
+&nbsp;&nbsp;  <br>
+  a(0,1) = &quot;0x3c&quot; '数字0 <br>
+  a(0,2) = &quot;0x66&quot; <br>
+  a(0,3) = &quot;0xc3&quot; <br>
+  a(0,4) = &quot;0xc3&quot; <br>
+  a(0,5) = &quot;0xc3&quot; <br>
+  a(0,6) = &quot;0xc3&quot; <br>
+  a(0,7) = &quot;0xc3&quot; <br>
+  a(0,8) = &quot;0xc3&quot; <br>
+  a(0,9) = &quot;0x66&quot; <br>
+  a(0,10)= &quot;0x3c&quot; <br>
+&nbsp;&nbsp;  <br>
+  a(1,1) = &quot;0x18&quot; '数字1 <br>
+  a(1,2) = &quot;0x1c&quot; <br>
+  a(1,3) = &quot;0x18&quot; <br>
+  a(1,4) = &quot;0x18&quot; <br>
+  a(1,5) = &quot;0x18&quot; <br>
+  a(1,6) = &quot;0x18&quot; <br>
+  a(1,7) = &quot;0x18&quot; <br>
+  a(1,8) = &quot;0x18&quot; <br>
+  a(1,9) = &quot;0x18&quot; <br>
+  a(0,10)= &quot;0x7e&quot; <br>
+&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;  <br>
+  a(2,1) = &quot;0x3c&quot; '数字2 <br>
+  a(2,2) = &quot;0x66&quot; <br>
+  a(2,3) = &quot;0x60&quot; <br>
+  a(2,4) = &quot;0x60&quot; <br>
+  a(2,5) = &quot;0x30&quot; <br>
+  a(2,6) = &quot;0x18&quot; <br>
+  a(2,7) = &quot;0x0c&quot; <br>
+  a(2,8) = &quot;0x06&quot; <br>
+  a(2,9) = &quot;0x06&quot; <br>
+  a(2,10)= &quot;0x7e&quot; <br>
+&nbsp;&nbsp;  <br>
+  a(3,1) = &quot;0x3c&quot; '数字3 <br>
+  a(3,2) = &quot;0x66&quot; <br>
+  a(3,3) = &quot;0xc0&quot; <br>
+  a(3,4) = &quot;0x60&quot; <br>
+  a(3,5) = &quot;0x1c&quot; <br>
+  a(3,6) = &quot;0x60&quot; <br>
+  a(3,7) = &quot;0xc0&quot; <br>
+  a(3,8) = &quot;0xc0&quot; <br>
+  a(3,9) = &quot;0x66&quot; <br>
+  a(3,10)= &quot;0x38&quot; <br>
+&nbsp;&nbsp;  <br>
+  a(4,1) = &quot;0x38&quot; '数字4 <br>
+  a(4,2) = &quot;0x3c&quot; <br>
+  a(4,3) = &quot;0x36&quot; <br>
+  a(4,4) = &quot;0x33&quot; <br>
+  a(4,5) = &quot;0x33&quot; <br>
+  a(4,6) = &quot;0x33&quot; <br>
+  a(4,7) = &quot;0xff&quot; <br>
+  a(4,8) = &quot;0x30&quot; <br>
+  a(4,9) = &quot;0x30&quot; <br>
+  a(4,10)= &quot;0xfe&quot; <br>
+&nbsp;&nbsp;  <br>
+  a(5,1) = &quot;0xfe&quot; '数字5 <br>
+  a(5,2) = &quot;0xfe&quot; <br>
+  a(5,3) = &quot;0x06&quot; <br>
+  a(5,4) = &quot;0x06&quot; <br>
+  a(5,5) = &quot;0x3e&quot; <br>
+  a(5,6) = &quot;0x60&quot; <br>
+  a(5,7) = &quot;0xc0&quot; <br>
+  a(5,8) = &quot;0xc3&quot; <br>
+  a(5,9) = &quot;0x66&quot; <br>
+  a(5,10)= &quot;0x3c&quot; <br>
+&nbsp;&nbsp;  <br>
+  a(6,1) = &quot;0x60&quot; '数字6 <br>
+  a(6,2) = &quot;0x30&quot; <br>
+  a(6,3) = &quot;0x18&quot; <br>
+  a(6,4) = &quot;0x0c&quot; <br>
+  a(6,5) = &quot;0x3e&quot; <br>
+  a(6,6) = &quot;0x63&quot; <br>
+  a(6,7) = &quot;0xc3&quot; <br>
+  a(6,8) = &quot;0xc3&quot; <br>
+  a(6,9) = &quot;0x66&quot; <br>
+  a(6,10) =&quot;0x3c&quot; <br>
+&nbsp;&nbsp;  <br>
+  a(7,1) = &quot;0xff&quot; '数字7 <br>
+  a(7,2) = &quot;0xc0&quot; <br>
+  a(7,3) = &quot;0x60&quot; <br>
+  a(7,4) = &quot;0x30&quot; <br>
+  a(7,5) = &quot;0x18&quot; <br>
+  a(7,6) = &quot;0x18&quot; <br>
+  a(7,7) = &quot;0x18&quot; <br>
+  a(7,8) = &quot;0x18&quot; <br>
+  a(7,9) = &quot;0x18&quot; <br>
+  a(7,10)= &quot;0x18&quot; <br>
+&nbsp;&nbsp;  <br>
+  a(8,1) = &quot;0x3c&quot; '数字8 <br>
+  a(8,2) = &quot;0x66&quot; <br>
+  a(8,3) = &quot;0xc3&quot; <br>
+  a(8,4) = &quot;0x66&quot; <br>
+  a(8,5) = &quot;0x3c&quot; <br>
+  a(8,6) = &quot;0x66&quot; <br>
+  a(8,7) = &quot;0xc3&quot; <br>
+  a(8,8) = &quot;0xc3&quot; <br>
+  a(8,9) = &quot;0x66&quot; <br>
+  a(8,10)= &quot;0x3c&quot; <br>
+&nbsp;&nbsp;  <br>
+  a(9,1) = &quot;0x3c&quot; '数字9 <br>
+  a(9,2) = &quot;0x66&quot; <br>
+  a(9,3) = &quot;0xc3&quot; <br>
+  a(9,4) = &quot;0xc3&quot; <br>
+  a(9,5) = &quot;0x66&quot; <br>
+  a(9,6) = &quot;0x3c&quot; <br>
+  a(9,7) = &quot;0x18&quot; <br>
+  a(9,8) = &quot;0x0c&quot; <br>
+  a(9,9) = &quot;0x06&quot; <br>
+  a(9,10)= &quot;0x03&quot; <br>
+&nbsp;&nbsp;  <br>
+  %&gt; <br></div></body></html>

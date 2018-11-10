@@ -1,0 +1,47 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>统计在线人数</title></head><body><h1>统计在线人数</h1><div>&lt;%<br>
+'计算有多少人正在使用浏览器阅读这个网页，并将结果保存在application变量中，必须放在网页刚开始的地方<br>
+Dim RefreshTime, IdleTime, TotalUsers, OnlineUser(), Tmp(), Num, I, ID<br>
+RefreshTime = 10<br>
+IdleTime = RefreshTime * 3<br>
+Application.Lock<br>
+If Application(Session.SessionID &amp; &quot;LastAccessTime&quot;) = Empty Then<br>
+If Application(&quot;TotalUsers&quot;) = Empty Then Application(&quot;TotalUsers&quot;) = 0<br>
+ReDim Tmp(Application(&quot;TotalUsers&quot;) + 1)<br>
+Num = 0<br>
+If Application(&quot;TotalUsers&quot;) &gt; 0 Then<br>
+For I = LBOUND(Application(&quot;OnlineUser&quot;)) To UBOUND(Application(&quot;OnlineUser&quot;))<br>
+ID = Application(&quot;OnlineUser&quot;)(I)<br>
+If ID &lt;&gt; Session.SessionID Then<br>
+Tmp(Num) = ID<br>
+Num = Num + 1<br>
+End If<br>
+Next<br>
+End If<br>
+Tmp(Num) = Session.SessionID<br>
+Application(&quot;TotalUsers&quot;) = Num + 1<br>
+ReDim Preserve Tmp(Application(&quot;TotalUsers&quot;))<br>
+Application(&quot;OnlineUser&quot;) = Tmp<br>
+End If<br>
+Application(Session.SessionID &amp; &quot;LastAccessTime&quot;) = Timer<br>
+ReDim Tmp(Application(&quot;TotalUsers&quot;))<br>
+Num = 0<br>
+For I = 0 To Application(&quot;TotalUsers&quot;) - 1<br>
+ID = Application(&quot;OnlineUser&quot;)(I)<br>
+If (Timer - Application(ID &amp; &quot;LastAccessTime&quot;)) &lt; IdleTime Then<br>
+Tmp(Num) = ID<br>
+Num = Num + 1<br>
+Else<br>
+Application(ID &amp; &quot;LastAccessTime&quot;) = Empty<br>
+End If<br>
+Next<br>
+If Num &lt;&gt; Application(&quot;TotalUsers&quot;) Then<br>
+ReDim Preserve Tmp(Num)<br>
+Application(&quot;OnlineUser&quot;) = Tmp<br>
+Application(&quot;TotalUsers&quot;) = Num<br>
+End If<br>
+Application.UnLock<br>
+%&gt;<br>
+<br>
+<br>
+以下这句放在要显示在线人数的地方<br>
+&lt;%= Application(&quot;TotalUsers&quot;) %&gt;</div></body></html>

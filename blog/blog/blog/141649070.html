@@ -1,0 +1,42 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>ASP生成生成静态页面示例</title></head><body><h1>ASP生成生成静态页面示例</h1><div>&lt;!--模块文件(template.htm)--&gt; <br>
+&lt;html&gt; <br>
+&lt;head&gt; <br>
+&lt;title&gt;%TITLE%&lt;/title&gt; <br>
+&lt;/head&gt; <br>
+&lt;body&gt; <br>
+%CONTENT% <br>
+&lt;/body&gt; <br>
+&lt;/html&gt; <br>
+<br>
+&lt;!--TestTemplate.asp--&gt; <br>
+&lt;% <br>
+Dim fso,f <br>
+Dim strTitle,strContent,strOut <br>
+''创建文件系统对象 <br>
+Set fso=Server.CreateObject(&quot;Scripting.FileSystemObject&quot;) <br>
+<br>
+''打开网页模板文件，读取模板内容 <br>
+Set f=fso.OpenTextFile(Server.MapPath(&quot;Template.htm&quot;)) <br>
+strOut=f.ReadAll <br>
+f.close <br>
+<br>
+strTitle=&quot;这是生成的网页标题&quot; <br>
+strContent=&quot;这是生成的网页内容&quot; <br>
+<br>
+''用真实内容替换模板中的标记 <br>
+strOut=Replace(strOut,&quot;%TITLE%&quot;,strTitle) <br>
+strOut=Replace(strOut,&quot;%CONTENT%&quot;,strContent) <br>
+<br>
+''创建要生成的静态页 <br>
+Set f=fso.CreateTextFile(Server.MapPath(&quot;New.htm&quot;),true) <br>
+<br>
+''写入网页内容 <br>
+f.WriteLine strOut <br>
+f.close <br>
+<br>
+Response.Write &quot;生成静态页成功！&quot; <br>
+<br>
+''释放文件系统对象 <br>
+set f=Nothing <br>
+set fso=Nothing <br>
+%&gt; <br></div></body></html>

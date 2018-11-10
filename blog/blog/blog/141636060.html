@@ -1,0 +1,12 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>隐藏图片的真实地址</title></head><body><h1>隐藏图片的真实地址</h1><div><div>一般情况下，网站的图片代码是这样的。</div>
+<div>&lt;img src=&quot;./images/test.jpg&quot; /&gt;</div>
+<div>　　右键点击图片，选择属性就可以看到图片的真实地址。这样就让其它网站有机可乘，盗链您网站的图片。我们可以利用一个小技巧来防止这种情况。</div>
+<div>新建一个showimg.asp（或showimg.php）文件（本文是用asp语法，其实php除语法不同外，基本思路都是相同的），它所要做的是从request中取file的值。如下：</div>
+<div><em>&lt;% </em></div>
+<div>Dim filename</div>
+<div>filename=request(&quot;file&quot;)</div>
+<div>response.Redirect &quot;images/&quot; &amp; filename &amp; &quot;.jpg&quot;</div>
+<div>%&gt;</div>
+<div>将图片代码改为如下方式：</div>
+<div>&lt;img src=&quot;./showimg.asp?file=test&quot; /&gt;</div>
+<div>右键点击图片，选择属性看到的地址将会是:　http://localhost/showimg.asp?file=test</div></div></body></html>

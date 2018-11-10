@@ -1,0 +1,104 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>asp常用数据库连接方法和技巧A</title></head><body><h1>asp常用数据库连接方法和技巧A</h1><div><p>&lt;% <br>
+dim conn,mdbfile <br>
+mdbfile=server.mappath(``数据库名称.mdb``) <br>
+set conn=server.createobject(``adodb.connection``) <br>
+conn.open ``driver={microsoft access driver (*.mdb)};uid=admin;pwd=数据库密码;dbq=``&amp;mdbfile <br>
+%&gt;</p>
+<p><br>
+2. ASP与SQL数据库连接：</p>
+<p>&lt;% <br>
+dim conn <br>
+set conn=server.createobject(``ADODB.connection``) <br>
+con.open ``PROVIDER=SQLOLEDB;DATA SOURCE=SQL服务器名称或IP地址;UID=sa;PWD=数据库密码</p>
+<p>;DATABASE=数据库名称 <br>
+%&gt;</p>
+<p>建立记录集对象：</p>
+<p>set rs=server.createobject(``adodb.recordset``) <br>
+rs.open SQL语句,conn,3,2</p>
+<p><br>
+3. SQL常用命令使用方法：</p>
+<p>(1) 数据记录筛选：</p>
+<p>sql=``select * from 数据表 where 字段名=字段值 order by 字段名 `` <br>
+sql=``select * from 数据表 where 字段名 like &lsquo;%字段值%&lsquo; order by 字段名 `` <br>
+sql=``select top 10 * from 数据表 where 字段名 order by 字段名 `` <br>
+sql=``select * from 数据表 where 字段名 in (&lsquo;值1&lsquo;,&lsquo;值2&lsquo;,&lsquo;值3&lsquo;)`` <br>
+sql=``select * from 数据表 where 字段名 between 值1 and 值2``</p>
+<p>(2) 更新数据记录：</p>
+<p>sql=``update 数据表 set 字段名=字段值 where 条件表达式`` <br>
+sql=``update 数据表 set 字段1=值1,字段2=值2 …… 字段n=值n where 条件表达式``</p>
+<p>(3) 删除数据记录：</p>
+<p>sql=``delete from 数据表 where 条件表达式`` <br>
+sql=``delete from 数据表`` (将数据表所有记录删除)</p>
+<p>(4) 添加数据记录：</p>
+<p>sql=``insert into 数据表 (字段1,字段2,字段3 …) valuess (值1,值2,值3 …)`` <br>
+sql=``insert into 目标数据表 select * from 源数据表`` (把源数据表的记录添加到目标数据表)</p>
+<p>(5) 数据记录统计函数：</p>
+<p>AVG(字段名) 得出一个表格栏平均值 <br>
+COUNT(*|字段名) 对数据行数的统计或对某一栏有值的数据行数统计 <br>
+MAX(字段名) 取得一个表格栏最大的值 <br>
+MIN(字段名) 取得一个表格栏最小的值 <br>
+SUM(字段名) 把数据栏的值相加</p>
+<p>引用以上函数的方法：</p>
+<p>sql=``select sum(字段名) as 别名 from 数据表 where 条件表达式`` <br>
+set rs=conn.excute(sql)</p>
+<p>用 rs(``别名``) 获取统的计值，其它函数运用同上。</p>
+<p>(5) 数据表的建立和删除：</p>
+<p>CREATE TABLE 数据表名称(字段1 类型1(长度),字段2 类型2(长度) …… )</p>
+<p>例：CREATE TABLE tab01(name varchar(50),datetime default now())</p>
+<p>DROP TABLE 数据表名称 (永久性删除一个数据表)</p>
+<p><br>
+(6) 记录集对象的方法： <br>
+rs.movenext 将记录指针从当前的位置向下移一行 <br>
+rs.moveprevious 将记录指针从当前的位置向上移一行 <br>
+rs.movefirst 将记录指针移到数据表第一行 <br>
+rs.movelast 将记录指针移到数据表最后一行 <br>
+rs.absoluteposition=N 将记录指针移到数据表第N行 <br>
+rs.absolutepage=N 将记录指针移到第N页的第一行 <br>
+rs.pagesize=N 设置每页为N条记录 <br>
+rs.pagecount 根据 pagesize 的设置返回总页数 <br>
+rs.recordcount 返回记录总数 <br>
+rs.bof 返回记录指针是否超出数据表首端，true表示是，false为否 <br>
+rs.eof 返回记录指针是否超出数据表末端，true表示是，false为否 <br>
+rs.delete 删除当前记录，但记录指针不会向下移动 <br>
+rs.addnew 添加记录到数据表末端 <br>
+rs.update 更新数据表记录</p>
+<p><br>
+判断所填数据是数字型</p>
+<p>if not isNumeric(request(``字段名称``)) then <br>
+response.write ``不是数字`` <br>
+else <br>
+response.write ``数字`` <br>
+end if</p>
+<p> </p>
+<p><br>
+经常使用到有关数据库的操作。包括连接代码、SQL命令等等，又不曾刻意去记忆它们（我本人是不愿意</p>
+<p>去记这东东），所以常常在用到的时候又去查书本，翻来翻去。一些比较少用的数据库还不一定能顺利找</p>
+<p>到，所以现在把它们全归纳到这里，提供大家参考。（个人水平有限，有缺陷之处，欢迎大家指正。）</p>
+<p>&lt;一&gt;。数据库的连接方法：</p>
+<p>1.Access数据库的DSN-less连接方法:</p>
+<p>set adocon=Server.Createobject(``adodb.connection``) <br>
+adoconn.Open``Driver={Microsoft Access Driver(*.mdb)};DBQ=``&amp; _ <br>
+Server.MapPath(``数据库所在路径``)</p>
+<p>2.Access OLE DB连接方法：</p>
+<p>set adocon=Server.Createobject(``adodb.connection``) <br>
+adocon.open``Provider=Microsoft.Jet.OLEDB.4.0;``&amp; _ <br>
+``Data Source=`` &amp; Server.MapPath(``数据库所在路径``)</p>
+<p>3.SQL server连接方法：</p>
+<p>set adocon=server.createobject(``adodb.recordset``) <br>
+adocon.Open``Driver={SQL Server};Server=(Local);UID=***;PWD=***;``&amp; _ <br>
+``database=数据库名;``</p>
+<p>4.SQL server OLE DB连接方法:</p>
+<p>set adocon=Server.Createobject(``adodb.connection``) <br>
+adocon.open``provider=SQLOLEDB.1;Data Source=RITANT4;``&amp; _ <br>
+``user ID=***;Password=***;``&amp; _ <br>
+``inital Catalog=数据库名``</p>
+<p>5.Oracle 连接方法:</p>
+<p>set adocon=Server.Createobject(``adodb.connection``) <br>
+adocon.open``Driver={microsoft odbc for oracle};server=oraclesever.world;uid=admin;pwd=pass;``</p>
+<p>6.Oracle OLE DB 连接方法:</p>
+<p>set adocon=Server.Createobject(``adodb.connection``) <br>
+adocon.open``Provider=OraOLEDB.Oracle;data source=dbname;user id=admin;password=pass;``</p>
+<p>7.dBase 连接方法:</p>
+<p>set adocon=Server.Createobject(``adodb.connection``) <br>
+adocon.open``Driver={microsoft dbase driver(*.dbf)};driverid=277;dbq=------------;``</p>
+<p> </p></div></body></html>

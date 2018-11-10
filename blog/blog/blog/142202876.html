@@ -1,0 +1,18 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>修改密码的简单程序</title></head><body><h1>修改密码的简单程序</h1><div>&lt;%<br>
+id = Request(&quot;id&quot;)<br>
+newpassword = Request(&quot;password&quot;)<br>
+newpasswordtemp = Request(&quot;passwordtemp&quot;)<br>
+<br>
+If newpassword &lt;&gt; newpasswordtemp Then<br>
+Response.Write &quot;&lt;center&gt;对不起，新密码与新密码确认不同！请重试！&lt;/center&gt;&quot;<br>
+Response.End<br>
+End If<br>
+<br>
+Set conn = Server.CreateObject(&quot;ADODB.Connection&quot;)<br>
+DBPath = Server.MapPath(&quot;userinfo.mdb&quot;)<br>
+conn.Open &quot;driver={Microsoft Access Driver (*.mdb)};dbq=&quot; &amp; DBPath<br>
+Set rs = Server.CreateObject(&quot;ADODB.Recordset&quot;)<br>
+sql=&quot;update userinfo set 密码='&quot; &amp; newpassword &amp; &quot;' where id=&quot;&amp;id<br>
+rs.Open sql, conn, adOpenDynamic, adLockPessimistic<br>
+%&gt;<br>
+此程序非常简单，相信各位都会懂！跟&ldquo;如何使用 Microsoft Access 和 Active Server Pages 加密你的页面 ！&rdquo;的结合，实现让用户更改密码就简单了！</div></body></html>

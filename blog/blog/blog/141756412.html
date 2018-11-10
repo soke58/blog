@@ -1,0 +1,891 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>ASP常见问题及解答</title></head><body><h1>ASP常见问题及解答</h1><div>1.关于&lt;table&gt;折行: <br>
+&lt;table style=&quot;TABLE-LAYOUT: fixed&quot; width=&quot;200&quot; border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;7&quot; bgcolor=&quot;#f7f7f7&quot;&gt; <br>
+&lt;tr&gt; <br>
+&lt;td style=&quot;LEFT: 0px; WIDTH: 100%; WORD-WRAP: break-word&quot;&gt; <br>
+dffadfdaqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqsfdffadfdasfdffadfdasfdffadfdasfdffadfdasfdffadfdasfdffadfdasfdffadfdasfdffadfdasfdffadfdasf <br>
+&lt;/font&gt;&lt;/td&gt; <br>
+&lt;/tr&gt; <br>
+&lt;/table&gt; <br>
+<br>
+重点是&quot;WORD-WRAP: break-word&quot;把它去掉再看看就知道了. <br>
+<br>
+<br>
+<br>
+2.批量录入在数据库的应用中比较广泛的，关于批量录入的方法也有好多种。 <br>
+下面我就结合我实际中的应用，谈一下儿我是怎么实现的。 <br>
+主要用到的是form的集合的概念，通过循环取的所有的集合内数据。 <br>
+考虑到大家看着方便，我把它集成到了一个页面。 <br>
+下面是具体的代码： <br>
+batchInput.asp <br>
+&lt;% <br>
+''##################################### <br>
+''File Function:批量录入数据 <br>
+''Author:Myhon <br>
+''Date:2003-8-19 <br>
+''##################################### <br>
+<br>
+''向数据库写入数据 <br>
+SUB writeData() <br>
+dim recCnt,i <br>
+dim fieldName1,fieldName2,fieldName3 <br>
+dim conn <br>
+dim sqlStr,connStr <br>
+connStr=&quot;Provider=SQLOLEDB.1;Initial Catalog=myDatabase;Data Source=myhon;User Id=sa;PASSWORD=&quot; <br>
+set conn=Server.CreateObject(&quot;ADODB.Connection&quot;) <br>
+conn.open connStr ''建立数据库连接 <br>
+<br>
+recCnt=request.form(&quot;stu_num&quot;).count ''取得共有多少条记录 <br>
+''批量录入数据 <br>
+for i=1 to recCnt <br>
+fieldName1=trim(request.form(&quot;fieldName1&quot;)(i)) <br>
+fieldName2=trim(request.form(&quot;fieldName2&quot;)(i)) <br>
+fieldName3=trim(request.form(&quot;fieldName3&quot;)(i)) <br>
+sqlStr=&quot;insert into myTable(fieldName1,fieldName2,fieldName3) values(''&quot; <br>
+sqlStr=sqlStr &amp; fieldName1 &amp; &quot;'',''&quot; <br>
+sqlStr=sqlStr &amp; fieldName2 &amp; &quot;'',''&quot; <br>
+sqlStr=sqlStr &amp; fieldName3 &amp; &quot;'')&quot; <br>
+''response.write sqlStr <br>
+conn.execute(sqlStr) <br>
+next <br>
+END SUB <br>
+<br>
+''显示成批录入的界面 <br>
+SUB InputData() <br>
+dim recCnt,i <br>
+%&gt; <br>
+&lt;form name=&quot;bathInputData&quot; action=&quot;&quot; method=&quot;post&quot;&gt; <br>
+&lt;% <br>
+recCnt=cint(request.form(&quot;recCnt&quot;)) <br>
+for i=1 to recCnt <br>
+%&gt; <br>
+&lt;input type=&quot;text&quot; name=&quot;fieldName1&quot;&gt; <br>
+&lt;input type=&quot;text&quot; name=&quot;fieldName2&quot;&gt; <br>
+&lt;input type=&quot;text&quot; name=&quot;fieldName3&quot;&gt; <br>
+&lt;% <br>
+next <br>
+%&gt; <br>
+&lt;br/&gt; <br>
+&lt;input type=&quot;submit&quot; name=&quot;action&quot; value=&quot;提交&quot;&gt; <br>
+&lt;/form&gt; <br>
+&lt;% <br>
+END SUB <br>
+<br>
+''指定要批量录入多少条记录 <br>
+SUB assignHowMuch() <br>
+%&gt; <br>
+<br>
+&lt;!------指定要录入多少条记录--------------&gt; <br>
+&lt;form name=&quot;form1&quot; action=&quot;&quot; method=&quot;post&quot;&gt; <br>
+您要录入的记录的条数：&lt;input type=&quot;text&quot; name=&quot;recCnt&quot;&gt; <br>
+&lt;input type=&quot;submit&quot; name=&quot;action&quot; value=&quot;下一步&gt;&gt;&quot;&gt; <br>
+&lt;/form&gt; <br>
+&lt;% <br>
+END SUB <br>
+<br>
+if request.form(&quot;action&quot;)=&quot;下一步&gt;&gt;&quot; then <br>
+Call InputData() ''显示成批录入界面 <br>
+elseif request.form(&quot;action&quot;)=&quot;提交&quot; then Call writeData() ''向数据库批量写入数据 <br>
+else <br>
+Call assignHowMuch() ''显示指定录入多少条记录的界面 <br>
+end if <br>
+<br>
+%&gt; <br>
+<br>
+<br>
+<br>
+3.以动感下载系统为例: <br>
+<br>
+打开文件 SoftDown.Asp 在： <br>
+if request.QueryString(&quot;ID&quot;)=&quot;&quot; then <br>
+response.write &quot;不能连接或者没有指定下载软件&quot; <br>
+response.end <br>
+end if <br>
+的上面或者是下面加上下列代码 <br>
+<br>
+dim strReferer,domain,splDomain,isHttp <br>
+isHttp=false <br>
+<br>
+''本站下载系统网址列表，不要带上http:// <br>
+domain=&quot;sron.net,61.156.14.223,61.156.14.227&quot; <br>
+<br>
+splDomain=split(domain,&quot;,&quot;) <br>
+strReferer=Request.ServerVariables(&quot;HTTP_REFERER&quot;) <br>
+for iii = 0 to ubound(splDomain) <br>
+if instr(strReferer,trim(splDomain(iii)))&gt;0 then isHttp=True <br>
+next <br>
+if isnull(strReferer) or isHttp=false then <br>
+Response.Write &quot;下载链接来自其他网站，这是不允许的，&lt;a href=&quot;/stblog/&quot;./&quot;&quot;&gt;请进入本站页面后再进行下载。&lt;/a&gt;&quot; <br>
+CloseDatabase <br>
+response.end <br>
+end if <br>
+<br>
+本站下载系统网址列表 就是访问你下载频道网址里的域名，比如你的下载频道可以用多个网址来访问，所以这里用逗号隔开. <br>
+<br>
+<br>
+<br>
+4.无法写入cookie的常见问题 <br>
+1.确定你的response.cookie代码在第一个&lt;html&gt;之前 <br>
+2.设置cookies的截止日期response.cookie(&quot;cookiename&quot;).expires = expiresdate; <br>
+<br>
+设置cookie的请求指定路径: <br>
+就是说你的cookie写入后，指定路径中的页面才有权得到这个cookie <br>
+例如：指定路径response.cookie(&quot;cookiename&quot;).path = &quot;http://www.domain.com/path&quot; <br>
+那么只有path目录中的页面才能得到request.cookie(&quot;cookiename&quot;) <br>
+<br>
+<br>
+<br>
+5.vbscript的错误捕捉: <br>
+<br>
+on error resume next ''打开错误捕捉 <br>
+... <br>
+if err.number&lt;&gt;0 then ''err是vbs内置的对象，类似于try catch的exception <br>
+err.clear ''错误被处理了就要及时把错误标记清空 <br>
+''输出自己的出错信息,或用err.description显示系统出错信息 <br>
+end if <br>
+<br>
+on error goto 0 ''关闭错误捕捉。 <br>
+<br>
+<br>
+<br>
+6.ServerVariables集合用于得到系统的环境变量用以下程序可以讲ServerVariables集合的所有内容名称都显示出来 <br>
+&lt;html&gt; <br>
+&lt;head&gt;&lt;/head&gt; <br>
+&lt;body&gt; <br>
+&lt;% for each item in request.servervariables <br>
+response.write(&quot;&lt;p&gt;&lt;b&gt;&quot;&amp;item&amp;&quot;&lt;/b&gt;:&quot;) <br>
+response.write(request.serverVariables(item)) <br>
+next <br>
+%&gt; <br>
+&lt;/body&gt; <br>
+&lt;/html&gt; <br>
+具体的系统环境变量如下： <br>
+Auth_Type 当用户访问一个被保护的脚本时，用于判断是否是一个有效用户 <br>
+Content_Length 客户端所提交的正文的长度 <br>
+Content_Type 提交的正文数据类型 <br>
+Gateway_Interface 服务器所使用的CGI修订版本 <br>
+Login_User 用户是否以Windows NT帐户登陆 <br>
+Path_Info 客户端路径信息 <br>
+Query_String 在一个HTTP请求的查询信息 <br>
+Remote_Addr 发送请求的远程主机的ip地址，利用此地址可以知道访问这的来源 <br>
+Remote_Host 发送请求的远程主机名，如果远端服务器不包含该信息，则返回空字符串 <br>
+Request_Method 数据请求的方法 <br>
+Script_Map url的基本部分 <br>
+Script_Name 执行脚本的虚拟路径 <br>
+Server_Name 该服务器的名称DNS的别名，IP地址及其制定的url路径 <br>
+Server_Port 数据请求所使用的端口号 <br>
+Server_Software 服务器端运行的软件名称及版本号 <br>
+Server_Protocol 要求信息的协议及修订版本 <br>
+URL 系统的URL路径 <br>
+HTTP_REFERER 当通过链接到大当前页面时，HTTP_REFERER header 保存这个用户的来源 <br>
+<br>
+<br>
+<br>
+8.HTML文件标记 <br>
+&lt;html&gt; <br>
+&lt;head&gt; <br>
+&lt;!--&gt; <br>
+&lt;title&gt; <br>
+&lt;body&gt; <br>
+<br>
+文字排版标记 <br>
+&lt;br/&gt; <br>
+&lt;nobr&gt; <br>
+&lt;p&gt; <br>
+&lt;pre&gt; 原始文字样式 <br>
+&lt;center&gt; <br>
+&lt;blockquote&gt; 向内缩排 <br>
+&lt;h&gt; 标题 <br>
+&lt;strong&gt;,&lt;b&gt; 粗体 <br>
+&lt;em&gt;,&lt;i&gt;,&lt;cite&gt; 斜体 <br>
+&lt;U&gt; 底线 <br>
+&lt;strike&gt; 删除线 <br>
+&lt;blink&gt; 文字闪烁 <br>
+&lt;big&gt; 大型字体 <br>
+&lt;small&gt; 小型字体 <br>
+&lt;sup&gt; 文字上标 <br>
+&lt;SUB&gt; 文字下标 <br>
+&lt;basefont&gt; 默认字体设置 <br>
+&lt;font&gt; 更改字体设置 <br>
+<br>
+菜单标记 <br>
+&lt;menu&gt; 选项菜单 <br>
+&lt;dir&gt; 目录菜单 <br>
+&lt;lh&gt; 菜单格式(一) <br>
+&lt;ul&gt; 菜单格式(二) <br>
+&lt;dl&gt;,&lt;dt&gt;,&lt;dd&gt; 说明式菜单 <br>
+&lt;ol&gt;,&lt;li&gt; 标题菜单 <br>
+<br>
+直线与表格标记 <br>
+&lt;hr&gt; <br>
+&lt;table&gt; <br>
+&lt;tr&gt; <br>
+&lt;td&gt; <br>
+&lt;th&gt; <br>
+&lt;caption&gt; 表格标题 <br>
+<br>
+超链接标记 <br>
+&lt;a&gt; 锚 <br>
+<br>
+图形标记 <br>
+&lt;IMG&gt; 插入图形 <br>
+<br>
+框架标记 <br>
+&lt;FRAME&gt; 定义框架内容 <br>
+&lt;NOFRAME&gt; 不支持框架声明 <br>
+<br>
+表单标记 <br>
+&lt;FORM&gt; <br>
+&lt;INPUT&gt; <br>
+&lt;TEXTAREA&gt; <br>
+&lt;SELECT&gt; <br>
+&lt;OPTION&gt; <br>
+<br>
+SCRIPT <br>
+&lt;script&gt; <br>
+<br>
+VBSCRIPT标记索引 <br>
+<br>
+基本运算 <br>
++ 数字加法及字符串连接 <br>
+- 数字减法 <br>
+* 数字乘法 <br>
+/ 数字除法 <br>
+Mod 求余数 <br>
+\ 求商数 <br>
+&amp; 字符串连接 <br>
+^ 次方 <br>
+= 相等 <br>
+&lt;&gt; 不相等 <br>
+&gt;= 大于或等于 <br>
+&gt; 大于 <br>
+&lt;= 小于或等于 <br>
+&lt; 小于 <br>
+Not 非 <br>
+And 且 <br>
+Or 或 <br>
+Xor 异或 <br>
+<br>
+循环及决策 <br>
+if ....then 若...则... <br>
+if ...then...else 若...则...非 <br>
+else if... 非若 <br>
+select case... 群组选择条件 <br>
+end select <br>
+for ... next 计数循环 <br>
+while...wend 条件循环(一) <br>
+do while...loop 条件循环(二) <br>
+do...loop while 条件循环(三) <br>
+do until...loop 条件循环(四) <br>
+do...loop until 条件循环(五) <br>
+<br>
+数学函数 <br>
+Abs 绝对值 <br>
+Sgn 正负号 <br>
+Hex 转换成十六进制 <br>
+Oct 转换成八进制 <br>
+Sqr 平方根 <br>
+Int 取整数 <br>
+Fix 取整数 <br>
+Round 取整数 <br>
+Log 以e为底的对数 <br>
+Sin 正弦函数 <br>
+Cos 余弦函数 <br>
+Tan 正切函数 <br>
+<br>
+字符串处理函数 <br>
+Len 字符串长度 <br>
+Mid 取部分字符串 <br>
+Left 从字符串开头取部分字符串 <br>
+Right 从字符串结尾取部分字符串 <br>
+Lcase 转换成小写 <br>
+Ucase 转换成大写 <br>
+Trim 清除字符串开头及结尾的空格符 <br>
+Ltrim 清除字符串开头空格符 <br>
+Rtrim 清除字符串结尾空格符 <br>
+Replace 替换字符串部分字符 <br>
+Instr 判断是否包含于另一个字符串(从起始搜寻) <br>
+InstrRev 判断是否包含于另一个字符串(从结尾搜寻) <br>
+Space 任意字符数的空格符 <br>
+String 任意字符数的任一字符 <br>
+StrReverse 反转字符串 <br>
+Split 以某字符分割字符串 <br>
+<br>
+数据类型转换函数 <br>
+Cint 转换成整形 <br>
+Cstr 转换成字符串 <br>
+Clng 转换成常整数 <br>
+Cbool 转换成布尔函数 <br>
+Cdate 转换成日期函数 <br>
+CSng 转换成单精度 <br>
+CDbl 转换成双精度 <br>
+<br>
+日期时间函数 <br>
+Date 现在日期 <br>
+Time 现在时间 <br>
+NOw 现在日期时间 <br>
+DateAdd 增加日期 <br>
+DateDiff 两日期差 <br>
+DateSerial 日期设定 <br>
+DateValue 日期设定 <br>
+Year 现在年份 <br>
+Month 现在月份 <br>
+Day 现在天 <br>
+Hour 现在时刻 <br>
+Minute 现在分钟 <br>
+Second 现在秒钟 <br>
+Timer 午夜距现在秒数 <br>
+TimeSerial 时间设定 <br>
+TimeValue 时间所属部分 <br>
+WeekDay 星期名称 <br>
+MonthName 月份名称 <br>
+<br>
+其它函数 <br>
+Array 产生数组 <br>
+Asc 字符ASCII码 <br>
+Chr ASCII码字符 <br>
+Filter 过滤数组 <br>
+InputBox 输入窗口 <br>
+Join 合并数组中的元素 <br>
+MsgBox 信息窗口 <br>
+Lbound 数组下界 <br>
+Ubound 数组上界 <br>
+<br>
+指令 <br>
+Const 设定常数 <br>
+Dim 定义变量或者数组 <br>
+Erase 清除数组 <br>
+ReDim 重新声明数组 <br>
+Randomize 起始随机数 <br>
+Rnd 取得随机数 <br>
+<br>
+ASP对象 <br>
+<br>
+Session对象 <br>
+IsEmpty 测试Session变量是否存在 <br>
+TimeOut 设定Session变量生存周期 <br>
+Abandon 强制清除Session变量 <br>
+<br>
+Application对象 <br>
+IsEmpty 测试Application变量是否存在 <br>
+Lock 锁定Application变量 <br>
+Unlock 解除Lock指令的锁定 <br>
+<br>
+Cookies对象 <br>
+Expires 设定Cookies变量的生存周期 <br>
+<br>
+Connection对象 <br>
+Open 打开与数据库的连接 <br>
+Execute 打开Recordset对象 <br>
+Close 关闭Connection对象 <br>
+<br>
+Recordset对象 <br>
+movefirst 将记录指针移至第一条 <br>
+movelast 将记录指针移至最后一条 <br>
+movenext 将记录指针移至下一条 <br>
+moveprevious 将记录指针移至上一条 <br>
+bof 测试是否为recordset的起始 <br>
+eof 测试是否为recordset的结束 <br>
+open 打开Recoreset对象 <br>
+close 关闭recordset对象 <br>
+fields 读取数据的子对象 <br>
+fileds.count 字段个数 <br>
+pagesize 每页记录条数 <br>
+absolutepage 设定为某页 <br>
+pagecount 总页数 <br>
+Absoluteposition 直接跳至某条记录 <br>
+<br>
+<br>
+<br>
+<br>
+<br>
+9.没什么好共享的，但太感动了，把做树型菜单的js函数贴出来， <br>
+&lt;SCRIPT language=&quot;JavaScript&quot;&gt; <br>
+var lastObj <br>
+<br>
+function expandIt(obj) <br>
+{ <br>
+if(lastObj != null) <br>
+{ <br>
+if(obj == lastObj) <br>
+{ <br>
+if(obj.style.display == &quot;none&quot;) <br>
+{ <br>
+obj.style.display = &quot;&quot;; <br>
+} <br>
+else <br>
+{ <br>
+obj.style.display = &quot;none&quot; <br>
+} <br>
+} <br>
+else <br>
+{ <br>
+lastObj.style.display = &quot;none&quot;; <br>
+obj.style.display = &quot;&quot;; <br>
+} <br>
+} <br>
+else <br>
+{ <br>
+obj.style.display = &quot;&quot;; <br>
+} <br>
+<br>
+lastObj = obj <br>
+} <br>
+&lt;/SCRIPT&gt; <br>
+<br>
+&lt;table width=&quot;100%&quot; border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt; <br>
+&lt;% <br>
+dim id <br>
+id = request(&quot;id&quot;) <br>
+dim strsql,rs <br>
+<br>
+strsql=&quot;select * from p_type where slanguage=1 and typelevel=1 order by typename&quot; <br>
+set rs=fgetrslist(strsql) <br>
+do while not rs.eof <br>
+<br>
+%&gt; <br>
+&lt;tr&gt; <br>
+&lt;td height=&quot;25&quot; class=&quot;LEFTLINKS&quot;&gt;&lt;img width=&quot;30&quot; height=&quot;0&quot; align=&quot;absmiddle&quot; /&gt;&lt;b&gt;&lt;%if rs(&quot;isleaf&quot;)=0 then%&gt;&lt;a href=&quot;#&quot; onClick=&quot;javascript:expandIt(kb&lt;%=rs(&quot;id&quot;)%&gt;);return false&quot;&gt;&lt;%else%&gt;&lt;a href=&quot;&lt;%=request.ServerVariables(&quot;SCRIPT_NAME&quot;)%&gt;?idtree=&lt;%=rs(&quot;idtree&quot;)%&gt;&quot; &gt;&lt;%end if%&gt;&lt;%=server.HTMLEncode(right((rs(&quot;typename&quot;)&amp;&quot;&quot;),len(rs(&quot;typename&quot;)&amp;&quot;&quot;)-2))%&gt;&lt;/a&gt;&lt;/b&gt;&lt;/td&gt; <br>
+&lt;/tr&gt; <br>
+&lt;% <br>
+IF clng(id)=clng(rs(&quot;id&quot;)) then <br>
+<br>
+%&gt; <br>
+&lt;tr id=&quot;kb&lt;%=rs(&quot;id&quot;)%&gt;&quot;&gt; <br>
+&lt;% <br>
+else <br>
+<br>
+%&gt; <br>
+<br>
+<br>
+&lt;tr id=&quot;kb&lt;%=rs(&quot;id&quot;)%&gt;&quot; style=&quot;display:none;&quot;&gt; <br>
+&lt;% <br>
+end if <br>
+%&gt; <br>
+&lt;td&gt; <br>
+&lt;table&gt; <br>
+&lt;% <br>
+dim rs1 <br>
+strsql=&quot;select * from p_type where parentid=&quot;&amp;rs(&quot;id&quot;)&amp;&quot; and slanguage=1 order by typename&quot; <br>
+set rs1=fgetrslist(strsql) <br>
+do while not rs1.eof <br>
+%&gt; <br>
+&lt;tr&gt;&lt;td height=&quot;20&quot; class=&quot;LEFTLINKS&quot;&gt; <br>
+&lt;img width=&quot;40&quot; height=&quot;0&quot; align=&quot;absmiddle&quot; /&gt;&lt;a href=&quot;&lt;%=request.ServerVariables(&quot;SCRIPT_NAME&quot;)%&gt;?idtree=&lt;%=rs1(&quot;idtree&quot;)%&gt;&amp;id=&lt;%=rs(&quot;id&quot;)%&gt;&quot; &gt;&lt;%=server.HTMLEncode(right((rs1(&quot;typename&quot;)&amp;&quot;&quot;),len(rs1(&quot;typename&quot;)&amp;&quot;&quot;)-2))%&gt;&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt; <br>
+&lt;% <br>
+rs1.movenext <br>
+loop <br>
+rs1.close <br>
+set rs1=nothing <br>
+%&gt; <br>
+&lt;/table&gt; <br>
+&lt;/td&gt; <br>
+&lt;/tr&gt; <br>
+&lt;% <br>
+rs.movenext <br>
+<br>
+loop <br>
+rs.close <br>
+set rs=nothing <br>
+%&gt; <br>
+&lt;/table&gt; <br>
+<br>
+<br>
+<br>
+10.计算网页文本的汉字字数，去掉了表格以外的所有标识。 <br>
+Function GetLength(strChinese1) <br>
+Dim strWord, ascWord, lenTotal <br>
+strChinese1 = Trim(strChinese1) <br>
+<br>
+If strChinese1 = &quot;&quot; Or Vartype(strChinese1) = vbNull Then <br>
+GetLength = 0 <br>
+Exit Function <br>
+End If <br>
+<br>
+lenTotal = 0 <br>
+For GetLengthi=1 to Len(strChinese1) <br>
+strWord = Mid(strChinese1, GetLengthi, 1) <br>
+ascWord = Asc(strWord) <br>
+If ascWord &lt; 0 or ascWord &gt; 127 then <br>
+lenTotal = lenTotal + 1 <br>
+Elseif ascWord = 63 And strWord &lt;&gt; &quot;?&quot; then <br>
+lenTotal = lenTotal + 1 <br>
+Elseif ascWord = 44 And strWord &lt;&gt; &quot;,&quot; then <br>
+lenTotal = lenTotal + 1 <br>
+Elseif ascWord = 33 And strWord &lt;&gt; &quot;!&quot; then <br>
+lenTotal = lenTotal + 1 <br>
+Else <br>
+lenTotal = lenTotal <br>
+End If <br>
+Next <br>
+<br>
+GetLength = lenTotal <br>
+End Function <br>
+<br>
+<br>
+<br>
+<br>
+11.&lt;table width=&quot;95%&quot; cellspacing=&quot;1&quot; cellpadding=&quot;5&quot; align=center bgcolor=999999&gt; <br>
+&lt;tr bgcolor=#ffcc00&gt;&lt;td colspan=&quot;2&quot; height=25&gt;&lt;b&gt;服务器有关的变量&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt; <br>
+&lt;tr bgcolor=#efefef&gt;&lt;td valign=top&gt;显示客户发出的所有HTTP标题&lt;/td&gt;&lt;td&gt;&lt;%=request.ServerVariables(&quot;All_Http&quot;)%&gt;&lt;/td&gt;&lt;/tr&gt; <br>
+&lt;tr bgcolor=#efefef&gt;&lt;td valign=top&gt;检取ISAPIDLL的metabase路径&lt;/td&gt;&lt;td&gt;&lt;%=request.ServerVariables(&quot;APPL_MD_PATH&quot;)%&gt;&lt;/td&gt;&lt;/tr&gt; <br>
+&lt;tr bgcolor=#efefef&gt;&lt;td valign=top&gt;显示站点物理路径&lt;/td&gt;&lt;td&gt;&lt;%=request.ServerVariables(&quot;APPL_PHYSICAL_PATH&quot;)%&gt;&lt;/td&gt;&lt;/tr&gt; <br>
+&lt;tr bgcolor=#efefef&gt;&lt;td valign=top&gt;路径信息&lt;/td&gt;&lt;td&gt;&lt;%=request.ServerVariables(&quot;PATH_INFO&quot;)%&gt;&lt;/td&gt;&lt;/tr&gt; <br>
+&lt;tr bgcolor=#efefef&gt;&lt;td valign=top&gt;显示请求机器IP地址&lt;/td&gt;&lt;td&gt;&lt;%=request.ServerVariables(&quot;REMOTE_ADDR&quot;)%&gt;&lt;/td&gt;&lt;/tr&gt; <br>
+&lt;tr bgcolor=#efefef&gt;&lt;td valign=top&gt;服务器IP地址&lt;/td&gt;&lt;td&gt;&lt;%=Request.ServerVariables(&quot;LOCAL_ADDR&quot;)%&gt;&lt;/td&gt;&lt;/tr&gt; <br>
+&lt;tr bgcolor=#efefef&gt;&lt;td valign=top&gt;显示执行SCRIPT的虚拟路径&lt;/td&gt;&lt;td&gt;&lt;%=request.ServerVariables(&quot;SCRIPT_NAME&quot;)%&gt;&lt;/td&gt;&lt;/tr&gt; <br>
+&lt;tr bgcolor=#efefef&gt;&lt;td valign=top&gt;返回服务器的主机名，DNS别名，或IP地址&lt;/td&gt;&lt;td&gt;&lt;%=request.ServerVariables(&quot;SERVER_NAME&quot;)%&gt;&lt;/td&gt;&lt;/tr&gt; <br>
+&lt;tr bgcolor=#efefef&gt;&lt;td valign=top&gt;返回服务器处理请求的端口&lt;/td&gt;&lt;td&gt;&lt;%=request.ServerVariables(&quot;SERVER_PORT&quot;)%&gt;&lt;/td&gt;&lt;/tr&gt; <br>
+&lt;tr bgcolor=#efefef&gt;&lt;td valign=top&gt;协议的名称和版本&lt;/td&gt;&lt;td&gt;&lt;%=request.ServerVariables(&quot;SERVER_PROTOCOL&quot;)%&gt;&lt;/td&gt;&lt;/tr&gt; <br>
+&lt;tr bgcolor=#efefef&gt;&lt;td valign=top&gt;服务器的名称和版本&lt;/td&gt;&lt;td&gt;&lt;%=request.ServerVariables(&quot;SERVER_SOFTWARE&quot;)%&gt;&lt;/td&gt;&lt;/tr&gt; <br>
+&lt;tr bgcolor=#efefef&gt;&lt;td valign=top&gt;服务器操作系统&lt;/td&gt;&lt;td&gt;&lt;%=Request.ServerVariables(&quot;OS&quot;)%&gt;&lt;/td&gt;&lt;/tr&gt; <br>
+&lt;tr bgcolor=#efefef&gt;&lt;td valign=top&gt;脚本超时时间&lt;/td&gt;&lt;td&gt;&lt;%=Server.ScriptTimeout%&gt; 秒&lt;/td&gt;&lt;/tr&gt; <br>
+&lt;tr bgcolor=#efefef&gt;&lt;td valign=top&gt;服务器CPU数量&lt;/td&gt;&lt;td&gt;&lt;%=Request.ServerVariables(&quot;NUMBER_OF_PROCESSORS&quot;)%&gt; 个&lt;/td&gt;&lt;/tr&gt; <br>
+&lt;tr bgcolor=#efefef&gt;&lt;td valign=top width=30%&gt;服务器解译引擎&lt;/td&gt;&lt;td&gt;&lt;%=ScriptEngine &amp; &quot;/&quot;&amp; ScriptEngineMajorVersion &amp;&quot;.&quot;&amp;ScriptEngineMinorVersion&amp;&quot;.&quot;&amp; ScriptEngineBuildVersion %&gt;&lt;/td&gt;&lt;/tr&gt; <br>
+&lt;/table&gt; <br>
+<br>
+<br>
+<br>
+12.10进制表示，希望actor2222 (优悠) 能看到 <br>
+<br>
+MicrosoftVBscript运行时错误列表（10进制表示） <br>
+<br>
+error # 5 无效的过程调用或参数 <br>
+error # 5 无效的过程调用或参数 <br>
+error # 6 溢出 <br>
+error # 7 内存不够 <br>
+error # 9 下标越界 <br>
+error # 10 该数组为定长的或临时被锁定 <br>
+error # 11 被零除 <br>
+error # 13 类型不匹配 <br>
+error # 14 字符串空间不够 <br>
+error # 17 不能执行所需的操作 <br>
+error # 28 堆栈溢出 <br>
+error # 35 未定义过程或函数 <br>
+error # 48 加载 DLL 时出错 <br>
+error # 51 内部错误 <br>
+error # 52 错误的文件名或号码 <br>
+error # 53 文件未找到 <br>
+error # 54 错误的文件模式 <br>
+error # 55 文件已经打开 <br>
+error # 57 设备 I/O 错误 <br>
+error # 58 文件已存在 <br>
+error # 61 磁盘已满 <br>
+error # 62 输入超出了文件尾 <br>
+error # 67 文件过多 <br>
+error # 68 设备不可用 <br>
+error # 70 没有权限 <br>
+error # 71 磁盘没有准备好 <br>
+error # 74 重命名时不能带有其他驱动器符号 <br>
+error # 75 路径/文件访问错误 <br>
+error # 76 路径未找到 <br>
+error # 91 对象变量未设置 <br>
+error # 92 For 循环未初始化 <br>
+error # 94 无效使用 Null <br>
+error # 322 不能创建必要的临时文件 <br>
+error # 424 缺少对象 <br>
+error # 429 ActiveX 部件不能创建对象 <br>
+error # 430 类不支持 Automation 操作 <br>
+error # 432 Automation 操作中文件名或类名未找到 <br>
+error # 438 对象不支持此属性或方法 <br>
+error # 440 Automation 操作错误 <br>
+error # 445 对象不支持此操作 <br>
+error # 446 对象不支持已命名参数 <br>
+error # 447 对象不支持当前区域设置选项 <br>
+error # 448 未找到已命名参数 <br>
+error # 449 参数是必选项 <br>
+error # 450 错误的参数个数或无效的参数属性值 <br>
+error # 451 对象不是一个集合 <br>
+error # 453 未找到指定的 DLL 函数 <br>
+error # 455 代码资源锁定错误 <br>
+error # 457 此键已与该集合的一个元素关联 <br>
+error # 458 变量使用了一个 VBScript 中不支持的 Automation 类型 <br>
+error # 462 远程服务器不存在或不可用 <br>
+error # 481 无效图片 <br>
+error # 500 变量未定义 <br>
+error # 501 非法赋值 <br>
+error # 502 对象不能安全用 Script 编程 <br>
+error # 503 对象不能安全初始化 <br>
+error # 504 对象不能安全创建 <br>
+error # 505 无效的或无资格的引用 <br>
+error # 506 类没有被定义 <br>
+error # 507 出现一个意外错误 <br>
+error # 1001 内存不够 <br>
+error # 1002 语法错误 <br>
+error # 1003 缺少 '':'' <br>
+error # 1005 缺少 ''('' <br>
+error # 1006 缺少 '')'' <br>
+error # 1007 缺少 '']'' <br>
+error # 1010 缺少标识符 <br>
+error # 1011 缺少 ''='' <br>
+error # 1012 缺少 ''If'' <br>
+error # 1013 缺少 ''To'' <br>
+error # 1014 缺少 ''End'' <br>
+error # 1015 缺少 ''Function'' <br>
+error # 1016 缺少 ''Sub'' <br>
+error # 1017 缺少 ''Then'' <br>
+error # 1018 缺少 ''Wend'' <br>
+error # 1019 缺少 ''Loop'' <br>
+error # 1020 缺少 ''Next'' <br>
+error # 1021 缺少 ''Case'' <br>
+error # 1022 缺少 ''Select'' <br>
+error # 1023 缺少表达式 <br>
+error # 1024 缺少语句 <br>
+error # 1025 语句未结束 <br>
+error # 1026 缺少整型常数 <br>
+error # 1027 缺少 ''While'' 或 ''Until'' <br>
+error # 1028 缺少 ''While'' 和 ''Until''或语句未结束 <br>
+error # 1029 缺少 ''With'' <br>
+error # 1030 标识符过长 <br>
+error # 1031 无效数字 <br>
+error # 1032 无效字符 <br>
+error # 1033 未结束的字符串常量 <br>
+error # 1034 注释未结束 <br>
+error # 1037 无效使用 ''Me'' 关键字 <br>
+error # 1038 ''loop'' 语句缺少 ''do'' <br>
+error # 1039 无效的 ''exit'' 语句 <br>
+error # 1040 循环控制变量 ''for'' 无效 <br>
+error # 1041 名称重定义 <br>
+error # 1042 必须是行中的第一个语句 <br>
+error # 1043 不能为 non-ByVal 参数赋值 <br>
+error # 1044 调用子程序时不能使用括号 <br>
+error # 1045 缺少文字常数 <br>
+error # 1046 缺少 ''In'' <br>
+error # 1047 缺少 ''Class'' <br>
+error # 1048 必须在一个类的内部定义 <br>
+error # 1049 在属性声明中缺少 Let , Set 或 Get <br>
+error # 1050 缺少 ''Property'' <br>
+error # 1051 在所有属性的规范中，变量的数目必须一致 <br>
+error # 1052 在一个类中不允许有多个缺省的属性/方法 <br>
+error # 1053 类的初始化或终止程序没有变量 <br>
+error # 1054 属性的 set 或 let 必须至少有一个变量 <br>
+error # 1055 错误的 ''Next'' <br>
+error # 1056 ''Default'' 只能在 ''Property'' , ''Function'' 或 ''Sub'' 中指定 <br>
+error # 1057 指定 ''Default'' 时必须同时指定 ''Public'' <br>
+error # 1058 只能在 Property Get 中指定 ''Default'' <br>
+error # 4096 Microsoft VBScript 编译器错误 <br>
+error # 4097 Microsoft VBScript 运行时错误 <br>
+error # 5016 缺少正则表达式对象 <br>
+error # 5017 正则表达式语法错误 <br>
+error # 5018 错误的数量词 <br>
+error # 5019 正则表达式中缺少 '']'' <br>
+error # 5020 正则表达式中缺少 '')'' <br>
+error # 5021 字符集越界 <br>
+<br>
+<br>
+<br>
+13.利用ASP获得图象的实际尺寸的示例 <br>
+&lt;!--＃i nclude virtual=&quot;/learn/test/lib_graphicdetect.asp&quot;--&gt; <br>
+&lt;html&gt;&lt;head&gt; <br>
+&lt;TITLE&gt;dbtable.asp&lt;/TITLE&gt; <br>
+&lt;/head&gt; <br>
+&lt;body bgcolor=&quot;#FFFFFF&quot;&gt; <br>
+&lt;% <br>
+graphic=&quot;images/learnaspiconmain.gif&quot; <br>
+HW = ReadImg(graphic) <br>
+Response.Write graphic &amp; &quot; Dimensions: &quot; &amp; HW(0) &amp; &quot;x&quot; &amp; HW(1) <br>
+&amp; &quot;&lt;br/&gt;&quot; <br>
+response.write &quot;&lt;img src=&quot;/stblog/&quot;/&quot; &amp; graphic &amp; &quot;&quot;&quot;&quot; <br>
+response.write height=&quot;&quot;&quot; &amp; HW(0) &amp; &quot;&quot;&quot; <br>
+response.write width=&quot;&quot;&quot; &amp; HW(0) &amp; &quot;&quot;&gt;&quot; <br>
+%&gt; <br>
+&lt;/body&gt;&lt;/html&gt; <br>
+<br>
+<br>
+The library that is included is: <br>
+<br>
+&lt;% <br>
+Dim HW <br>
+<br>
+Function AscAt(s, n) <br>
+AscAt = Asc(Mid(s, n, 1)) <br>
+End Function <br>
+<br>
+Function HexAt(s, n) <br>
+HexAt = Hex(AscAt(s, n)) <br>
+End Function <br>
+<br>
+<br>
+Function isJPG(fichero) <br>
+If inStr(uCase(fichero), &quot;.JPG&quot;) &lt;&gt; 0 Then <br>
+isJPG = true <br>
+Else <br>
+isJPG = false <br>
+End If <br>
+End Function <br>
+<br>
+<br>
+Function isPNG(fichero) <br>
+If inStr(uCase(fichero), &quot;.PNG&quot;) &lt;&gt; 0 Then <br>
+isPNG = true <br>
+Else <br>
+isPNG = false <br>
+End If <br>
+End Function <br>
+<br>
+<br>
+Function isGIF(fichero) <br>
+If inStr(uCase(fichero), &quot;.GIF&quot;) &lt;&gt; 0 Then <br>
+isGIF = true <br>
+Else <br>
+isGIF = false <br>
+End If <br>
+End Function <br>
+<br>
+<br>
+Function isBMP(fichero) <br>
+If inStr(uCase(fichero), &quot;.BMP&quot;) &lt;&gt; 0 Then <br>
+isBMP = true <br>
+Else <br>
+isBMP = false <br>
+End If <br>
+End Function <br>
+<br>
+<br>
+Function isWMF(fichero) <br>
+If inStr(uCase(fichero), &quot;.WMF&quot;) &lt;&gt; 0 Then <br>
+isWMF = true <br>
+Else <br>
+isWMF = false <br>
+End If <br>
+End Function <br>
+<br>
+<br>
+Function isWebImg(f) <br>
+If isGIF(f) Or isJPG(f) Or isPNG(f) Or isBMP(f) Or isWMF(f) <br>
+Then <br>
+isWebImg = true <br>
+Else <br>
+isWebImg = true <br>
+End If <br>
+End Function <br>
+<br>
+<br>
+Function ReadImg(fichero) <br>
+If isGIF(fichero) Then <br>
+ReadImg = ReadGIF(fichero) <br>
+Else <br>
+If isJPG(fichero) Then <br>
+ReadImg = ReadJPG(fichero) <br>
+Else <br>
+If isPNG(fichero) Then <br>
+ReadImg = ReadPNG(fichero) <br>
+Else <br>
+If isBMP(fichero) Then <br>
+ReadImg = ReadPNG(fichero) <br>
+Else <br>
+If isWMF(fichero) Then <br>
+ReadImg = ReadWMF(fichero) <br>
+Else <br>
+ReadImg = Array(0,0) <br>
+End If <br>
+End If <br>
+End If <br>
+End If <br>
+End If <br>
+End Function <br>
+<br>
+<br>
+Function ReadJPG(fichero) <br>
+Dim fso, ts, s, HW, nbytes <br>
+HW = Array(&quot;&quot;,&quot;&quot;) <br>
+Set fso = CreateObject(&quot;Scripting.FileSystemObject&quot;) <br>
+Set ts = fso.OpenTextFile(Server.MapPath(&quot;/&quot; &amp; fichero), 1) <br>
+s = Right(ts.Read(167), 4) <br>
+HW(0) = HexToDec(HexAt(s,3) &amp; HexAt(s,4)) <br>
+HW(1) = HexToDec(HexAt(s,1) &amp; HexAt(s,2)) <br>
+ts.Close <br>
+ReadJPG = HW <br>
+End Function <br>
+<br>
+<br>
+Function ReadPNG(fichero) <br>
+Dim fso, ts, s, HW, nbytes <br>
+HW = Array(&quot;&quot;,&quot;&quot;) <br>
+Set fso = CreateObject(&quot;Scripting.FileSystemObject&quot;) <br>
+Set ts = fso.OpenTextFile(Server.MapPath(&quot;/&quot; &amp; fichero), 1) <br>
+s = Right(ts.Read(24), 8) <br>
+HW(0) = HexToDec(HexAt(s,3) &amp; HexAt(s,4)) <br>
+HW(1) = HexToDec(HexAt(s,7) &amp; HexAt(s,8)) <br>
+ts.Close <br>
+ReadPNG = HW <br>
+End Function <br>
+<br>
+<br>
+Function ReadGIF(fichero) <br>
+Dim fso, ts, s, HW, nbytes <br>
+HW = Array(&quot;&quot;,&quot;&quot;) <br>
+Set fso = CreateObject(&quot;Scripting.FileSystemObject&quot;) <br>
+Set ts = fso.OpenTextFile(Server.MapPath(&quot;/&quot; &amp; fichero), 1) <br>
+s = Right(ts.Read(10), 4) <br>
+HW(0) = HexToDec(HexAt(s,2) &amp; HexAt(s,1)) <br>
+HW(1) = HexToDec(HexAt(s,4) &amp; HexAt(s,3)) <br>
+ts.Close <br>
+ReadGIF = HW <br>
+End Function <br>
+<br>
+<br>
+Function ReadWMF(fichero) <br>
+Dim fso, ts, s, HW, nbytes <br>
+HW = Array(&quot;&quot;,&quot;&quot;) <br>
+Set fso = CreateObject(&quot;Scripting.FileSystemObject&quot;) <br>
+Set ts = fso.OpenTextFile(Server.MapPath(&quot;/&quot; &amp; fichero), 1) <br>
+s = Right(ts.Read(14), 4) <br>
+HW(0) = HexToDec(HexAt(s,2) &amp; HexAt(s,1)) <br>
+HW(1) = HexToDec(HexAt(s,4) &amp; HexAt(s,3)) <br>
+ts.Close <br>
+ReadWMF = HW <br>
+End Function <br>
+<br>
+<br>
+Function ReadBMP(fichero) <br>
+Dim fso, ts, s, HW, nbytes <br>
+HW = Array(&quot;&quot;,&quot;&quot;) <br>
+Set fso = CreateObject(&quot;Scripting.FileSystemObject&quot;) <br>
+Set ts = fso.OpenTextFile(Server.MapPath(&quot;/&quot; &amp; fichero), 1) <br>
+s = Right(ts.Read(24), 8) <br>
+HW(0) = HexToDec(HexAt(s,4) &amp; HexAt(s,3)) <br>
+HW(1) = HexToDec(HexAt(s,8) &amp; HexAt(s,7)) <br>
+ts.Close <br>
+ReadBMP = HW <br>
+End Function <br>
+<br>
+<br>
+Function isDigit(c) <br>
+If inStr(&quot;0123456789&quot;, c) &lt;&gt; 0 Then <br>
+isDigit = true <br>
+Else <br>
+isDigit = false <br>
+End If <br>
+End Function <br>
+<br>
+<br>
+Function isHex(c) <br>
+If inStr(&quot;0123456789ABCDEFabcdef&quot;, c) &lt;&gt; 0 Then <br>
+isHex = true <br>
+Else <br>
+ishex = false <br>
+End If <br>
+End Function <br>
+<br>
+<br>
+Function HexToDec(cadhex) <br>
+Dim n, i, ch, decimal <br>
+decimal = 0 <br>
+n = Len(cadhex) <br>
+For i=1 To n <br>
+ch = Mid(cadhex, i, 1) <br>
+If isHex(ch) Then <br>
+decimal = decimal * 16 <br>
+If isDigit(c) Then <br>
+decimal = decimal + ch <br>
+Else <br>
+decimal = decimal + Asc(uCase(ch)) - Asc(&quot;A&quot;) <br>
+End If <br>
+Else <br>
+HexToDec = -1 <br>
+End If <br>
+Next <br>
+HexToDec = decimal <br>
+End Function <br>
+%&gt; <br>
+<br></div></body></html>

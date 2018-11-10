@@ -1,0 +1,215 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>asp数据库(access)详解</title></head><body><h1>asp数据库(access)详解</h1><div>学习目的：掌握ACCESS数据库的连接和读取记录<br>
+今天要学习的内容有一点枯燥，但是很重要。在这里大家不需要知道命令具体的运行情况，外面的很多书籍之所以不适合入门就是因为介绍了太多的理论知识，让初学者一头雾水。<br>
+下面开门见山，看两句话：<br>
+&lt;%<br>
+set conn=server.createobject(&quot;adodb.connection&quot;)<br>
+conn.open &quot;driver={microsoft access driver (*.mdb)};dbq=&quot;&amp;server.mappath(&quot;example3.mdb&quot;)<br>
+%&gt;<br>
+第一句话定义了一个adodb数据库连接组件，第二句连接了数据库，大家只要修改后面的数据库名字就可以了。是不是很简单？<br>
+下面再看三句：<br>
+&lt;%<br>
+exec=&quot;select * from guestbook&quot;<br>
+set rs=server.createobject(&quot;adodb.recordset&quot;)<br>
+rs.open exec,conn,1,1 <br>
+%&gt;<br>
+这三句加在前面两句的后面，第一句：设置查询数据库的命令，select后面加的是字段，如果都要查询的话就用*，from后面再加上表的名字，我们前面建立的是不是一个gustbook表阿？第二句：定义一个记录集组件，所有搜索到的记录都放在这里面，第三句是打开这个记录集，exec就是前面定义的查询命令，conn就是前面定义的数据库连接组件，后面参数&quot;1，1&quot;，这是读取，后面讲到修改记录就把参数设置为1，3，好了接下来我们读取记录。<br>
+&lt;table width=&quot;100%&quot; border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;<br>
+&lt;%do while not rs.eof%&gt;&lt;tr&gt;<br>
+&lt;td&gt;&lt;%=rs(&quot;name&quot;)%&gt;&lt;/td&gt;<br>
+&lt;td&gt;&lt;%=rs(&quot;tel&quot;)%&gt;&lt;/td&gt;<br>
+&lt;td&gt;&lt;%=rs(&quot;message&quot;)%&gt;&lt;/td&gt;<br>
+&lt;td&gt;&lt;%=rs(&quot;time&quot;)%&gt;&lt;/td&gt;<br>
+&lt;/tr&gt;&lt;%<br>
+rs.movenext<br>
+loop<br>
+%&gt;<br>
+&lt;/table&gt;<br>
+在一个表格中，我们用4列分别显示了上次建立的表里面的四个字段，用do循环，not rs.eof的意思是条件为没有读到记录集的最后，rs.movenext的意思是显示完一条转到下面一条记录，&lt;%=%&gt;就等于&lt;%response.write%&gt;用于在html代码里面插入asp代码，主要用于显示变量,调试一下.<br>
+<br>
+学习目的：学会数据库的基本操作1（写入记录）<br>
+数据库的基本操作无非是：查询记录，写入记录，删除记录，修改记录。今天我们先学习写入记录。<br>
+先建立一个表单：<br>
+&lt;form name=&quot;form1&quot; method=&quot;post&quot; action=&quot;example5.asp&quot;&gt;<br>
+name &lt;input type=&quot;text&quot; name=&quot;name&quot;&gt;&lt;br&gt;<br>
+tel &lt;input type=&quot;text&quot; name=&quot;tel&quot;&gt;&lt;br&gt;<br>
+message &lt;input type=&quot;text&quot; name=&quot;message&quot; &amp;#118alue=&quot;&quot;&gt;&lt;br&gt;<br>
+&lt;input type=&quot;submit&quot; name=&quot;Submit&quot; &amp;#118alue=&quot;提交&quot;&gt;<br>
+&lt;input type=&quot;reset&quot; name=&quot;Submit2&quot; &amp;#118alue=&quot;重置&quot;&gt;<br>
+&lt;/form&gt;<br>
+表单提交到example5.asp，下面是example5.asp的代码： <br>
+&lt;%<br>
+set conn=server.createobject(&quot;adodb.connection&quot;)<br>
+conn.open &quot;driver={microsoft access driver (*.mdb)};dbq=&quot;&amp;server.mappath(&quot;example3.mdb&quot;)<br>
+name=request.form(&quot;name&quot;)<br>
+tel=request.form(&quot;tel&quot;)<br>
+message=request.form(&quot;message&quot;) <br>
+exec=&quot;insert into guestbook(name,tel,message)&amp;#118alues('&quot;+name+&quot;',&quot;+tel+&quot;,'&quot;+message+&quot;')&quot;<br>
+conn.execute exec<br>
+conn.close<br>
+set conn=nothing<br>
+response.write &quot;记录添加成功!&quot;<br>
+%&gt;<br>
+在这里前面两句我不说了，后面三句我也不说了，前面说过exec里面的是执行的命令，添加记录的比较繁，大家要仔细看。insert into后面加的是表的名字，后面的括号里面是需要添加的字段，不用添加的或者字段的内容就是默认值的可以省略。注意，这里的变量一定要和ACCESS里面的字段名对应，否则就会出错。&amp;#118alues后面加的是传送过来的变量。exec是一个字符串，&quot;insert into guestbook(name,tel,message)&amp;#118alues('&quot;是第一段，在ASP里面不能嵌双引号，所以可以用'代替双引号，放在双引号里面，连接两个变量用+或者&amp;所以&quot;',&quot;又是一段，中间夹了一个name就是表单传来的变量，这样就可以在这个变量外面加两个''，表示是字符串了，后面的tel是数字型变量所以不需要外面包围''，大家慢慢分析这句话，如果用表单传来的数据代替变量名字的话这句话为（假设name=&quot;aaa&quot;,tel=111,message=&quot;bbb&quot;）：&quot;insert into guestbook(name,tel,message)&amp;#118alues('aaa',111,'bbb')&quot;。<br>
+接下来的conn.execute 就是执行这个exec命令，最后别忘记把打开的数据库关闭，把定义的组件设置为空，这样可以返回资源。上次的读取为了简单，我没有关闭，大家可以补充上去：<br>
+rs.close<br>
+set rs=nothing<br>
+conn.close<br>
+set conn=nothing<br>
+记住，次序不可以颠倒！ <br>
+大家可以到数据库里面去看一看，或者用example4.asp读取看看是不是多了记录阿？<br>
+<br>
+<br>
+学习目的：学会数据库的基本操作3（删除记录）<br>
+开门见山，大家直接看程序。<br>
+exec=&quot;delete * from guestbook where id=&quot;&amp;request.form(&quot;id&quot;)<br>
+上面这句话完成了删除记录的操作，不过锁定记录用了记录唯一的表示id，我们前面建立数据库的时候用的是系统给我们的主键，名字是编号，由于是中文的名字不是很方便，大家可以修改为id，不修改的话就是<br>
+exec=&quot;delete * from guestbook where 编号=&quot;&amp;request.form(&quot;id&quot;)<br>
+下面我们看完整的代码：一个表单传给ASP文件一个ID，然后这个ASP文件就删除了这个ID。<br>
+&lt;form name=&quot;form1&quot; method=&quot;post&quot; action=&quot;example7.asp&quot;&gt;<br>
+delete: <br>
+&lt;input type=&quot;text&quot; name=&quot;id&quot;&gt;<br>
+&lt;input type=&quot;submit&quot; name=&quot;Submit&quot; &amp;#118alue=&quot;提交&quot;&gt;<br>
+&lt;/form&gt;<br>
+example7.asp：<br>
+&lt;%<br>
+set conn=server.createobject(&quot;adodb.connection&quot;)<br>
+conn.open &quot;driver={microsoft access driver (*.mdb)};dbq=&quot;&amp;server.mappath(&quot;example3.mdb&quot;)<br>
+exec=&quot;delete * from guestbook where 编号=&quot;&amp;request.form(&quot;id&quot;)<br>
+conn.execute exec<br>
+%&gt;<br>
+我在示例里面加了一个example72.asp，和example4.asp差不多，就是加了一个id字段，大家可以先运行这个文件看一下所有记录的ID和想删除记录的ID，删除记录以后也可以通过这个文件复查。<br>
+<br>
+example72.asp：<br>
+&lt;%<br>
+set conn=server.createobject(&quot;adodb.connection&quot;)<br>
+conn.open &quot;driver={microsoft access driver (*.mdb)};dbq=&quot;&amp;server.mappath(&quot;example3.mdb&quot;)<br>
+exec=&quot;select * from guestbook&quot;<br>
+set rs=server.createobject(&quot;adodb.recordset&quot;)<br>
+rs.open exec,conn,1,1 <br>
+%&gt;<br>
+&lt;html&gt;<br>
+&lt;head&gt;<br>
+&lt;title&gt;无标题文档&lt;/title&gt;<br>
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=gb2312&quot;&gt;<br>
+&lt;/head&gt;<br>
+&lt;body bgcolor=&quot;#FFFFFF&quot; text=&quot;#000000&quot;&gt;<br>
+&lt;table width=&quot;100%&quot; border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;<br>
+&lt;%<br>
+do while not rs.eof<br>
+%&gt;&lt;tr&gt;<br>
+&lt;td&gt;&lt;%=rs(&quot;编号&quot;)%&gt;&lt;/td&gt;<br>
+&lt;td&gt;&lt;%=rs(&quot;name&quot;)%&gt;&lt;/td&gt;<br>
+&lt;td&gt;&lt;%=rs(&quot;tel&quot;)%&gt;&lt;/td&gt;<br>
+&lt;td&gt;&lt;%=rs(&quot;message&quot;)%&gt;&lt;/td&gt;<br>
+&lt;td&gt;&lt;%=rs(&quot;time&quot;)%&gt;&lt;/td&gt;<br>
+&lt;/tr&gt;<br>
+&lt;%<br>
+rs.movenext<br>
+loop<br>
+%&gt;<br>
+&lt;/table&gt;<br>
+&lt;/body&gt;<br>
+&lt;/html&gt;<br>
+<br>
+<br>
+----------------------------<br>
+学习目的：学会数据库的基本操作4（修改记录） 先来看代码：<br>
+&lt;%<br>
+set conn=server.createobject(&quot;adodb.connection&quot;)<br>
+conn.open &quot;driver={microsoft access driver (*.mdb)};dbq=&quot;&amp;server.mappath(&quot;test.mdb&quot;)//这不是以前的一个数据库，里面就aa,bb两个字段<br>
+exec=&quot;select * from test where id=&quot;&amp;request.querystring(&quot;id&quot;)<br>
+set rs=server.createobject(&quot;adodb.recordset&quot;)<br>
+rs.open exec,conn<br>
+%&gt;<br>
+&lt;form name=&quot;form1&quot; method=&quot;post&quot; action=&quot;modifysave.asp&quot;&gt;<br>
+&lt;table width=&quot;748&quot; border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;<br>
+&lt;tr&gt; <br>
+&lt;td&gt;aa&lt;/td&gt;<br>
+&lt;td&gt;bb&lt;/td&gt;<br>
+&lt;/tr&gt;<br>
+&lt;tr&gt; <br>
+&lt;td&gt;<br>
+&lt;input type=&quot;text&quot; name=&quot;aa&quot; &amp;#118alue=&quot;&lt;%=rs(&quot;aa&quot;)%&gt;&quot;&gt;<br>
+&lt;/td&gt;<br>
+&lt;td&gt;<br>
+&lt;input type=&quot;text&quot; name=&quot;bb&quot; &amp;#118alue=&quot;&lt;%=rs(&quot;bb&quot;)%&gt;&quot;&gt;<br>
+&lt;input type=&quot;submit&quot; name=&quot;Submit&quot; &amp;#118alue=&quot;提交&quot;&gt;<br>
+&lt;input type=&quot;hidden&quot; name=&quot;id&quot; &amp;#118alue=&quot;&lt;%=request.querystring(&quot;id&quot;)%&gt;&quot;&gt;<br>
+&lt;/td&gt;<br>
+&lt;/tr&gt;<br>
+&lt;/table&gt;<br>
+&lt;/form&gt;<br>
+&lt;%<br>
+rs.close<br>
+set rs=nothing<br>
+conn.close<br>
+set conn=nothing<br>
+%&gt;<br>
+大家到现在应该分析这个代码没有什么问题，这个代码的作用是接受前面一个页面的ID然后显示这条记录，文本框即是输入的地方也是显示的地方，如果需要修改的话修改以后按提交；如果不需要修改就可以直接按提交按钮。这里还有一个东西以前没有说，那就是隐藏的表单元素：hidden元素，里面的&amp;#118alue是不用用户输入的，会随着表单一起提交，用于传递变量。下面是modifysave.asp的代码：<br>
+&lt;%<br>
+set conn=server.createobject(&quot;adodb.connection&quot;)<br>
+conn.open &quot;driver={microsoft access driver (*.mdb)};dbq=&quot;&amp;server.mappath(&quot;test.mdb&quot;)<br>
+exec=&quot;select * from test where id=&quot;&amp;request.form(&quot;id&quot;)<br>
+set rs=server.createobject(&quot;adodb.recordset&quot;)<br>
+rs.open exec,conn,1,3<br>
+rs(&quot;aa&quot;)=request.form(&quot;aa&quot;)<br>
+rs(&quot;bb&quot;)=request.form(&quot;bb&quot;)<br>
+rs.update<br>
+rs.close<br>
+set rs=nothing<br>
+conn.close<br>
+set conn=nothing<br>
+%&gt;<br>
+在这里，rs.open exec,conn,1,3后面的参数是1，3，这我以前提过，修改记录就要用1，3。实际上修改记录很容易看懂，记录集是rs，rs(&quot;aa&quot;)就是当前记录aa字段的东西，让它等于新的数据request.form(&quot;aa&quot;)当然就修改了，不过最后别忘记保存，那就是rs.update！ 说到这里，记录的搜索，读取，修改，插入都说了，通过这最基本的东西就可以作出复杂的东西了，外面的大型数据库：新闻系统，留言簿就是字段多一点罢了。今天的示例中的代码是结合以前的数据库的，大家调试分析一下。<br>
+-------------------------------------------------<br>
+<br>
+学习目的：基本的SESSION组件，总结response，request组件。<br>
+首先，有会员系统的任何程序都会用到检测是不是用户已经登陆这个步骤。这就用到了SESSION组件，下面我们 看一个代码来说明。<br>
+&lt;%<br>
+session(&quot;islogin&quot;)=&quot;yes&quot;<br>
+%&gt;<br>
+这句话的意思就是在session里面定义一个islogin字符串变量，值为&quot;yes&quot;，直接可以赋值，不需要声明。是不是很简单？<br>
+如果我们做管理员登陆系统的话，首先是一段检测是不是管理员<br>
+if 是 then <br>
+session(&quot;isadmin&quot;)=yes&quot;<br>
+else <br>
+session(&quot;isadmin&quot;)=&quot;no&quot;<br>
+end if<br>
+在每一个需要管理员才能看的页面最前面加上<br>
+&lt;%<br>
+if not session(&quot;isaadmin&quot;)=&quot;yes&quot;then<br>
+response.redirect &quot;login.htm&quot;<br>
+%&gt;<br>
+这样一般用户就无法打开这个页面。解释一下response.redirect，它是转向的意思，后面的&quot;login.htm&quot;就是转向的文件。这样没有登陆的管理员是无法看到后面的内容的。<br>
+下面总结一下<br>
+response组件基本就是用到response.write ()，response.redirect() 分别是写字符串和转向的作用<br>
+request基本就是request.form()，request.querystring() 分别是接受post,get方法传来的信息<br>
+学习目的：分页技术，总结<br>
+我们学习一下ASP里面稍微难一点地分页技术，毕竟当我们有N条记录的时候我们不可能把所有记录显示在一个页面里面吧。<br>
+&lt;%<br>
+exec=&quot;select * from test&quot;<br>
+set rs=server.createobject(&quot;adodb.recordset&quot;)<br>
+rs.open exec,conn,1,1<br>
+rs.PageSize=3<br>
+pagecount=rs.PageCount <br>
+page=int(request.QueryString (&quot;page&quot;))<br>
+if page&lt;=0 then page=1<br>
+if request.QueryString(&quot;page&quot;)=&quot;&quot; then page=1<br>
+rs.AbsolutePage=page <br>
+%&gt;<br>
+rs.pagesize设置一个页面里面显示的记录数，pagecount是我们自己定义的一个变量，rs.pagecount是记录的个数，page也是我们自己定义的一个变量，我们下一页的链接可以设置为list.asp?page=&lt;%=page+1%&gt;，下一页的链接可以设置为list.asp?page=&lt;%=page-1%&gt;，这样当按下链接的时候调用页面自己，page这个变量就+1或者-1了，最后我们让rs.absolutepage（当前页面）为第page页就可以了。<br>
+if request.QueryString(&quot;page&quot;)=&quot;&quot; then page=1，这句话的作用就是我们打开list.asp的时候没有跟随page变量，自动设置为page=1，防止出错，还有当我们if....then...放在一行的时候end if可以省略。是不是分页也不难？<br>
+下面说一种特殊情况：<br>
+if page=1 and not page=pagecount，这个时候没有上一页，但是有下一页<br>
+elseif page=pagecount and not page=1，这个时候没有下一页，但是有上一页<br>
+elseif page&lt;1，这个时候没有任何记录<br>
+elseif page&gt;pagecount then，这个时候没有任何记录<br>
+elseif page=1 and page=pagecount，这个时候没有上一页，没有下一页<br>
+else，这个时候有上一页，也有下一页。<br>
+下面看一段显示1到n页，且每一个数字点击以后就出现这个数在代表的页面的代码，很常见哦。<br>
+&lt;%for i=1 to pagecount%&gt;<br>
+&lt;a href=&quot;list.asp?page=&lt;%=i%&gt;&quot;&gt;&lt;%=i%&gt;&lt;/a&gt;&lt;%next%&gt;<br>
+for....next是循环从i=1开始，循环一次加1到pagecount为止。<br>
+test.mdb数据库，里面有aa，bb两个字段：aa数字型只能接受数字，bb是字符型。 <br>
+--------------------------------------<br>
+以上是数据库的基本操作,是建立在数据库ACCESS上的!大家可以去试一试,我做了,恩，还是比较成功的!<br></div></body></html>

@@ -1,0 +1,113 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>禁止ip访问代码</title></head><body><h1>禁止ip访问代码</h1><div><p>&lt;% <br>
+''获取访问者的地址 <br>
+ip=Request.ServerVariables(&quot;REMOTE_ADDR&quot;)</p>
+<p>''允许的IP地址段为10.0.0.0～10.68.63.255 <br>
+allowip1=&quot;192.0.0.0&quot; <br>
+allowip2=&quot;1192.168.255.71&quot; <br>
+response.write checkip(ip,allowip1,allowip2) <br>
+function checkip(ip,allowip1,allowip2) <br>
+dim check(4) <br>
+checkip=false <br>
+ipstr=split(ip,&quot;.&quot;) <br>
+allow1=split(allowip1,&quot;.&quot;) <br>
+allow2=split(allowip2,&quot;.&quot;) <br>
+if cint(allow1(0))&gt;cint(allow2(0)) then ''判断IP地址段是否合法 <br>
+response.write &quot;禁止访问&quot; <br>
+exit function <br>
+end if <br>
+for i=0 to ubound(ipstr) <br>
+if cint(allow1(i))&lt;cint(allow2(i)) then <br>
+if cint(allow1(i))=cint(ipstr(i)) then <br>
+check(i)=true <br>
+checkip=true <br>
+exit for <br>
+else <br>
+if cint(ipstr(i))&lt;cint(allow2(i)) then <br>
+check(i)=true <br>
+checkip=true <br>
+exit for <br>
+else <br>
+if cint(ipstr(i))&gt;cint(allow2(i)) then <br>
+check(i)=false <br>
+checkip=false <br>
+exit for <br>
+else <br>
+check(i)=true <br>
+checkip=true <br>
+end if <br>
+end if <br>
+end if <br>
+else <br>
+if cint(allow1(i))&gt;cint(ipstr(i)) or cint(allow1(i))&lt;cint(ipstr(i)) then <br>
+check(i)=false <br>
+checkip=false <br>
+if i&lt;&gt;ubound(ipstr) then <br>
+exit for <br>
+end if <br>
+else <br>
+check(i)=true <br>
+end if <br>
+end if <br>
+next <br>
+if (check(0)=true and check(1)=true and check(2)=true and check(3)=false) and (cint(allow2(2))&gt;cint(ipstr(2))) then <br>
+checkip=true <br>
+end if <br>
+end function <br>
+%&gt;</p>
+<p>-------------------------------------</p>
+<p>要完成此效果把如下代码加入到&lt;head&gt;区域中</p>
+<p>&lt;SCRIPT LANGUAGE=&quot;JavaScript&quot;&gt;<br>
+&lt;!-- Begin<br>
+netscape = (navigator.appName.indexOf(&quot;Netscape&quot;) != -1);<br>
+version4 = (navigator.appVersion.indexOf(&quot;4.&quot;) != -1);</p>
+<p>if (netscape &amp;&amp; version4) { <br>
+ip = &quot;&quot; + java.net.InetAddress.getLocalHost().getHostAddress();<br>
+if (ip.indexOf(&quot;235.12&quot;) &gt;= -1)  <br>
+// 这是想要禁止访问的IP例如: 235.12.xxx.xxx</p>
+<p>&nbsp;&nbsp;  {<br>
+&nbsp;&nbsp;  alert(&quot;You are not permitted to access this site.&quot;);<br>
+&nbsp;&nbsp;  history.go(-1);<br>
+&nbsp;&nbsp;  }<br>
+}<br>
+//  End --&gt;<br>
+&lt;/script&gt;</p>
+<p>--------------------------------</p>
+<p>&lt;%<br>
+function IP2Num(sip)<br>
+dim str1,str2,str3,str4<br>
+dim num<br>
+IP2Num=0<br>
+if isnumeric(left(sip,2)) then<br>
+str1=left(sip,instr(sip,&quot;.&quot;)-1)<br>
+sip=mid(sip,instr(sip,&quot;.&quot;)+1)<br>
+str2=left(sip,instr(sip,&quot;.&quot;)-1)<br>
+sip=mid(sip,instr(sip,&quot;.&quot;)+1)<br>
+str3=left(sip,instr(sip,&quot;.&quot;)-1)<br>
+str4=mid(sip,instr(sip,&quot;.&quot;)+1)<br>
+num=cint(str1)*256*256*256+cint(str2)*256*256+cint(str3)*256+cint(str4)-1<br>
+IP2Num = num<br>
+end if<br>
+end function<br>
+<br>
+function Num2IP(nip)<br>
+iip1 = int(nip/256/256/256)<br>
+iip2 = int((nip-iip1*256*256*256)/256/256)<br>
+iip3 = int((nip-iip1*256*256*256-iip2*256*256)/256)<br>
+iip4 = int((nip-iip1*256*256*256-iip2*256*256-iip3*256) mod 256)<br>
+iip0 = iip1 &amp;&quot;.&quot;&amp; iip2 &amp; &quot;.&quot; &amp;iip3 &amp;&quot;.&quot;&amp; iip4<br>
+Num2IP = iip0<br>
+end function<br>
+<br>
+userIPnum = IP2Num(Request.ServerVariables(&quot;REMOTE_ADDR&quot;))<br>
+<br>
+if userIPnum &gt; IP2Num(&quot;192.168.3.0&quot;) and userIPnum &lt; IP2Num(&quot;192.168.3.255&quot;) then<br>
+response.write (&quot;&lt;center&gt;此IP被禁止&lt;/center&gt;&quot;)<br>
+response.end<br>
+'页面ASP解释结束<br>
+end if<br>
+%&gt;<br>
+显示内容<br>
+====================================================<br>
+<br>
+上例是禁止192.168.3.0&mdash;&mdash;192.168.3.255之内的所有IP看到下面的&ldquo;显示内容&rdquo;。<br>
+如果是要禁止访问整个页面，那只需要把这段代码放到开头就可以限制访问页面了</p></div></body></html>

@@ -1,0 +1,24 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>搜索结果高亮显示关键词的函数</title></head><body><h1>搜索结果高亮显示关键词的函数</h1><div><div class="t_msgfont" style="padding-right: 5px; padding-left: 5px; padding-bottom: 5px; padding-top: 5px">如:要检索abc，结果显示akjdfdkcdb,如何才能让其中的abc显示为红色。</div>
+<p>函数如下:</p>
+<p>function highLight($str, $keywords, $color = &quot;red&quot;) {<br>
+    if (empty($keywords)) {<br>
+  &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp; return $str;<br>
+    }<br>
+    $keywords = split(&quot;[ \t\r\n,]+&quot;, $keywords);<br>
+    $str_begin = &quot;##~~##~&quot;;<br>
+    $str_end   = &quot;~##~~##&quot;;<br>
+    foreach($keywords as $val) {<br>
+  &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp; $tvar = preg_quote($val);<br>
+  &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp; $tvar = str_replace('/', '\/', $tvar);<br>
+  &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp; $patterns[]    = &quot;/(&quot; . $tvar . &quot;)/&quot;;<br>
+  &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp; $replacement[] = $str_begin . urlencode($val) . $str_end;<br>
+  &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp; $tvar = preg_quote(urlencode($val));<br>
+  &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp; $tvar = str_replace('/', '\/', $tvar);<br>
+  &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp; $tmppattern[]&nbsp;&nbsp; = &quot;/(&quot; . $str_begin . $tvar . $str_end . &quot;)/&quot;;<br>
+  &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp; $finalrep[]    = &quot;&lt;span style='color:&quot; . $color . &quot;'&gt;&quot; . $val . &quot;&lt;/span&gt;&quot;;<br>
+    }<br>
+    $str = preg_replace($patterns, $replacement, $str);<br>
+    $str = preg_replace($tmppattern, $finalrep, $str);<br>
+    return $str;<br>
+}</p>
+<br></div></body></html>

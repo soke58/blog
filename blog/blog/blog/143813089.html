@@ -1,0 +1,91 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>asp制作搜索引擎</title></head><body><h1>asp制作搜索引擎</h1><div>用ASP实现搜索引擎的功能是一件很方便的事，可是，如何实现类似3721的智能搜索呢？比如，当在搜索条件框内输入&ldquo;中国人民&rdquo;时，自动从中提取&ldquo;中国&rdquo;、&ldquo;人民&rdquo;等关键字并在数据库内进行搜索。看完本文后，你就可以发现，这个功能实现起来竟然是如此的简单。OK，Follow   Me！     <br>
+  第一步，我们要建立一个名为db_sample.mdb的数据库（本文以Access2000数据库为例），并在其中建立表T_Sample。表T_Sample包括如下字段：     <br>
+  ID   自动编号     <br>
+  U_Name   文本     <br>
+  U_Info   备注     <br>
+  第二步，我们开始设计搜索页面Search.asp。该页面包括一个表单（Frm_Search），表单内包括一个文本框和一个提交按钮。并将表单的method属性设为&ldquo;get&rdquo;   ，action属性设为&ldquo;Search.asp&quot;，即提交给网页自身。代码如下：     <br>
+  &lt;!--   Search.asp   --&gt;     <br>
+  &lt;form   name=&quot;frm_Search&quot;   method=&quot;get&quot;   action=&quot;Search.asp&quot;&gt;     <br>
+  请输入关键字：     <br>
+  &lt;input   type=&quot;text&quot;   name=&quot;key&quot;   size=&quot;10&quot;&gt;     <br>
+  &lt;input   type=&quot;submit&quot;   value=&quot;搜索&quot;&gt;     <br>
+  &lt;/form&gt;     <br>
+  下面，就进入了实现智能搜索的关键部分。     <br>
+  首先，建立数据库连接。在Search.asp的开始处加入如下代码：     <br>
+  &lt;%     <br>
+  Dim   strProvider,CNN     <br>
+  strProvider=&quot;Provider=Microsoft.Jet.OLEDB.4.0;Data   Source=&quot;     <br>
+  strProvider=strProvider   &amp;   Server.MapPath(&quot;\&quot;)   &amp;   &quot;\data\db_Sample.mdb&quot;   ''假设数据库存放在主页根目录下的data目录下     <br>
+  Set   CNN   =   Server.CreateObject(&quot;ADODB.connection&quot;)     <br>
+  CNN.Open   strProvider   ''打开数据库连接     <br>
+  %&gt;     <br>
+  接下来，判断   ASP页所接收到的数据，并在数据库中进行搜索。     <br>
+  &lt;%     <br>
+  Dim   S_Key,RST,StrSQL     <br>
+  S_Key   =   Trim(Request(&quot;key&quot;))   ''得到搜索关键字的值     <br>
+  If   S_Key   &lt;&gt;&quot;&quot;   then     <br>
+  Set   RST=Server.CreateObject(&quot;ADODB.RecordSet&quot;)     <br>
+  StrSQL=AutoKey(S_Key)   ''此处使用自定义函数   AutoKey()，该函数为实现智能搜索的核心     <br>
+  RST.Open   StrSQL,CNN,3,2   ''得到搜索后的记录     <br>
+    <br>
+  If   RST.BOF   And   RST.EOF   Then     <br>
+  %&gt;     <br>
+  &lt;font   color=&quot;#FF0000&quot;&gt;未找到任何结果！！！&lt;/font&gt;     <br>
+  &lt;%     <br>
+  Else     <br>
+  %&gt;     <br>
+  搜索名称为&ldquo;&lt;font   color=&quot;#FF0000&quot;&gt;&lt;%=   S_Key   %&gt;&lt;/font&gt;&rdquo;的项，共找到   &lt;font   color=&quot;#FF0000&quot;&gt;&lt;%=   RST.RecordCount   %&gt;&lt;/font&gt;   项：&lt;p&gt;     <br>
+  &lt;%     <br>
+  While   Not   RST.EOF   ''遍历整个记录集，显示搜索到的信息并设置链接     <br>
+  %&gt;     <br>
+  &lt;!--   此处可设为你所需要的链接目标   --&gt;     <br>
+  &lt;font   style=&quot;font:   12pt   宋体&quot;&gt;&lt;a   href=&quot;info.asp?ID=&lt;%=   RST(&quot;ID&quot;)   %&gt;&quot;   target=&quot;_blank&quot;&gt;&lt;%=   RST(&quot;U_Name&quot;)   %&gt;&lt;/a&gt;&lt;/font&gt;   <br>
+    <br>
+  &lt;!--   显示部分详细内容   --&gt;     <br>
+  &lt;font   style=&quot;font:   9pt   宋体&quot;&gt;&lt;%=   Left(RST(&quot;U_Info&quot;),150)   %&gt;&lt;/font&gt;&lt;p&gt;     <br>
+  &lt;%     <br>
+  RST.MoveNext     <br>
+  Wend     <br>
+  RST.Close     <br>
+  Set   RST=Nothing     <br>
+  End   If     <br>
+  End   If     <br>
+  %&gt;     <br>
+  在上面的代码中，有一个自定义函数   AutoKey   ，该函数是实现智能搜索的核心所在。代码如下：     <br>
+  &lt;%     <br>
+  Function   AutoKey(strKey)     <br>
+  CONST   lngSubKey=2     <br>
+  Dim   lngLenKey,   strNew1,   strNew2,   i,   strSubKey     <br>
+    <br>
+  ''检测字符串的合法性，若不合法则转到出错页。出错页你可以根据需要进行设定。     <br>
+  if   InStr(strKey,&quot;=&quot;)&lt;&gt;0   or   InStr(strKey,&quot;`&quot;)&lt;&gt;0   or   InStr(strKey,&quot;''&quot;)&lt;&gt;0   or   InStr(strKey,&quot;   &quot;)&lt;&gt;0   or   InStr(strKey,&quot;　&quot;)&lt;&gt;0   or   InStr(strKey,&quot;''&quot;)&lt;&gt;0   or   InStr(strKey,chr(34))&lt;&gt;0   or   InStr(strKey,&quot;\&quot;)&lt;&gt;0   or   InStr(strKey,&quot;,&quot;)&lt;&gt;0   or   InStr(strKey,&quot;&lt;&quot;)&lt;&gt;0   or   InStr(strKey,&quot;&gt;&quot;)&lt;&gt;0   then     <br>
+  Response.Redirect   &quot;error.htm&quot;     <br>
+  End   If     <br>
+    <br>
+  lngLenKey=Len(strKey)     <br>
+  Select   Case   lngLenKey     <br>
+  Case   0   ''若为空串，转到出错页     <br>
+  Response.Redirect   &quot;error.htm&quot;     <br>
+  Case   1   ''若长度为1，则不设任何值     <br>
+  strNew1=&quot;&quot;     <br>
+  strNew2=&quot;&quot;     <br>
+  Case   Else   ''若长度大于1，则从字符串首字符开始，循环取长度为2的子字符串作为查询条件     <br>
+  For   i=1   To   lngLenKey-(lngSubKey-1)     <br>
+  strSubKey=Mid(strKey,i,lngSubKey)     <br>
+  strNew1=strNew1   &amp;   &quot;   or   U_Name   like   ''%&quot;   &amp;   strSubKey   &amp;   &quot;%''&quot;     <br>
+  strNew2=strNew2   &amp;   &quot;   or   U_Info   like   ''%&quot;   &amp;   strSubKey   &amp;   &quot;%''&quot;     <br>
+  Next     <br>
+  End   Select     <br>
+    <br>
+  ''得到完整的SQL语句     <br>
+  AutoKey=&quot;Select   *   from   T_Sample   where   U_Name   like   ''%&quot;   &amp;   strKey   &amp;   &quot;%''   or   U_Info   like   ''%&quot;   &amp;   strKey   &amp;   &quot;%''&quot;   &amp;   strNew1   &amp;   strNew2     <br>
+    <br>
+  End   Function     <br>
+  %&gt;     <br>
+  要实现智能搜索，其核心就是将搜索关键字进行自动分组。在此处，我们使用了循环取长度为2的子串的方法。为什么不将子串长度定为1、3、4或其他呢？这是因为若子串长度小于2即为1时，会失去将关键字分组的功能，而若子串长度大于2，则会丢失一些词组。大家可以将   CONST   lngSubKey=2改为其他数字试一试，孰优孰劣自见分晓。     <br>
+  最后，别忘了将数据连接关闭，以释放资源。     <br>
+  &lt;%     <br>
+  CNN.Close     <br>
+  Set   CNN=Nothing     <br>
+  %&gt;     <br>
+  至此，这个智能搜索引擎已经完成了。你还可以将其继续完善，比如添加分页、突出显示等功能。好了，不耽误大家时间了，赶快去试一试吧。</div></body></html>

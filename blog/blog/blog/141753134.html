@@ -1,0 +1,141 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>ASP数据库简单操作教程</title></head><body><h1>ASP数据库简单操作教程</h1><div>&lt;1 &gt;.数据库连接(用来单独编制连接文件conn.asp) <br>
+&lt; % <br>
+Set conn = Server.createObject(&quot;ADODB.Connection&quot;) <br>
+conn.Open &quot;DRIVER={Microsoft Access Driver (*.mdb)}; DBQ=&quot; &amp; Server.MapPath(&quot;\bbs\db1\user.mdb&quot;) <br>
+% &gt; <br>
+(用来连接bbs\db1\目录下的user.mdb数据库) <br>
+&lt;2 &gt;显示数据库记录 <br>
+<br>
+原理：将数据库中的记录一一显示到客户端浏览器，依次读出数据库中的每一条记录 <br>
+如果是从头到尾：用循环并判断指针是否到末 使用: not rs.eof <br>
+如果是从尾到头：用循环并判断指针是否到开始 使用：not rs.bof <br>
+<br>
+&lt; ! --＃i nclude file=conn.asp-- &gt; (包含conn.asp用来打开bbs\db1\目录下的user.mdb数据 <br>
+库) <br>
+&lt; % <br>
+set rs=server.createObject(&quot;adodb.recordset&quot;) (建立recordset对象) <br>
+sqlstr=&quot;select * from message&quot; ---- &gt;(message为数据库中的一个数据表，即你要显示的 <br>
+数据所存放的数据表) <br>
+rs.open sqlstr,conn,1,3 ---- &gt;(表示打开数据库的方式) <br>
+rs.movefirst ---- &gt;(将指针移到第一条记录) <br>
+while not rs.eof ---- &gt;(判断指针是否到末尾) <br>
+response.write(rs(&quot;name&quot;)) ---- &gt;(显示数据表message中的name字段) <br>
+rs.movenext ---- &gt;(将指针移动到下一条记录) <br>
+wend ---- &gt;(循环结束) <br>
+------------------------------------------------------ <br>
+rs.close <br>
+conn.close 这几句是用来关闭数据库 <br>
+set rs=nothing <br>
+set conn=nothing <br>
+------------------------------------------------------- <br>
+% &gt; <br>
+其中response对象是服务器向客户端浏览器发送的信息 <br>
+&lt;3 &gt;增加数据库记录 <br>
+增加数据库记录用到rs.addnew,rs.update两个函数 <br>
+<br>
+&lt; !--＃i nclude file=conn.asp-- &gt; (包含conn.asp用来打开bbs\db1\目录下的user.mdb数据 <br>
+库) <br>
+&lt; % <br>
+set rs=server.createObject(&quot;adodb.recordset&quot;) (建立recordset对象) <br>
+sqlstr=&quot;select * from message&quot; ---- &gt;(message为数据库中的一个数据表，即你要显示的 <br>
+数据所存放的数据表) <br>
+rs.open sqlstr,conn,1,3 ---- &gt;(表示打开数据库的方式) <br>
+rs.addnew 新增加一条记录 <br>
+rs(&quot;name&quot;)=&quot;xx&quot; 将xx的值传给name字段 <br>
+rs.update 刷新数据库 <br>
+------------------------------------------------------ <br>
+rs.close <br>
+conn.close 这几句是用来关闭数据库 <br>
+set rs=nothing <br>
+set conn=nothing <br>
+------------------------------------------------------- <br>
+% &gt; <br>
+.&lt;4 &gt;删除一条记录 <br>
+删除数据库记录主要用到rs.delete,rs.update <br>
+&lt; !--＃i nclude file=conn.asp-- &gt; (包含conn.asp用来打开bbs\db1\目录下的user.mdb数据 <br>
+库) <br>
+&lt; % <br>
+dim name <br>
+name=&quot;xx&quot; <br>
+set rs=server.createObject(&quot;adodb.recordset&quot;) (建立recordset对象) <br>
+sqlstr=&quot;select * from message&quot; ---- &gt;(message为数据库中的一个数据表，即你要显示的数据所存放的数据表) <br>
+rs.open sqlstr,conn,1,3 ---- &gt;(表示打开数据库的方式) <br>
+------------------------------------------------------- <br>
+while not rs.eof <br>
+if rs.(&quot;name&quot;)=name then <br>
+rs.delete <br>
+rs.update 查询数据表中的name字段的值是否等于变量name的值&quot;xx&quot;，如果符合就执行删 <br>
+除， <br>
+else 否则继续查询,直到指针到末尾为止 <br>
+rs.movenext <br>
+emd if <br>
+wend <br>
+------------------------------------------------------ <br>
+------------------------------------------------------ <br>
+rs.close <br>
+conn.close 这几句是用来关闭数据库 <br>
+set rs=nothing <br>
+set conn=nothing <br>
+------------------------------------------------------- <br>
+% &gt; <br>
+&lt;5 &gt;关于数据库的查询 <br>
+(a) 查询字段为字符型 <br>
+&lt; % <br>
+dim user,pass,qq,mail,message <br>
+user=request.form(&quot;user&quot;) <br>
+pass=request.form(&quot;pass&quot;) <br>
+qq=request.form(&quot;qq&quot;) <br>
+mail=request.form(&quot;mail&quot;) <br>
+message=request.form(&quot;message&quot;) <br>
+if trim(user)&amp;&quot;x&quot;=&quot;x&quot; or trim(pass)&amp;&quot;x&quot;=&quot;x&quot; then (检测user值和pass值是否为空，可以检测 <br>
+到空格) <br>
+response.write(&quot;注册信息不能为空&quot;) <br>
+else <br>
+set rs=server.createObject(&quot;adodb.recordset&quot;) <br>
+sqlstr=&quot;select * from user where user='&quot;&amp;user&amp;&quot;'&quot; (查询user数据表中的user字段其中user <br>
+字段为字符型) <br>
+rs.open sqlstr,conn,1,3 <br>
+if rs.eof then <br>
+rs.addnew <br>
+rs(&quot;user&quot;)=user <br>
+rs(&quot;pass&quot;)=pass <br>
+rs(&quot;qq&quot;)=qq <br>
+rs(&quot;mail&quot;)=mail <br>
+rs(&quot;message&quot;)=message <br>
+rs.update <br>
+rs.close <br>
+conn.close <br>
+set rs=nothing <br>
+set conn=nothing <br>
+response.write(&quot;注册成功&quot;) <br>
+end if <br>
+rs.close <br>
+conn.close <br>
+set rs=nothing <br>
+set conn=nothing <br>
+response.write(&quot;注册重名&quot;) <br>
+% &gt; <br>
+(b)查询字段为数字型 <br>
+&lt; % <br>
+dim num <br>
+num=request.form(&quot;num&quot;) <br>
+set rs=server.createObject(&quot;adodb.recordset&quot;) <br>
+sqlstr=&quot;select * from message where id=&quot;&amp;num (查询message数据表中id字段的值是否与 <br>
+num相等，其中id为数字型) <br>
+rs.open sqlstr,conn,1,3 <br>
+if not rs.eof then <br>
+rs.delete <br>
+rs.update <br>
+rs.close <br>
+conn.close <br>
+set rs=nothing <br>
+set conn=nothing <br>
+response.write(&quot;删除成功&quot;) <br>
+end if <br>
+rs.close <br>
+conn.close <br>
+set rs=nothing <br>
+set conn=nothing <br>
+response.write(&quot;删除失败&quot;) <br>
+% &gt; <br>
+%&gt; <br></div></body></html>

@@ -1,0 +1,274 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>用asp制作强大的搜索引擎(2）</title></head><body><h1>用asp制作强大的搜索引擎(2）</h1><div><p><br>
+&nbsp;&nbsp;&nbsp;  以上呢在文本框输入多个关键字，中间用空格隔开，然后点击搜索按钮，这样做的目的是什么呢？大家开动一下脑筋，我们是不是在缩小搜索的范围，即搜索出来的结果中既包含&ldquo;网人&rdquo;，又包含&ldquo;教程&rdquo;、&ldquo;交流&rdquo;、&ldquo;图书&rdquo;这些关键字。当然关键字之间的间隔符不仅可以是空格，还可以是&ldquo;，&rdquo;&ldquo;、&rdquo;等等，一般来说空格比较方面输入，你说呢！<br>
+&nbsp;&nbsp;&nbsp;  在书写实现这个功能的过程中，我们会使用几个非常重要的asp函数，先来了解一下：<br>
+split()</p>
+<p>-函数将一个字符串分割并返回分割结果</p>
+<p>表达式 split (s[，d])</p>
+<p>实例：&lt;%v= split(a,b,c)</p>
+<p>for i = 0 to ubound(v)</p>
+<p>response.write v(i)</p>
+<p>next</p>
+<p>%&gt;</p>
+<p>返回结果: a b c</p>
+<p>ubound()</p>
+<p>函数返回指定数组维数的最大可用下标&gt;.</p>
+<p>表达式 ubound(arrayname [, dimension])</p>
+<p>实例： &lt;%</p>
+<p>i = array(&quot;monday&quot;,&quot;tuesday&quot;,&quot;wednesday&quot;)</p>
+<p>response.write ubound(i)</p>
+<p>%&gt;</p>
+<p>返回结果: 2 <br>
+rtrim()</p>
+<p>函数去掉字符串右边的字符串.</p>
+<p>表达式 rtrim(string) </p>
+<p>ltrim()</p>
+<p>函数去掉字符串左边的空格.</p>
+<p>表达式 ltrim(string) <br>
+replace() <br>
+函数replace（）是最有用的字符串函数之一。你可以使用replace（）函数，以一个字符串取代另一个字符串的一部分。<br>
+下面咱们来看看实现的方法和代码：<br>
+searchdata=request(&quot;t1&quot;) '从文本框中获得输入的关键字<br>
+if trim(searchdata)=&quot;&quot; then '如果没有关键字的输入或者只输入的空格，警告！<br>
+response.write &quot;&lt;script&gt;alert('请输入查询搜索关键字！');history.back();&lt;/script&gt;&quot;<br>
+response.end</p>
+<p>end if <br>
+searchdata=replace(searchdata,&quot;'&quot;,&quot;&rsquo;&quot;)'将获得的字符串中英文单引号换成中文单引号<br>
+searchdata=rtrim(ltrim(searchdata))'去掉获得的字符串最左边空格和最右边空格</p>
+<p>sql1=&quot;&quot; '网站关键字匹配sql语句<br>
+sql2=&quot;&quot; '网站标题匹配sql语句<br>
+sql3=&quot;&quot; '网站简要说明匹配sql语句<br>
+searchdatatmp=split(searchdata,&quot; &quot;) '将输入的字符串根据空格分开，获得一个数组<br>
+max=ubound(searchdatatmp) '得出这个数组的维数，即输入的关键字个数<br>
+if max=0 then '如果max等于0说明只输入了一个关键字，那么就不需要循环处理<br>
+sql1=sql1&amp;&quot; key like '%&quot; &amp; searchdatatmp(i) &amp; &quot;%' &quot; '网站关键字模糊搜索<br>
+sql2=sql2&amp;&quot; sitename like '%&quot; &amp; searchdatatmp(i) &amp; &quot;%' &quot; '网站标题模糊搜索<br>
+sql3=sql3&amp;&quot; faq like '%&quot; &amp; searchdatatmp(i) &amp; &quot;%' &quot; '网站简要说明搜索<br>
+else '如果含有多个关键字，采用循环处理sql语句<br>
+for i=0 to max '如果关键字很多，我们要求每一个搜索都要匹配每一个关键字，通过循环来实现<br>
+if i=0 then '写入下面sql语句作为开头，仔细研究一下下面的代码<br>
+sql1=sql1&amp;&quot; (key like '%&quot; &amp; searchdatatmp(i) &amp; &quot;%' and &quot;<br>
+sql2=sql2&amp;&quot; (sitename like '%&quot; &amp; searchdatatmp(i) &amp; &quot;%' and &quot;<br>
+sql3=sql3&amp;&quot; (faq like '%&quot; &amp; searchdatatmp(i) &amp; &quot;%' and &quot;<br>
+else<br>
+if i=max then '如果循环到最后一个关键字，写入下面sql语句作为结尾<br>
+sql1=sql1&amp;&quot; key like '%&quot; &amp; searchdatatmp(i) &amp; &quot;%') &quot;<br>
+sql2=sql2&amp;&quot; sitename like '%&quot; &amp; searchdatatmp(i) &amp; &quot;%') &quot;<br>
+sql3=sql3&amp;&quot; faq like '%&quot; &amp; searchdatatmp(i) &amp; &quot;%') &quot;<br>
+else '如果关键自己不是开头的也不是结尾的，那么循坏写入下面的sql语句<br>
+sql1=sql1&amp;&quot; key like '%&quot; &amp; searchdatatmp(i) &amp; &quot;%' and &quot;<br>
+sql2=sql2&amp;&quot; sitename like '%&quot; &amp; searchdatatmp(i) &amp; &quot;%' and &quot;<br>
+sql3=sql3&amp;&quot; faq like '%&quot; &amp; searchdatatmp(i) &amp; &quot;%' and &quot;<br>
+end if<br>
+end if<br>
+next '循环结束<br>
+end if<br>
+sql=&quot;select * from www where &quot;&amp;sql1&amp;&quot; or &quot;&amp;sql2&amp;&quot; or &quot;&amp;sql3<br>
+response.write sql '看看我们这个代码运行的结果是否正确<br>
+&nbsp;&nbsp;&nbsp;  在文本框中输入&ldquo;网人 俱乐部&rdquo;，然后点击搜索，记住表单的action=&quot;文件名&quot;，这个文件里包含以上的代码。<br>
+&nbsp;&nbsp;&nbsp;  执行结果：select * from www where (key like '%网人%' and key like '%俱乐部%') or (sitename like '%网人%' and sitename like '%俱乐部%') or (faq like '%网人%' and faq like '%俱乐部%')<br>
+&nbsp;&nbsp;&nbsp;  可以看出我们写的代码是正确的了。下一节我们讲解搜索出结果如果排序，以及怎么实现！<br>
+ <br>
+分页显示<br>
+&nbsp;&nbsp;  关于分页显示，样式很多，比如动网的分页显示、google的分页显示，就我的网站里关于分页的样式就有很多，而这里我们实现的分页基本类似于<a href="http://www.china-sd.net/yahoo">www.china-sd.net/yahoo</a>，大家可以去看看！<br>
+&nbsp;&nbsp;&nbsp;  说明：显示&ldquo;页次/总页数&rdquo;；显示&ldquo;1...&rdquo;页数，最多显示十页；&ldquo;&lt;&lt;&rdquo;显示前十页，&ldquo;&gt;&gt;&rdquo;显示后十页。这样我们可以很方便的显示每一页的资料信息，而且还保持了页面的整洁美观。<br>
+&nbsp;&nbsp;&nbsp;  实现：<br>
+1、初始化页次：<br>
+if request.querystring(&quot;curpage&quot;) = &quot;&quot; or request.querystring(&quot;curpage&quot;) = 0 then <br>
+curpage = 1 <br>
+else <br>
+curpage = cint(request(&quot;curpage&quot;)) <br>
+end if <br>
+2、获得页数：<br>
+rs.pagesize=20 '每页显示的记录数<br>
+dim totalpages <br>
+totalpages = rs.pagecount '获得总页数<br>
+if curpage&gt;rs.pagecount then <br>
+curpage=rs.pagecount <br>
+end if <br>
+rs.absolutepage=curpage <br>
+rs.cachesize = rs.pagesize <br>
+dim totalcount <br>
+totalcount =int(rs.recordcount)<br>
+3、分页显示的实现：</p>
+<p>○页次： &lt;%=curpage%&gt; / &lt;%=totalpages%&gt;<br>
+&lt;%if int(int(curpage/10)*10+9)&gt;totalpages then <br>
+topages=totalpages <br>
+else <br>
+topages=int(int(curpage/10)*10+9) <br>
+end if <br>
+if curpage/10 &lt; 1 then <br>
+frompages=1 <br>
+else <br>
+frompages=int(curpage/10)*10 <br>
+end if %&gt; <br>
+&lt;td width=&quot;50%&quot; align=&quot;right&quot;&gt;页数： &lt;a href=&quot;search.aspcurpage=&lt;%=frompages-1%&gt;&amp;t1=&lt;%=searchdata%&gt;&quot;&gt;&amp;lt;&amp;lt;&lt;/a&gt; <br>
+&lt;% <br>
+for i =frompages to topages %&gt; <br>
+&lt;a href=search.asp?curpage=&lt;%=i%&gt;&amp;t1=&lt;%=searchdata%&gt;&gt;&lt;%=i%&gt;&lt;/a&gt; <br>
+&lt;%next%&gt; <br>
+&lt;a href=&quot;search.asp?curpage=&lt;%=topages+1%&gt;&amp;t1=&lt;%=searchdata%&gt;&quot;&gt;&amp;gt;&amp;gt;&lt;/a&gt; <br>
+(&quot;&amp;lt;&amp;lt;&quot; 这个符号代表&quot;&lt;&lt;&quot;,&quot;&amp;gt;&amp;gt;&quot;这个符号代表&quot;&gt;&gt;&quot;)<br>
+当然分页显示的代码不能单独运行，它放到以前写的sql语句并且运行这个sql语句之后，所以你不必着急现在就运行这段代码。<br>
+ <br>
+统计<br>
+&nbsp;&nbsp;  大多数搜索引擎统计的数据一般是：资料的查看次数、热门的关键字。对于资料的查看次数的统计，我们以前就在数据库中添加了hot这个字段，它就是存储资料的查看次数；当我们搜索到一个资料并察看它时，我们会让hot这个字段自动加1，如此就实现了。热门的关键字的统计也是非常简单：<br>
+&nbsp;&nbsp;&nbsp;  对于关键字的统计，我们必须先建一个用来存放关键字相关数据的表，表里的字段主要是：key,keyhot；一个是记录关键字名，一个是记录关键字的出现次数。一般人们在搜索之前，首先会在文本框中输入关键字，然后点击搜索，所以运行统计关键字的代码也应存放在搜索代码之中。<br>
+&nbsp;&nbsp;&nbsp;  分析一下：在数据库中输入的关键字只有存在不存在这两个可能，存在时候我们是让它的&ldquo;keyhot&rdquo;加1(keyhot=keyhot+1),不存在的时候我们把这个关键字插入到数据库中，然后keyhot=keyhot+1，当然前提条件keyhot=0。下面我们来看看代码怎么写(表名为key)：<br>
+&nbsp;&nbsp;&nbsp;  &lt;%<br>
+set rs = server.createobject(&quot;adodb.recordset&quot;) <br>
+sqltmp=&quot;select * from key where keyn like '%&quot;&amp;searchdatakey&amp;&quot;%'&quot;<br>
+rs.open sqltmp,conn,1,3<br>
+if rs.eof and rs.bof then<br>
+rs.addnew<br>
+rs(&quot;key&quot;)=searchdatakey<br>
+else<br>
+rs(&quot;keyhot&quot;)=rs(&quot;keyhot&quot;)+1<br>
+end if<br>
+rs.update<br>
+rs.close<br>
+&nbsp;&nbsp;&nbsp;  %&gt;<br>
+&nbsp;&nbsp;&nbsp;  但如果输入文本框的字符串是多个关键字组成（字符串中含有多个空格），结合我们在多个关键字搜索一节中讲授的代码，把上边的代码放到循环语句中，这样就实现了关键字的统计；有了统计的数据以后，我们就可以在搜索引擎的首页面调出目前最热查询的关键字是什么了。<br>
+&lt;%set rs = server.createobject(&quot;adodb.recordset&quot;) <br>
+sqltmp=&quot;select top 8 key from key order by keyhot desc&quot; '写出前八个最热查询关键字<br>
+rs.open sqltmp,conn,1,1<br>
+do while not rs.eof<br>
+response.write rs(&quot;key&quot;) '输出到屏幕上<br>
+rs.movenext<br>
+loop<br>
+rs.close<br>
+%&gt;<br>
+&nbsp;&nbsp;  关于搜索引擎的功能代码基本上写完了，我们将在下节将这些代码融合在一起，供大家参考一下。其他的什么功能，大家可以任意添加，有什么好的想法，告诉我哦！<br>
+ <br>
+以下是search搜索代码：<br>
+set rs = server.createobject(&quot;adodb.recordset&quot;) <br>
+searchdata=request(&quot;t1&quot;) <br>
+if trim(searchdata)=&quot;&quot; then<br>
+response.write &quot;&lt;script&gt;alert('请输入查询搜索关键字！');history.back();&lt;/script&gt;&quot;<br>
+response.end<br>
+end if <br>
+searchdata=replace(searchdata,&quot;'&quot;,&quot;&rsquo;&quot;)<br>
+searchdata=rtrim(ltrim(searchdata))<br>
+sql1=&quot;&quot;</p>
+<p>sql2=&quot;&quot;<br>
+sql3=&quot;&quot;<br>
+searchdatatmp=split(searchdata,&quot; &quot;)<br>
+max=ubound(searchdatatmp)<br>
+if max=0 then '如果max等于0说明只输入了一个关键字，那么就不需要循环处理<br>
+sql1=sql1&amp;&quot; key like '%&quot; &amp; searchdatatmp(i) &amp; &quot;%' &quot; '网站关键字模糊搜索<br>
+sql2=sql2&amp;&quot; sitename like '%&quot; &amp; searchdatatmp(i) &amp; &quot;%' &quot; '网站标题模糊搜索<br>
+sql3=sql3&amp;&quot; faq like '%&quot; &amp; searchdatatmp(i) &amp; &quot;%' &quot; '网站简要说明搜索<br>
+else '如果含有多个关键字，采用循环处理sql语句<br>
+for i=0 to max '如果关键字很多，我们要求每一个搜索都要匹配每一个关键字，通过循环来实现<br>
+if trim(searchdatatmp(i))&lt;&gt;&quot;&quot; then<br>
+'=============================================================================<br>
+sqltmp=&quot;select * from key where keyname like '%&quot;&amp;arraysearchdata(i)&amp;&quot;%'&quot;<br>
+rs.open sqltmp,conn,1,3<br>
+if rs.eof and rs.bof then<br>
+rs.addnew<br>
+rs(&quot;keyname&quot;)=arraysearchdata(i)<br>
+else<br>
+rs(&quot;keyhot&quot;)=rs(&quot;keyhot&quot;)+1<br>
+end if<br>
+rs.update<br>
+rs.close<br>
+'=============================================================================<br>
+end if<br>
+if i=0 then '写入下面sql语句作为开头，仔细研究一下下面的代码<br>
+sql1=sql1&amp;&quot; (key like '%&quot; &amp; searchdatatmp(i) &amp; &quot;%' and &quot;<br>
+sql2=sql2&amp;&quot; (sitename like '%&quot; &amp; searchdatatmp(i) &amp; &quot;%' and &quot;<br>
+sql3=sql3&amp;&quot; (faq like '%&quot; &amp; searchdatatmp(i) &amp; &quot;%' and &quot;<br>
+else<br>
+if i=max then '如果循环到最后一个关键字，写入下面sql语句作为结尾<br>
+sql1=sql1&amp;&quot; key like '%&quot; &amp; searchdatatmp(i) &amp; &quot;%') &quot;<br>
+sql2=sql2&amp;&quot; sitename like '%&quot; &amp; searchdatatmp(i) &amp; &quot;%') &quot;<br>
+sql3=sql3&amp;&quot; faq like '%&quot; &amp; searchdatatmp(i) &amp; &quot;%') &quot;<br>
+else '如果关键自己不是开头的也不是结尾的，那么循坏写入下面的sql语句<br>
+sql1=sql1&amp;&quot; key like '%&quot; &amp; searchdatatmp(i) &amp; &quot;%' and &quot;<br>
+sql2=sql2&amp;&quot; sitename like '%&quot; &amp; searchdatatmp(i) &amp; &quot;%' and &quot;<br>
+sql3=sql3&amp;&quot; faq like '%&quot; &amp; searchdatatmp(i) &amp; &quot;%' and &quot;<br>
+end if<br>
+end if<br>
+next '循环结束<br>
+end if<br>
+sql=&quot;select * from www where &quot;&amp;sql1&amp;&quot; or &quot;&amp;sql2&amp;&quot; or &quot;&amp;sql3&quot;&amp;&quot;order by level desc,hot desc&quot;<br>
+rs.open sql,conn, 1, 1<br>
+if not rs.eof then <br>
+if request.querystring(&quot;curpage&quot;) = &quot;&quot; or request.querystring(&quot;curpage&quot;) = 0 then <br>
+curpage = 1 <br>
+else <br>
+curpage = cint(request(&quot;curpage&quot;)) <br>
+end if</p>
+<p>rs.pagesize=20 <br>
+dim totalpages <br>
+totalpages = rs.pagecount <br>
+if curpage&gt;rs.pagecount then <br>
+curpage=rs.pagecount <br>
+end if <br>
+rs.absolutepage=curpage <br>
+rs.cachesize = rs.pagesize <br>
+dim totalcount <br>
+totalcount =int(rs.recordcount)<br>
+order=0 <br>
+do while (not rs.eof) and (order&lt;rs.pagesize) <br>
+order=order+1<br>
+%&gt;&lt;font color=&quot;#ff0000&quot;&gt;○&lt;/font&gt;&lt;a href=&quot;goturl.asp?id=&lt;%=rs(&quot;id&quot;)%&gt;&amp;url=&lt;%=rs(&quot;url&quot;)%&gt;&quot; target=&quot;_blank&quot;&gt;&lt;font color=&quot;#0000ff&quot;&gt;&lt;%<br>
+for j=0 to i<br>
+if j=0 then<br>
+sitenametmp=replace(rs(&quot;sitename&quot;),arraysearchdata(j),&quot;&lt;font color=red&gt;&quot;&amp;arraysearchdata(j)&amp;&quot;&lt;/font&gt;&quot;)<br>
+else<br>
+sitenametmp=replace(sitenametmp,arraysearchdata(j),&quot;&lt;font color=red&gt;&quot;&amp;arraysearchdata(j)&amp;&quot;&lt;/font&gt;&quot;)<br>
+end if<br>
+next<br>
+response.write sitenametmp%&gt;&lt;/font&gt;&lt;/a&gt;<br>
+---&lt;%for j=0 to i</p>
+<p>if j=0 then<br>
+sitenametmp=replace(rs(&quot;faq&quot;),arraysearchdata(j),&quot;&lt;font color=red&gt;&quot;&amp;arraysearchdata(j)&amp;&quot;&lt;/font&gt;&quot;)<br>
+else<br>
+sitenametmp=replace(sitenametmp,arraysearchdata(j),&quot;&lt;font color=red&gt;&quot;&amp;arraysearchdata(j)&amp;&quot;&lt;/font&gt;&quot;)<br>
+end if<br>
+next<br>
+response.write sitenametmp%&gt;<br>
+&lt;% <br>
+rs.movenext <br>
+loop <br>
+%&gt; &lt;table&gt; <br>
+&lt;tr&gt; &lt;td width=&quot;30%&quot;&gt;○页次： &lt;%=curpage%&gt; / &lt;%=totalpages%&gt;&lt;/td&gt; <br>
+&lt;td width=&quot;20%&quot;&gt;&lt;/td&gt;</p>
+<p>&lt;%if int(int(curpage/10)*10+9)&gt;totalpages then <br>
+topages=totalpages <br>
+else <br>
+topages=int(int(curpage/10)*10+9) <br>
+end if <br>
+if curpage/10 &lt; 1 then <br>
+frompages=1 <br>
+else <br>
+frompages=int(curpage/10)*10 <br>
+end if %&gt; <br>
+&lt;td width=&quot;50%&quot; align=&quot;right&quot;&gt;页数： &lt;a href=&quot;search.asp?curpage=&lt;%=frompages-1%&gt;&amp;t1=&lt;%=searchdata%&gt;&quot;&gt;&amp;lt;&amp;lt;&lt;/a&gt; <br>
+&lt;% <br>
+for i =frompages to topages %&gt; <br>
+&lt;a href=search.asp?curpage=&lt;%=i%&gt;&amp;t1=&lt;%=searchdata%&gt;&gt;&lt;%=i%&gt;&lt;/a&gt; <br>
+&lt;%next%&gt; <br>
+&lt;a href=&quot;search.asp?curpage=&lt;%=topages+1%&gt;&amp;t1=&lt;%=searchdata%&gt;&quot;&gt;&amp;gt;&amp;gt;&lt;/a&gt; <br>
+&lt;/td&gt; &lt;/tr&gt;&lt;/table&gt; <br>
+&lt;table&gt; <br>
+&lt;tr&gt; &lt;td width=&quot;30%&quot;&gt;○页次： &lt;%=curpage%&gt; / &lt;%=totalpages%&gt;&lt;/td&gt; <br>
+&lt;td width=&quot;20%&quot;&gt;&lt;/td&gt;</p>
+<p>&lt;%if int(int(curpage/10)*10+9)&gt;totalpages then <br>
+topages=totalpages <br>
+else <br>
+topages=int(int(curpage/10)*10+9) <br>
+end if <br>
+if curpage/10 &lt; 1 then <br>
+frompages=1 <br>
+else <br>
+frompages=int(curpage/10)*10 <br>
+end if %&gt; <br>
+&lt;td width=&quot;50%&quot; align=&quot;right&quot;&gt;页数： &lt;a href=&quot;search.asp?fs2=&lt;%=select2%&gt;&amp;fs1=&lt;%=select1%&gt;&amp;curpage=&lt;%=frompages-1%&gt;&amp;t1=&lt;%=searchdata%&gt;&quot;&gt;&amp;lt;&amp;lt;&lt;/a&gt; <br>
+&lt;% <br>
+for i =frompages to topages %&gt; <br>
+&lt;a href=search.asp?fs2=&lt;%=select2%&gt;&amp;fs1=&lt;%=select1%&gt;&amp;curpage=&lt;%=i%&gt;&amp;t1=&lt;%=searchdata%&gt;&gt;&lt;%=i%&gt;&lt;/a&gt; <br>
+&lt;%next%&gt; <br>
+&lt;a href=&quot;search.asp?fs2=&lt;%=select2%&gt;&amp;fs1=&lt;%=select1%&gt;&amp;curpage=&lt;%=topages+1%&gt;&amp;t1=&lt;%=searchdata%&gt;&quot;&gt;&amp;gt;&amp;gt;&lt;/a&gt; <br>
+&lt;/td&gt; &lt;/tr&gt;&lt;/table&gt; <br>
+请参考，其他的代码就很简单了！</p></div></body></html>

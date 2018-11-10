@@ -1,0 +1,53 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>各种数据库连接代码</title></head><body><h1>各种数据库连接代码</h1><div><p>MS Access数据库连接</p>
+<p>用DSN连接并且没有用户名和密码：</p>
+<p>&lt;%<br>
+set conn = Server.CreateObject(``ADODB.Connection``)<br>
+conn.open ``YourDSNName``<br>
+%&gt;</p>
+<p>用DSN连接并且有用户名和密码：</p>
+<p>&lt;%<br>
+set conn = Server.CreateObject(``ADODB.Connection``)<br>
+conn.open ``YourDSNName``,``username``,``password``<br>
+%&gt;</p>
+<p>用实际的数据库绝对路径连接：</p>
+<p>&lt;%<br>
+Set conn = Server.CreateObject(``ADODB.Connection``)<br>
+Strconn=``DRIVER={Microsoft Access Driver (*.mdb)}; ``<br>
+Strconn=Strconn &amp; ``DBQ=e:\yanhang\database.mdb`` <br>
+conn.Open Strconn<br>
+%&gt;</p>
+<p>用实际的数据库相对路径连接：</p>
+<p>&lt;%<br>
+Set conn = Server.CreateObject(``ADODB.Connection``)<br>
+Strconn=``DRIVER={Microsoft Access Driver (*.mdb)}; ``<br>
+Strconn=Strconn &amp; ``DBQ=`` &amp; Server.MapPath(``/database/yanhang.mdb``)<br>
+conn.Open Strconn<br>
+%&gt;</p>
+<p><br>
+MS SQL Server数据库连接</p>
+<p>用DSN连接：</p>
+<p>&lt;%<br>
+set conn = Server.CreateObject(``ADODB.Connection``)<br>
+conn.open ``DSN=MyDSN;UID=user;PWD=password;DATABASE=databasename``<br>
+%&gt;</p>
+<p>不用DSN连接：</p>
+<p>&lt;%<br>
+Set conn = Server.CreateObject(``ADODB.Connection``)<br>
+DSNtemp=``DRIVER={SQL Server};SERVER=ServerName;UID=USER;PWD=password;DATABASE=databasename``<br>
+conn.open DSNtemp<br>
+%&gt;</p>
+<p><br>
+FoxPro数据库连接</p>
+<p>&lt;%<br>
+Set Conn = Server.CreateObject(``ADODB.connection``)<br>
+ConnStr= ``Driver=Microsoft Visual Foxpro Driver; UID=userID;SourceType=DBC;SourceDB=C:\yanhang\database.dbc``<br>
+Conn.Open ConnStr<br>
+%&gt;</p>
+<p><br>
+Oracle数据库连接：</p>
+<p>&lt;%<br>
+set conn=server.createobject(``adodb.connection``)<br>
+conn.cursorlocation=adUseClient<br>
+DSNTemp=``Provider=MSDAORA.1;Password=xxxxx;User ID=yanhang;Data Source=xxx.world``<br>
+conn.open DSNtemp<br>
+%&gt;</p></div></body></html>

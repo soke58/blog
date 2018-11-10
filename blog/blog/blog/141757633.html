@@ -1,0 +1,86 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>非摸板生成静态页</title></head><body><h1>非摸板生成静态页</h1><div><p>目前已经有很多生成html的新闻系统，但是都是用的模板，本函数实现把asp页面产生的html代码保存成为一个html文件，这样就没有必要改动原来的页面就可以轻松完成一个生成html的新闻系统了。^_^<br>
+由于代码比较短，这里就不进行注释了<br>
+&lt;%<br>
+'当目标页面的包含文件即＃i nclude的页面里边存在response.End()的时候本程序有问题<br>
+'注意：本文件一定要放在filename指向的文件的同一目录下<br>
+dim hughchiu_rtcode<br>
+Function get_exe_code(filename)<br>
+dim execode<br>
+dim tmp_str<br>
+Dim re,re1,content,fso,f,aspStart,aspEnd<br>
+dim ms,m<br>
+execode = &quot;&quot;<br>
+set fso=CreateObject(&quot;<span style="color: #808000">Scripting .FileSystemObject</span>&quot;)<br>
+set f=fso.OpenTextFile(server.mappath(filename))<br>
+content=f.ReadAll<br>
+f.close<br>
+set f=nothing<br>
+set fso=nothing</p>
+<p>set re = new regexp<br>
+re.ignorecase = true<br>
+re.global = true<br>
+re.pattern = &quot;\&lt;\%\@[^\%]+\%\&gt;&quot;<br>
+content = re.replace(content,&quot;&quot;)</p>
+<p>re.global = false<br>
+re.pattern = &quot;\&lt;\!\-\-\s*\＃i nclude\s*file\s*=\s*\&quot;&quot;([^\&quot;&quot;]+)\&quot;&quot;\s*\-\-\&gt;&quot;<br>
+do<br>
+set ms = re.execute(content)<br>
+if ms.count&lt;&gt;0 then<br>
+set m = ms(0)<br>
+tmp_str = get_exe_code(m.submatches(0))<br>
+content = re.replace(content, tmp_str)<br>
+else<br>
+exit do<br>
+end if<br>
+loop<br>
+set m = nothing<br>
+set ms = nothing</p>
+<p>re.pattern=&quot;^\s*=&quot;<br>
+aspEnd=1<br>
+aspStart=inStr(aspEnd,content,&quot;&lt;%&quot;)+2</p>
+<p>set re1=new RegExp<br>
+re1.ignorecase = true<br>
+re1.global = false<br>
+re1.pattern = &quot;response\.Write(.+)&quot;</p>
+<p>do while aspStart&gt;aspEnd+1 <br>
+&nbsp;&nbsp; execode = execode&amp;vbcrlf&amp;&quot; hughchiu_rtcode = hughchiu_rtcode&amp;&quot;&quot;&quot;&amp;replace( replace(Mid(content,aspEnd,aspStart-aspEnd-2),&quot;&quot;&quot;&quot;,&quot;&quot;&quot;&quot;&quot;&quot;), vbcrlf, &quot;&quot;&quot;&amp;vbcrlf&amp;&quot;&quot;&quot;)&amp;&quot;&quot;&quot;&quot;&amp;vbcrlf<br>
+&nbsp;&nbsp; aspEnd=inStr(aspStart,content,&quot;%\&gt;&quot;)+2<br>
+&nbsp;&nbsp; tmp_str = Mid(content,aspStart,aspEnd-aspStart-2)<br>
+&nbsp;&nbsp;<br>
+do<br>
+set ms = re1.execute(tmp_str)<br>
+if ms.count&lt;&gt;0 then<br>
+set m = ms(0)<br>
+tmp_str = re1.replace(tmp_str, &quot; hughchiu_rtcode = hughchiu_rtcode&amp;&quot;&amp;m.submatches(0))<br>
+else<br>
+exit do<br>
+end if<br>
+loop<br>
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp; set m = nothing<br>
+&nbsp;&nbsp; set ms = nothing<br>
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp; execode = execode&amp; re.replace(tmp_str,&quot;hughchiu_rtcode = hughchiu_rtcode&amp;&quot;)</p>
+<p>&nbsp;&nbsp; aspStart=inStr(aspEnd,content,&quot;&lt;%&quot;)+2<br>
+loop</p>
+<p>set re1 = nothing<br>
+set re=nothing</p>
+<p>execode = execode&amp;vbcrlf&amp;&quot; hughchiu_rtcode = hughchiu_rtcode&amp;&quot;&quot;&quot;&amp;replace( replace(Mid(content,aspEnd), &quot;&quot;&quot;&quot;, &quot;&quot;&quot;&quot;&quot;&quot;), vbcrlf, &quot;&quot;&quot;&amp;vbcrlf&amp;&quot;&quot;&quot; )&amp;&quot;&quot;&quot;&quot;&amp;vbcrlf<br>
+get_exe_code = &quot;&lt;%&quot;&amp;execode&amp;&quot;%\&gt;&quot;<br>
+End Function</p>
+<p>function asp2html(filename)<br>
+dim code<br>
+code = replace( replace( replace( get_exe_code(filename), &quot;hughchiu_rtcode = hughchiu_rtcode&amp;&quot;&quot;&quot;&quot;&quot;&amp;vbcrlf, &quot;&quot; ), &quot;&lt;%&quot;, &quot;&quot; ), &quot;%\&gt;&quot;, &quot;&quot; )<br>
+'response.Write(code)<br>
+execute(code)<br>
+'response.Write( hughchiu_rtcode )<br>
+asp2html = hughchiu_rtcode<br>
+end function<br>
+%&gt;</p>
+<p>使用范例：<br>
+set fso=CreateObject(&quot;Scripting. <span style="color: #708090">FileSystemObject</span>&quot;)<br>
+set f=fso.CreateTextFile( server.mappath( &quot;youpage.htm&quot; ), true )<br>
+f.WriteLine( asp2html(&quot;youpage.asp&quot;) )<br>
+f.close<br>
+set f = nothing<br>
+set fso = nothing</p></div></body></html>
