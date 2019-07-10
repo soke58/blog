@@ -14,11 +14,11 @@ url: "https://soke58.github.io" # the base hostname & protocol for your site
 permalink: /:year/:month/:day/:title/
 
 # other links
-twitter_username: gaohaoyang126
-facebook_username: gaohaoyang.water
+twitter_username: 
+facebook_username: 
 github_username:  soke58
-email: BAIDU58@YEAH.NET
-weibo_username: baidu58
+email: soker58@126.com
+weibo_username: abc0123456789
 zhihu_username: 
 linkedIn_username: 
 dribbble_username:
@@ -28,7 +28,7 @@ description_footer: 欢迎来到Soke的博客！
 # comments
 # two ways to comment, only choose one, and use your own short name
 # 两种评论插件，选一个就好了，使用自己的 short_name
-duoshuo_shortname: #hygblog
+duoshuo_shortname: 
 disqus_shortname: 
 
 # statistic analysis 统计代码
